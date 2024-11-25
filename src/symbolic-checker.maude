@@ -152,9 +152,16 @@ fmod META-LMC-PARAMETERS is
   op ##m## : ~> SModule [memo] . --- empty! the user module shoule define them.
   op ##f## : ~> TermList [memo] .
 
-  var H : Header .  var IL : ImportList .  var SS : SortSet .  var SSDS : SubsortDeclSet .  
-  var OPDS : OpDeclSet . var MAS : MembAxSet .  var EQS : EquationSet .  var RLS : RuleSet .
-  vars T1 T2 : Term . var ATS : AttrSet . var COND : EqCondition .
+  var H : Header .  
+  var IL : ImportList .  
+  var SS : SortSet .  
+  var SSDS : SubsortDeclSet .  
+  var OPDS : OpDeclSet . 
+  var MAS : MembAxSet .  
+  var EQS : EquationSet .  
+  var RLS : RuleSet .
+  var STDS : StratDeclSet .
+  var STDFS : StratDefSet .
 
   --- to handle the mismatch between Full & Core Maude
   --- due to some bugs, only used for getVarants and metaNarrow
@@ -309,11 +316,19 @@ mod META-SYMBOLIC-CONNECTOR is
   pr DECL-META-PRETTY-PRINT 
    * (op addOps to addOpsSE, op addEqs to addEqsSE, op addSorts to addSortsSE) .
 
-  var M : Module .  vars T T' T1 T2 ST ST' PT CT : Term . 
-  var RN : RuleName . var RS : RuleSet . var TL : TermList .  
-  var V : Variable . var TP : Type . vars SUB SUB' SUB'' : Substitution .  
-  var B : Bool . var N : Nat . var D : Bound .
-  var RT : ResultTriple .  var RTS : ResultTripleSet . 
+  var M : Module .  
+  vars T T' T1 T2 ST ST' PT CT : Term . 
+  var RN : RuleName . 
+  var RS : RuleSet . 
+  var TL : TermList .  
+  var V : Variable . 
+  var TP : Type . 
+  vars SUB SUB' SUB'' : Substitution .  
+  var B : Bool . 
+  var N : Nat . 
+  var D : Bound .
+  var RT : ResultTriple .  
+  var RTS : ResultTripleSet . 
 
 --- meta prop and state
   eq mid(ST) |= prop(PT) 
@@ -680,11 +695,13 @@ mod LMC-COMMAND-PROCESSING is
   var D : Bound .
   var CD : Condition .
   var  QIL : QidList .
-  vars VS VDS : OpDeclSet .
-  vars QI QI' F V O : Qid .  var TY : Type .
+  vars VS VDS : VariableSet .
+  vars QI QI' F V O : Qid .  
+  var TY : Type .
   var  TDM : Tuple{Database,ModuleExpression} .
-  var  TMVB : [Tuple{Term,Module,Bool,OpDeclSet,Bound,Database}] .
-  var RP : ResultPair . var  RP? : [ResultPair] .
+  var  TMVB : [Tuple{Term,Module,Bool,VariableSet,Bound,Database}] .
+  var RP : ResultPair . 
+  var  RP? : [ResultPair] .
 
 --- command condition type
   op lmcCmdCond : Qid -> Type? .
@@ -869,9 +886,15 @@ mod LMC-DATABASE-HANDLING is
   inc FM-DATABASE-HANDLING .
   pr LMC-COMMAND-PROCESSING .
 
-  var Atts : AttributeSet . var X@DatabaseClass : DatabaseClass . 
-  var F : Qid . var O : Oid .  var ME : ModuleExpression . var DB : Database .
-  var TL : TermList . var T T' : Term . var QIL : QidList .
+  var Atts : AttributeSet . 
+  var X@DatabaseClass : DatabaseClass . 
+  var F : Qid . 
+  var O : Oid .  
+  var ME : ModuleExpression . 
+  var DB : Database .
+  var TL : TermList . 
+  var T T' : Term . 
+  var QIL : QidList .
 
  crl [LMC] :
     < O : X@DatabaseClass | 
