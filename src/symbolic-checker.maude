@@ -171,13 +171,6 @@ fmod META-LMC-PARAMETERS is
    = fmod H is IL sorts SS . SSDS OPDS MAS EQS endfm .
   eq trMod(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm)
    = mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm .
-
-  op trEqs : EquationSet -> EquationSet .
-  eq trEqs(eq T1 = T2 [metadata("variant") ATS] . EQS)
-   = eq T1 = T2 [variant ATS] . trEqs(EQS) .
-  eq trEqs(ceq T1 = T2 if COND [metadata("variant") ATS] . EQS)
-   = ceq T1 = T2 if COND [variant ATS] . trEqs(EQS) .
-  eq trEqs(EQS) = EQS [owise] .
 endfm
 
 fmod LMC-RESULT-SET is
