@@ -263,7 +263,9 @@ fmod META-NARROWING-INTERFACE is
   var VR : Variant . 
   var VS : VariantSet .
   var SR : StepResult . 
-  var SRS : StepResultSet . 
+  var SRS : StepResultSet .
+  var P : Parent . 
+  var B : Bool .
 
   op metaNarrow2 : Module Term -> StepResult .
   eq metaNarrow2(M,T) 
