@@ -168,9 +168,9 @@ fmod META-LMC-PARAMETERS is
 
   op trMod : SModule -> SModule [memo] . 
   eq trMod(fmod H is IL sorts SS . SSDS OPDS MAS EQS endfm) 
-   = fmod H is IL sorts SS . SSDS OPDS MAS trEqs(EQS) endfm .
+   = fmod H is IL sorts SS . SSDS OPDS MAS EQS endfm .
   eq trMod(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm)
-   = mod H is IL sorts SS . SSDS OPDS MAS trEqs(EQS) RLS endm .
+   = mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm .
 
   op trEqs : EquationSet -> EquationSet .
   eq trEqs(eq T1 = T2 [metadata("variant") ATS] . EQS)
