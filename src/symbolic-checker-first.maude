@@ -145,7 +145,7 @@ endfm
 ***  Full Maude Narrowing Connector  ***
 ****************************************
 
-load full-maude27
+load full-maude
 
 fmod META-LMC-PARAMETERS is 
   pr META-MODULE .
