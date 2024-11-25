@@ -252,11 +252,18 @@ fmod META-NARROWING-INTERFACE is
   pr LMC-RESULT-SET .
   pr FM-META-NARROWING-SEARCH .
 
-  var M : Module . var RS : RuleSet .
-  vars T T1 T2 ST PT : Term .  var TL : TermList .  var C : Constant . 
-  var TP : Type . vars SUB SUB1 SUB2 : Substitution .  
-  vars NextVar NextVar' N : Nat . var VR : Variant . var VS : VariantSet .
-  var SR : StepResult . var SRS : StepResultSet . 
+  var M : Module . 
+  var RS : RuleSet .
+  vars T T1 T2 ST PT : Term .  
+  var TL : TermList .  
+  var C : Constant . 
+  var TP : Type . 
+  vars SUB SUB1 SUB2 : Substitution .  
+  vars NextVar NextVar' N : Nat . 
+  var VR : Variant . 
+  var VS : VariantSet .
+  var SR : StepResult . 
+  var SRS : StepResultSet . 
 
   op metaNarrow2 : Module Term -> StepResult .
   eq metaNarrow2(M,T) 
@@ -292,7 +299,7 @@ fmod META-NARROWING-INTERFACE is
   eq propInstSet(empty, PT) = empty .
 
   op filterPropVars : StepResult VariantSet ~> StepResultSet .
-  eq filterPropVars({ST,TP,SUB / RS}, {T,SUB1,N} # VS)
+  eq filterPropVars({ST,TP,SUB / RS}, {T,SUB1,N,P,B} # VS)
    = if inst?(T) then {ST << SUB1,TP, SUB .. SUB1 / RS} 
      else empty fi 
    || filterPropVars({ST,TP,SUB / RS}, VS) .
