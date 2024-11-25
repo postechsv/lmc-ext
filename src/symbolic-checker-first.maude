@@ -174,7 +174,7 @@ fmod META-LMC-PARAMETERS is
 endfm
 
 fmod LMC-RESULT-SET is
-  pr RESULT-CONTEXT-SET .
+  pr FM-RESULT-CONTEXT-SET .
 
   sort StepResult StepResult? .
   subsort StepResult < StepResult? .
@@ -243,7 +243,7 @@ endm
 fmod META-NARROWING-INTERFACE is
   pr META-LMC-PARAMETERS .
   pr LMC-RESULT-SET .
-  pr META-NARROWING-SEARCH .
+  pr FM-META-NARROWING-SEARCH .
 
   var M : Module . var RS : RuleSet .
   vars T T1 T2 ST PT : Term .  var TL : TermList .  var C : Constant . 
@@ -255,7 +255,7 @@ fmod META-NARROWING-INTERFACE is
   eq metaNarrow2(M,T) 
    = to4Tuple(M,metaENarrowShowAll(M,T,1,full noStrategy BuiltIn-unify)) 
      |> T .
-
+ 
   op metaGenVariant : Module Term -> VariantSet .
   eq metaGenVariant(M, T) = metaGenVariant(M, T, highestVar(T)) .
 
@@ -572,21 +572,21 @@ endm
 *****************************************
 
 --- REDEFINED
-fmod BANNER is
+fmod FM-BANNER is
   pr STRING .
   op banner : -> String .
   eq banner = "Logical Model Checker January 10th 2012" .
 endfm
 
 fmod LMC-COMMANDS is
-  inc COMMANDS .
+  inc FM-COMMANDS .
   op lmc_|=_. : @Bubble@ @Bubble@ -> @Command@ [ctor] .
   op lfmc_|=_. : @Bubble@ @Bubble@ -> @Command@ [ctor] .
 endfm
 
 --- REDEFINED
 fmod FULL-MAUDE-SIGN is
-  including VIEWS .
+  including FM-VIEWS .
   inc LMC-COMMANDS .
   sort @Input@ .
   subsorts @Command@ @Module@ @View@ < @Input@ .
@@ -668,7 +668,7 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
 endm
 
 mod LMC-COMMAND-PROCESSING is
-  pr COMMAND-PROCESSING .
+  pr FM-COMMAND-PROCESSING .
   pr META-PROP-SET .
 
   vars T T1 T2 T3 T4 T5 T6 : Term .  
@@ -866,7 +866,7 @@ mod LMC-COMMAND-PROCESSING is
 endm
 
 mod LMC-DATABASE-HANDLING is
-  inc DATABASE-HANDLING .
+  inc FM-DATABASE-HANDLING .
   pr LMC-COMMAND-PROCESSING .
 
   var Atts : AttributeSet . var X@DatabaseClass : DatabaseClass . 
