@@ -1,6 +1,18 @@
 --- The Maude Logical Bounded Model Checker Interface
 --- Author: Kyungmin Bae <kbae4@illinois.edu>
 
+---(
+TODO
+1. MetaEdge definition
+2. StepResult definition
+3. transTR (rule name to unlabeled)
+4. metaNarrow2 (metaENarrowShowAll -> metaNarrowCollect)
+5. toStepResult (originally to4Tuple)
+6. propSetInstSet
+7. filterPropVars
+8. transTR
+)
+
 load model-checker
 
 ****************************************
