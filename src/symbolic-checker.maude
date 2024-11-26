@@ -292,6 +292,10 @@ fmod META-NARROWING-INTERFACE is
   ceq summarize(T, V1 <- T1 ; SUB) = summarize(T, SUB1) if SUB1 := SUB << (V1 <- T1) /\ SUB =/= SUB1 .
   eq summarize(T, SUB) = SUB [owise] .
 
+  op cleanRedundant : StepResult -> StepResult .
+  ceq cleanRedundant({ST,V1 <- V2 ; SUB,RN | T}) = cleanRedundant({ST << (V2 <- V1),SUB << (V2 <- V1),RN | T}) .
+  eq cleanRedundant(SR) = SR [owise] .
+
   op metaNarrow2 : Module Term -> StepResult .
   eq metaNarrow2(M,T) 
    = to4Tuple(M,metaENarrowShowAll(M,T,1,full noStrategy BuiltIn-unify)) 
