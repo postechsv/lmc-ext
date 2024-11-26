@@ -310,16 +310,10 @@ fmod META-NARROWING-INTERFACE is
 
   --- StateSet PropSet -> StateSet
   op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
-  eq propSetInstSet(SRS, (PT,TL))
-   = propSetInstSet(propInstSet(SRS, PT), TL) .
-  eq propSetInstSet(SRS, empty) = SRS .
-
-  --- StateSet Prop -> StateSet (trMod for genVariant)
-  op propInstSet : StepResultSet Term ~> StepResultSet .
-  eq propInstSet({ST,TP,SUB / RS} || SRS, PT)
-   = filterPropVars({ST,TP,SUB / RS}, metaGenVariant(trMod(##m##), '_|=_[ST, PT]))
-   || propInstSet(SRS, PT) .
-  eq propInstSet(empty, PT) = empty .
+  eq propSetInstSet(empty, TL) = empty .
+  eq propSetInstSet({ST,SUB,RN | T} || SRS, TL)
+   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(trMod(##m##), conjProps(ST, TermSet(TL))))
+     || propSetInstSet(SRS, TL) .
 
   op filterPropVars : StepResult VariantSet ~> StepResultSet .
   eq filterPropVars({ST,TP,SUB / RS}, {T,SUB1,N,P,B} # VS)
