@@ -720,12 +720,12 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
 
 --- transition (including conditions)
   op transTR : Transition -> TermList .
-  eq transTR({mid(ST), RS / SUB})  
-   = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), 
-                  upRuleName(getRuleName(RS))] .
+  eq transTR({mid(ST), -[SUB]/ RN -})  
+   = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), RN] .
+
   eq transTR({mid(ST), deadlock})  
-   = '`{_`,_`,_`}[ST, 'none.CESubstitution, upRuleName(deadlock)] .
-  eq transTR({init(ST), ME}) = empty  .
+   = '`{_`,_`,_`}[ST, 'none.CESubstitution, deadlock] .
+  eq transTR({init(ST), -[SUB]/ RN -}) = empty  .
 
   eq transTR({mid(ST,CD),ME})  = transTR({mid(ST),ME}) .
   eq transTR({init(ST,CD),ME}) = empty  .
