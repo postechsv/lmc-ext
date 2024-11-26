@@ -66,7 +66,7 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
 --- meta transition
   sorts MetaEdge MetaConf .
   op deadlock : -> MetaEdge [ctor] .
-  op _/_ : RuleSet Substitution -> MetaEdge [ctor] .
+  op -[_]/_- : Substitution RuleName -> MetaEdge [ctor] .
   op <_> : State -> MetaConf [ctor] .
   op _|=>_ : MetaEdge State -> MetaConf [ctor] .
 
