@@ -268,14 +268,16 @@ fmod META-NARROWING-INTERFACE is
   pr META-LMC-PARAMETERS .
   pr LMC-RESULT-SET .
   pr FM-META-NARROWING-SEARCH .
+  pr FM-TERMSET .
 
   var M : Module . 
   var RS : RuleSet .
-  vars T T1 T2 ST PT : Term .  
+  vars T T' T1 T2 ST ST' PT : Term .  
   var TL : TermList .  
+  var TS : TermSet .
   var C : Constant . 
   var TP : Type . 
-  vars SUB SUB1 SUB2 : Substitution .  
+  vars SUB SUB' SUB1 SUB2 SUBI : Substitution .  
   vars NextVar NextVar' N : Nat . 
   var VR : Variant . 
   var VS : VariantSet .
@@ -283,6 +285,12 @@ fmod META-NARROWING-INTERFACE is
   var SRS : StepResultSet . 
   var P : Parent . 
   var B : Bool .
+  vars V1 V2 V3 : Variable .
+  var RN : RuleName .
+
+  op summarize : Term Substitution -> Substitution .
+  ceq summarize(T, V1 <- T1 ; SUB) = summarize(T, SUB1) if SUB1 := SUB << (V1 <- T1) /\ SUB =/= SUB1 .
+  eq summarize(T, SUB) = SUB [owise] .
 
   op metaNarrow2 : Module Term -> StepResult .
   eq metaNarrow2(M,T) 
