@@ -301,6 +301,10 @@ fmod META-NARROWING-INTERFACE is
    if VR := metaGetVariant(M,T,empty,NextVar,N) .
   eq metaGenVariant2(M, T, NextVar, N) = emptyVariantSet [owise] .
 
+  op conjProps : Term TermSet -> TermList .
+  eq conjProps(ST, emptyTermSet) = empty .
+  eq conjProps(ST, PT | TS) = '_|=_[ST, PT], conjProps(ST, TS) .
+
 --- variant narrowing prop instantiations.
 --- compute the PI-instantated states of the given state.
 
