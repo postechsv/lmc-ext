@@ -553,7 +553,7 @@ mod META-SYMBOLIC-COND-CONNECTOR is
   eq next(ST,CD)    
    = propSetInstSet(condSetInstSet(metaNarrow2(trMod(##m##), ST),CD), ##f##) .
   eq variant(ST,CD) 
-   = propSetInstSet(condSetInstSet({ST,leastSort((##m##),ST),none / none},CD), 
+   = propSetInstSet(condSetInstSet({ST,none,unlabeled | ST},CD), 
                     ##f##) .
 
 --- condition should be already considered by variant narrowing
