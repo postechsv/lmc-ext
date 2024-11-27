@@ -352,6 +352,10 @@ fmod META-NARROWING-INTERFACE is
   eq inst?('true.Bool)  = true .
   eq inst?('false.Bool) = true .
   eq inst?(T) = false [owise] .
+
+  op isGround : Sort -> Bool .
+  eq isGround('GroundBool) = true .
+  eq isGround(S:Sort) = false [owise] .
 endfm
 
 mod META-SYMBOLIC-CONNECTOR is
