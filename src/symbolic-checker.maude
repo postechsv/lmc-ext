@@ -265,6 +265,14 @@ mod META-LMC-THEORY is
     if {ST',SUB',RN | T} || SRS := next(ST) [print ST'] .
 endm
 
+fmod GROUND-BOOL is
+  sorts GroundBool .
+  subsort GroundBool < Bool .
+
+  op true : -> GroundBool [ctor special (id-hook SystemTrue)] .
+  op false : -> GroundBool [ctor special (id-hook SystemFalse)] .
+endfm
+
 fmod META-NARROWING-INTERFACE is
   pr META-LMC-PARAMETERS .
   pr LMC-RESULT-SET .
@@ -733,7 +741,7 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   op transTR : Transition -> TermList .
   eq transTR({mid(ST), -[SUB]/ RN -})  
    = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), upRuleName(RN)] .
-   
+
   eq transTR({mid(ST), deadlock})  
    = '`{_`,_`,_`}[ST, 'none.CESubstitution, upRuleName(deadlock)] .
   eq transTR({init(ST), -[SUB]/ RN -}) = empty  .
