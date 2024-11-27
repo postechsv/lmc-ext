@@ -400,7 +400,7 @@ mod META-SYMBOLIC-CONNECTOR is
   eq next(ST)    
    = propSetInstSet(metaNarrow2(trMod(##m##), ST), ##f##) .
   eq variant(ST) 
-   = propSetInstSet({ST,leastSort((##m##),ST),none / none}, ##f##) .
+   = propSetInstSet({ST,none,none | ST}, ##f##) .
 
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
