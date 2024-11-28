@@ -605,18 +605,17 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
   vars CD CD' : EqCondition .  
   var VS : VariantSet .
   var P : Parent .
-
-
+  
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
-    => RS / SUB' |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB' / RS} || SRS := variant(ST) /\ condOK(CD << SUB') .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := variant(ST) /\ condOK(CD << SUB') .
 
  crl [mid-cond]  : 
        < mid(ST,CD) >
-    => RS / SUB' |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB' / RS} || SRS := next(ST) /\ condOK(CD << SUB') .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := next(ST) /\ condOK(CD << SUB') .
 
 --- Another method to check a condition.
   op condOK : EqCondition ~> Bool .
