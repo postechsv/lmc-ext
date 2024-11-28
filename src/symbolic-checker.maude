@@ -187,11 +187,12 @@ endfm
 
 fmod LMC-RESULT-SET is
   pr FM-RESULT-CONTEXT-SET .
+  pr RULE-NAME .
 
   sort StepResult StepResult? .
   subsort StepResult < StepResult? .
   op failure : -> StepResult? [ctor] .
-  op {_,_,_/_} : Term Type Substitution RuleSet -> StepResult [ctor] .
+  op {_,_,_|_} : Term Substitution RuleName Term -> StepResult [ctor] .
 
   sort StepResultSet .
   subsort StepResult < StepResultSet .
@@ -203,15 +204,21 @@ fmod LMC-RESULT-SET is
   var M : Module . 
   vars NextVar : Nat . 
   vars S S' : Substitution .
-  vars T TS CtTS : Term . 
+  vars T TS CtTS ST : Term . 
   var TL : TermList . 
   var TP : Type . 
   var R : Rule .
   var Tr : TraceNarrow . 
   var B : Flags . 
   vars Ct CtS : Context .  
-  var RTS : ResultContextSet . 
+  var NAR : NarrowingApplyResult . 
   var SRS : StepResultSet .
+  var RN : RuleName .
+  
+  op toStepResult : Term NarrowingApplyResult? -> StepResult .
+  eq toStepResult(T, failure) = empty .
+  eq toStepResult(T, failureIncomplete) = empty .
+  eq toStepResult(T, NAR) = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} .
 
   op to4Tuple : Module ResultContextSet -> StepResult .
   eq to4Tuple(M, empty ) = empty .
@@ -605,7 +612,7 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
   vars CD CD' : EqCondition .  
   var VS : VariantSet .
   var P : Parent .
-  
+
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
