@@ -637,6 +637,7 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
   vars CD CD' : EqCondition .  
   var VS : VariantSet .
   var P : Parent .
+  var RN : RuleName .
 
 --- meta rules
  crl [init-cond] : 
