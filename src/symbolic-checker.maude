@@ -270,11 +270,11 @@ mod META-LMC-THEORY is
 --- meta rules
   crl [init] : < init(ST) > 
             => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST'))) 
-    if {ST',SUB',RN | T} || SRS := variant(ST) [print ST'] . 
+    if {ST',SUB',RN | T} || SRS := variant(ST) . 
 
   crl [mid]  :  < mid(ST) > 
             => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')))
-    if {ST',SUB',RN | T} || SRS := next(ST) [print ST'] .
+    if {ST',SUB',RN | T} || SRS := next(ST) .
 endm
 
 fmod GROUND-BOOL is
