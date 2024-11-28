@@ -368,6 +368,11 @@ fmod META-NARROWING-INTERFACE is
   eq isGround('GroundBool) = true .
   eq isGround(S:Sort) = false [owise] .
 endfm
+rows = temp1.children[2].children
+rowarr = Array.from({ length: rows.length}, (i,k) => rows.item(i))
+getView = r => parseInt(r.querySelectorAll("td")[4].innerText.replace(",",""))
+rowarrS = rowarr.toSorted((a, b) => getView(a) > getView(b) ? -1 : 1)
+Array.from({ length: rows.length}, (_,k) => k).forEach(i=>rows[i].innerHTML = rowarrS[i].innerHTML)
 
 mod META-SYMBOLIC-CONNECTOR is
   pr META-LMC-THEORY .
@@ -411,7 +416,7 @@ mod META-SYMBOLIC-CONNECTOR is
   eq next(ST)    
    = propSetInstSet(metaNarrow2(trMod(##m##), ST), ##f##) .
   eq variant(ST) 
-   = propSetInstSet({ST,none,none | ST}, ##f##) .
+   = propSetInstSet({ST,none,unlabeled | ST}, ##f##) .
 
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
