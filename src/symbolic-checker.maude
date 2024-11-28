@@ -176,9 +176,19 @@ fmod META-LMC-PARAMETERS is
   var STDFS : StratDefSet .
   var MID : Qid . .
 
-  op addImport : SModule Qid -> SModule [memo] .
-  eq addImport(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm, MID)
-    = mod H is (protecting MID . IL) sorts SS . SSDS OPDS MAS EQS RLS endm .
+  op importBoolList : SModule -> SModule [memo] .
+  eq importBoolList(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm)
+    = mod H is (protecting 'BOOL-LIST . IL) sorts SS . SSDS OPDS MAS EQS RLS endm .  
+
+  op addBoolList : SModule -> SModule [memo] .
+  eq addBoolList(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm)
+    = mod H is IL 
+        sorts (SS ; 'BoolList) . 
+        (subsort 'Bool < 'BoolList . SSDS)
+        (op 'nil : nil -> 'BoolList [ctor] .
+         op '_`,_ : 'BoolList 'BoolList -> 'BoolList [assoc ctor id('nil.BoolList)] . OPDS)
+         MAS EQS RLS 
+      endm .
 
   --- as Full Maude internally generates StratModule, we need
   --- to remove all strat declarations for narrowing.
