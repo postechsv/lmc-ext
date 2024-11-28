@@ -332,9 +332,12 @@ fmod META-NARROWING-INTERFACE is
   ceq cleanRedundant({ST,V1 <- V2 ; SUB,RN | T}) = cleanRedundant({ST << (V2 <- V1),SUB << (V2 <- V1),RN | T}) if getType(V1) = getType(V2) .
   eq cleanRedundant(SR) = SR [owise] .
 
-  op metaNarrow2 : Module Term Nat -> StepResultSet .
-  ceq metaNarrow2(M, T, N) = if SRS == empty then empty else SRS || metaNarrow2(M, T, s N) fi
-    if SRS := toStepResult(T, metaENarrowShowAll(M, T, 1, full noStrategy BuiltIn-unify)) |> T .
+  op metaNarrow2 : Module Term -> StepResult .
+  eq metaNarrow2(M,T) = metaNarrowCollect(M, T, 0) |> T .
+
+  op metaNarrowCollect : Module Term Nat -> StepResultSet .
+  ceq metaNarrowCollect(M, T, N) = if SRS == empty then empty else SRS || metaNarrowCollect(M, T, s N) fi
+    if SRS := toStepResult(T, metaNarrowingApply(M, T, empty, '@, N)) .
   
   op metaGenVariant : Module Term -> VariantSet .
   eq metaGenVariant(M, T) = metaGenVariant(M, T, highestVar(T)) .
