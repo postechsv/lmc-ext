@@ -314,7 +314,7 @@ fmod META-NARROWING-INTERFACE is
   eq summarize(T, SUB) = SUB [owise] .
 
   op cleanRedundant : StepResult -> StepResult .
-  ceq cleanRedundant({ST,V1 <- V2 ; SUB,RN | T}) = cleanRedundant({ST << (V2 <- V1),SUB << (V2 <- V1),RN | T}) .
+  ceq cleanRedundant({ST,V1 <- V2 ; SUB,RN | T}) = cleanRedundant({ST << (V2 <- V1),SUB << (V2 <- V1),RN | T}) if getType(V1) = getType(V2) .
   eq cleanRedundant(SR) = SR [owise] .
 
   op metaNarrow2 : Module Term Nat -> StepResultSet .
