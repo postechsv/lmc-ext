@@ -233,7 +233,7 @@ fmod LMC-RESULT-SET is
 
   op _|>_ : StepResult TermList -> StepResult .
   eq (empty).StepResult |> TL = (empty).StepResult .
-  eq ({T,TP,S / R} || SRS) |> TL = {T,TP,S |> TL / R} || (SRS |> TL) .
+  eq ({ST,S,RN | T} || SRS) |> TL = {ST,(S |> TL),RN | T} || (SRS |> TL) .
   eq (failure || SRS ) |> TL = failure || (SRS |> TL) .
 
   op getRuleSet : TraceNarrow -> RuleSet .
