@@ -310,7 +310,7 @@ fmod META-NARROWING-INTERFACE is
   var RN : RuleName .
 
   op summarize : Term Substitution -> Substitution .
-  ceq summarize(T, V1 <- T1 ; SUB) = summarize(T, SUB1) if SUB1 := SUB << (V1 <- T1) /\ SUB =/= SUB1 .
+  ceq summarize(T, V1 <- T1 ; SUB) = summarize(T, SUB1) if SUB1 := SUB << (V1 <- T1) /\ SUB =/= SUB1 /\ not V1 in VarsTerm(T) .
   eq summarize(T, SUB) = SUB [owise] .
 
   op cleanRedundant : StepResult -> StepResult .
