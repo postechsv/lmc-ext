@@ -224,15 +224,16 @@ fmod LMC-RESULT-SET is
   var Tr : TraceNarrow . 
   var B : Flags . 
   vars Ct CtS : Context .  
-  var NAR : NarrowingApplyResult . 
-  var SRS : StepResultSet .
-  var RN : RuleName .
+  var RTS : ResultContextSet . 
+  var SRS : ResultTripleSet .
+  vars Q Q' : Qid .
 
-  op toStepResult : Term NarrowingApplyResult? -> StepResult .
-  eq toStepResult(T, failure) = empty .
-  eq toStepResult(T, failureIncomplete) = empty .
-  eq toStepResult(T, NAR) = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} .
-
+  op to4Tuple : Module NarrowingApplyResult? -> ResultTripleSet .
+  eq to4Tuple(M, failure) = empty .
+  eq to4Tuple(M, failureIncomplete) = empty .
+  eq to4Tuple(M, {T,TP,Ct,Q,S,S',Q'})
+   = {T, TP, S .. S'} .
+   
   op _|>_ : StepResult TermList -> StepResult .
   eq (empty).StepResult |> TL = (empty).StepResult .
   eq ({ST,S,RN | T} || SRS) |> TL = {ST,(S |> TL),RN | T} || (SRS |> TL) .
