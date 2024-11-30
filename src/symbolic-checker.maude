@@ -187,7 +187,7 @@ fmod META-LMC-PARAMETERS is
         sorts (SS ; 'BoolList) . 
         (subsort 'Bool < 'BoolList . SSDS)
         (op 'nil : nil -> 'BoolList [ctor] .
-         op '_`,_ : 'BoolList 'BoolList -> 'BoolList [assoc ctor id('nil.BoolList)] . OPDS)
+         op '_`,_ : 'BoolList 'BoolList -> 'BoolList [assoc ctor id('empty.GroundBoolList)] . OPDS)
          MAS EQS RLS 
       endm .  
 
