@@ -510,16 +510,16 @@ fmod META-NARROWING-COND-INTERFACE is
 
   --- StateSet Prop -> StateSet
   op condInstSet : StepResultSet Term ~> StepResultSet .
- ceq condInstSet({ST,TP,SUB / RS} || SRS, T)
-   = filterCondVars({ST,TP,SUB / RS}, VS) || condInstSet(SRS, T) 
+ ceq condInstSet({ST,SUB,RN | T} || SRS, T)
+   = filterCondVars({ST,SUB,RN | T}, VS) || condInstSet(SRS, T) 
   if VS := metaGenVariant(trMod(##m##), T << SUB) .
   eq condInstSet(empty, T) = empty .
 
   --- only true instances (hence the conditions should be complete and FVP)
   op filterCondVars : StepResult VariantSet ~> StepResultSet .
-  eq filterCondVars({ST,TP,SUB / RS}, {'true.Bool,SUB1,N,P,B} # VS)
-   = {ST << SUB1, TP, SUB .. SUB1 / RS} 
-   || filterCondVars({ST,TP,SUB / RS}, VS) .
+  eq filterCondVars({ST,SUB,RN | T}, {'true.Bool,SUB1,N,P,B} # VS)
+   = {ST << SUB1, SUB .. SUB1,RN | T} 
+   || filterCondVars({ST,SUB,RN | T}, VS) .
   eq filterCondVars(SR, VS) = empty [owise] .
 
   --- applying substitution to condition
