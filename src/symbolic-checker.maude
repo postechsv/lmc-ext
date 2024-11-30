@@ -538,10 +538,10 @@ mod META-SYMBOLIC-COND-CONNECTOR-BASE is
 
 --- meta prop and state
   eq mid(ST,CD) |= prop(PT) 
-   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.Bool .
+   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool .
 
 --- with condition
-  op lmc-check : Term Term EqCondition Bool Bound ~> BoundedModelCheckReport .
+  op lmc-check : Term Term EqCondition GroundBool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, CD, B, D)
    = if CD == nil
      then symbolicModelCheck(init(ST), O tilde((##m##),PT), B, D)
@@ -556,8 +556,8 @@ mod META-SYMBOLIC-COND-CONNECTOR-BASE is
 --- abstraction, but it will be more correct since we do not worry about
 --- whether some variables is removed by such equations...
   op condNorm : EqCondition ~> EqCondition .
-  eq condNorm(T = 'true.Bool /\ CD)
-   = getTerm(metaNormalize((##m##),T)) = 'true.Bool /\ condNorm(CD) .
+  eq condNorm(T = 'true.GroundBool /\ CD)
+   = getTerm(metaNormalize((##m##),T)) = 'true.GroundBool /\ condNorm(CD) .
   eq condNorm(nil) = nil .
 
 --- pretty print (for debugging)
