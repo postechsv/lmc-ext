@@ -233,7 +233,7 @@ fmod LMC-RESULT-SET is
   eq to4Tuple(M, failureIncomplete) = empty .
   eq to4Tuple(M, {T,TP,Ct,Q,S,S',Q'})
    = {T, TP, S .. S'} .
-   
+
   op _|>_ : StepResult TermList -> StepResult .
   eq (empty).StepResult |> TL = (empty).StepResult .
   eq ({ST,S,RN | T} || SRS) |> TL = {ST,(S |> TL),RN | T} || (SRS |> TL) .
@@ -490,7 +490,7 @@ fmod META-NARROWING-COND-INTERFACE is
 
   --- StateSet EqCondition -> StateSet
   op condSetInstSet : StepResultSet EqCondition ~> StepResultSet . 
-  eq condSetInstSet(SRS, T = 'true.Bool /\ CD)
+  eq condSetInstSet(SRS, T = 'true.GroundBool /\ CD)
    = condSetInstSet(condInstSet(SRS, T), CD) .
   eq condSetInstSet(SRS, nil) = SRS .
 
@@ -503,7 +503,7 @@ fmod META-NARROWING-COND-INTERFACE is
 
   --- only true instances (hence the conditions should be complete and FVP)
   op filterCondVars : StepResult VariantSet ~> StepResultSet .
-  eq filterCondVars({ST,SUB,RN | T}, {'true.Bool,SUB1,N,P,B} # VS)
+  eq filterCondVars({ST,SUB,RN | T}, {'true.GroundBool,SUB1,N,P,B} # VS)
    = {ST << SUB1, SUB .. SUB1,RN | T} 
    || filterCondVars({ST,SUB,RN | T}, VS) .
   eq filterCondVars(SR, VS) = empty [owise] .
