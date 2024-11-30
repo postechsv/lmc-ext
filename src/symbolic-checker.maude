@@ -589,17 +589,18 @@ mod META-SYMBOLIC-COND-CONNECTOR is
   var SRS : StepResultSet . 
   vars CD CD' : EqCondition . 
   var RS : RuleSet .
+  var RN : RuleName .
 
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
-    => RS / SUB' |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB' / RS} || SRS := variant(ST,CD) .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := variant(ST,CD) .
 
  crl [mid-cond] : 
        < mid(ST,CD) >
-    => RS / SUB' |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB' / RS} || SRS := next(ST,CD) .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := next(ST,CD) .
 
   ops next variant : Term EqCondition -> StepResultSet .
   eq next(ST,CD)    
