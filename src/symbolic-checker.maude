@@ -338,7 +338,7 @@ fmod META-NARROWING-INTERFACE is
   op metaNarrowCollect : Module Term Nat -> StepResultSet .
   ceq metaNarrowCollect(M, T, N) = if SRS == empty then empty else SRS || metaNarrowCollect(M, T, s N) fi
     if SRS := toStepResult(T, metaNarrowingApply(M, T, empty, '@, N)) .
-  
+
   op metaGenVariant : Module Term -> VariantSet .
   eq metaGenVariant(M, T) = metaGenVariant(M, T, highestVar(T)) .
 
@@ -351,6 +351,9 @@ fmod META-NARROWING-INTERFACE is
    if VR := metaGetVariant(M,T,empty,NextVar,N) .
   eq metaGenVariant2(M, T, NextVar, N) = emptyVariantSet [owise] .
 
+--- variant narrowing prop instantiations.
+--- compute the PI-instantated states of the given state.
+
   op conjProps : Term TermSet -> TermList .
   eq conjProps(ST, emptyTermSet) = empty .
   eq conjProps(ST, PT | TS) = '_|=_[ST, PT], conjProps(ST, TS) .
@@ -359,43 +362,27 @@ fmod META-NARROWING-INTERFACE is
   eq conjAsBoolList(ST, PT) = '_|=_[ST, PT] .
   eq conjAsBoolList(ST, TL) = '_`,_[conjProps(ST, TermSet(TL))] .
 
---- variant narrowing prop instantiations.
---- compute the PI-instantated states of the given state.
-
   --- StateSet PropSet -> StateSet
   op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
   eq propSetInstSet(empty, TL) = empty .
   eq propSetInstSet({ST,SUB,RN | T} || SRS, TL)
-   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(trMod(##m##), conjProps(ST, TermSet(TL))))
+   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(addBoolList(trMod(##m##)), conjAsBoolList(ST, TL)))
      || propSetInstSet(SRS, TL) .
-
+  
   op filterPropVars : StepResult VariantSet ~> StepResultSet .
-  eq filterPropVars({ST,TP,SUB / RS}, {T,SUB1,N,P,B} # VS)
-   = if inst?(T) then {ST << SUB1,TP, SUB .. SUB1 / RS} 
-     else empty fi 
-   || filterPropVars({ST,TP,SUB / RS}, VS) .
-  eq filterPropVars(SR, emptyVariantSet) = empty .
+  eq filterPropVars({ST,SUB,RN | T}, emptyVariantSet) = empty .
+  eq filterPropVars({ST,SUB,RN | T}, {PT,SUB1,N,P,B} # VS) 
+   = (if inst?(PT) then cleanRedundant({ST << SUB1,summarize(T, SUB .. SUB1),RN | T}) |> T else empty fi) || filterPropVars({ST,SUB,RN | T}, VS) .
 
-  --- TODO: by not filtering, we may allow more patterns that are not reduced 
-  --- to true/false. However, it easily generates spurious counter examples.. 
-  --- We may adopt this with abstract refinement techniques..
-  --- But with filtering, the |= equations should be total...
-
-  op inst? : Term ~> Bool .
-  eq inst?('true.Bool)  = true .
-  eq inst?('false.Bool) = true .
+  op inst? : Term -> Bool .
+  ceq inst?(T) = true if isGround(leastSort(upModule('GROUND-BOOL-LIST, false), T)) .
   eq inst?(T) = false [owise] .
-
+  
   op isGround : Sort -> Bool .
   eq isGround('GroundBoolList) = true .
   eq isGround('GroundBool) = true .
   eq isGround(S:Sort) = false [owise] .
 endfm
-rows = temp1.children[2].children
-rowarr = Array.from({ length: rows.length}, (i,k) => rows.item(i))
-getView = r => parseInt(r.querySelectorAll("td")[4].innerText.replace(",",""))
-rowarrS = rowarr.toSorted((a, b) => getView(a) > getView(b) ? -1 : 1)
-Array.from({ length: rows.length}, (_,k) => k).forEach(i=>rows[i].innerHTML = rowarrS[i].innerHTML)
 
 mod META-SYMBOLIC-CONNECTOR is
   pr META-LMC-THEORY .
