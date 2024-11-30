@@ -492,13 +492,14 @@ fmod META-NARROWING-COND-INTERFACE is
   var CD : EqCondition . 
   var RS : RuleSet .
   var TP : Type . 
-  vars SUB SUB1 SUB2 : Substitution .  
+  vars SUB SUB1 SUB2 : Substitution .    var RN : RuleName .
   var N : Nat .
   var SR : StepResult . 
   var SRS : StepResultSet . 
   var VS : VariantSet .
   var P : Parent . 
   var B : Bool .
+  var RN : RuleName .
 
 --- variant narrowing condition instantiations.
 
