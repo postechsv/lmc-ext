@@ -279,7 +279,7 @@ mod META-LMC-THEORY is
   if {ST',SUB',RN | T} || SRS := next(ST) .
 endm
 
-fmod GROUND-BOOL-LIST is
+fmod BOOL-LIST is
   sorts GroundBool GroundBoolList BoolList .
   subsort GroundBool < Bool < BoolList .
   subsort GroundBool < GroundBoolList < BoolList .
