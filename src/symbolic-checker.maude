@@ -2,7 +2,7 @@
 --- Author: Kyungmin Bae <kbae4@illinois.edu>
 
 ---(
-TODO
+Modified segments
 1. MetaEdge definition
 2. StepResult definition
 3. transTR (rule name to unlabeled)
@@ -80,7 +80,6 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
 
   op _~_  : MetaEdge MetaEdge -> Bool .
   eq deadlock ~ deadlock = true .
-  eq RS:RuleSet / S1:Substitution ~ RS:RuleSet / S2:Substitution = true .
 
 --- print state during model checking (debugging purpose)
   op prettyPrint : State ~> QidList .
@@ -174,7 +173,9 @@ fmod META-LMC-PARAMETERS is
   var RLS : RuleSet .
   var STDS : StratDeclSet .
   var STDFS : StratDefSet .
-  var MID : Qid . .
+
+  --- as Full Maude internally generates StratModule, we need
+  --- to remove all strat declarations for narrowing.
 
   op importBoolList : SModule -> SModule [memo] .
   eq importBoolList(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm)
@@ -188,10 +189,7 @@ fmod META-LMC-PARAMETERS is
         (op 'nil : nil -> 'BoolList [ctor] .
          op '_`,_ : 'BoolList 'BoolList -> 'BoolList [assoc ctor id('nil.BoolList)] . OPDS)
          MAS EQS RLS 
-      endm .
-
-  --- as Full Maude internally generates StratModule, we need
-  --- to remove all strat declarations for narrowing.
+      endm .  
 
   op trMod : Module -> SModule [memo] . 
   eq trMod(smod H is IL sorts SS . SSDS OPDS MAS EQS RLS STDS STDFS endsm)
@@ -229,17 +227,11 @@ fmod LMC-RESULT-SET is
   var NAR : NarrowingApplyResult . 
   var SRS : StepResultSet .
   var RN : RuleName .
-  
+
   op toStepResult : Term NarrowingApplyResult? -> StepResult .
   eq toStepResult(T, failure) = empty .
   eq toStepResult(T, failureIncomplete) = empty .
   eq toStepResult(T, NAR) = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} .
-
-  op to4Tuple : Module ResultContextSet -> StepResult .
-  eq to4Tuple(M, empty ) = empty .
-  eq to4Tuple(M, {T,TP,S,S',Ct,CtS,TS,CtTS,NextVar,Tr,B} | RTS )
-   = {CtTS, leastSort(M,CtTS), S .. S' / getRuleSet(Tr)} || 
-     to4Tuple(M, RTS) .
 
   op _|>_ : StepResult TermList -> StepResult .
   eq (empty).StepResult |> TL = (empty).StepResult .
@@ -278,13 +270,13 @@ mod META-LMC-THEORY is
   ops next variant : Term -> StepResultSet .
 
 --- meta rules
-  crl [init] : < init(ST) > 
-            => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST'))) 
-    if {ST',SUB',RN | T} || SRS := variant(ST) . 
+ crl [init] : < init(ST) > 
+           => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST'))) 
+  if {ST',SUB',RN | T} || SRS := variant(ST) . 
 
-  crl [mid]  :  < mid(ST) > 
-            => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')))
-    if {ST',SUB',RN | T} || SRS := next(ST) .
+ crl [mid]  :  < mid(ST) > 
+           => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')))
+  if {ST',SUB',RN | T} || SRS := next(ST) .
 endm
 
 fmod GROUND-BOOL-LIST is
@@ -382,6 +374,7 @@ fmod META-NARROWING-INTERFACE is
   eq isGround('GroundBoolList) = true .
   eq isGround('GroundBool) = true .
   eq isGround(S:Sort) = false [owise] .
+  
 endfm
 
 mod META-SYMBOLIC-CONNECTOR is
@@ -483,7 +476,7 @@ fmod META-NARROWING-COND-INTERFACE is
   var CD : EqCondition . 
   var RS : RuleSet .
   var TP : Type . 
-  vars SUB SUB1 SUB2 : Substitution .    var RN : RuleName .
+  vars SUB SUB1 SUB2 : Substitution .  
   var N : Nat .
   var SR : StepResult . 
   var SRS : StepResultSet . 
@@ -773,7 +766,6 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   op transTR : Transition -> TermList .
   eq transTR({mid(ST), -[SUB]/ RN -})  
    = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), upRuleName(RN)] .
-
   eq transTR({mid(ST), deadlock})  
    = '`{_`,_`,_`}[ST, 'none.CESubstitution, upRuleName(deadlock)] .
   eq transTR({init(ST), -[SUB]/ RN -}) = empty  .
@@ -1026,4 +1018,3 @@ set break off .
 set profile off .
 
 loop init .
-
