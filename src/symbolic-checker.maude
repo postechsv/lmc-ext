@@ -641,8 +641,8 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
 
 --- Another method to check a condition.
   op condOK : EqCondition ~> Bool .
-  eq condOK(T1 = 'true.Bool /\ CD)
-   = if getTerm(metaReduce((##m##), T1)) == 'false.Bool then false else true fi 
+  eq condOK(T1 = 'true.GroundBool /\ CD)
+   = if getTerm(metaReduce((##m##), T1)) == 'false.GroundBool then false else true fi 
      and-then condOK(CD) .
   eq condOK(nil) = true .
 
@@ -669,15 +669,15 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
 
   op implyOKsub : VariantSet ~> Bool .
  ceq implyOKsub({T,SUB,N,P,B} # VS)
-   = T' =/= 'true.Bool and-then implyOKsub(VS)
+   = T' =/= 'true.GroundBool and-then implyOKsub(VS)
   if T' := getTerm(metaReduce((##m##),T)) .
   eq implyOKsub(emptyVariantSet) = true .
 
   op condList : EqCondition Bool ~> TermList .
-  eq condList(T = 'true.Bool /\ CD, B) 
+  eq condList(T = 'true.GroundBool /\ CD, B) 
    = if B then T else 'not_[T] fi, condList(CD, B) .
   eq condList(nil, B) 
-   = if B then 'true.Bool else 'false.Bool fi .
+   = if B then 'true.GroundBool else 'false.GroundBool fi .
 endm
 
 
