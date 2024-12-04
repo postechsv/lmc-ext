@@ -333,19 +333,19 @@ fmod META-NARROWING-INTERFACE is
 --- variant narrowing prop instantiations.
 --- compute the PI-instantated states of the given state.
 
-  op conjProps : Term TermSet -> TermList .
-  eq conjProps(ST, emptyTermSet) = empty .
-  eq conjProps(ST, PT | TS) = '_|=_[ST, PT], conjProps(ST, TS) .
+  op conjTermListInside : Term TermList -> TermList .
+  eq conjTermListInside(ST, empty) = empty .
+  eq conjTermListInside(ST, (PT,TL)) = '_|=_[ST,PT], conjTermListInside(ST, TL) .
 
-  op conjAsBoolList : Term TermList -> Term .
-  eq conjAsBoolList(ST, PT) = '_|=_[ST, PT] .
-  eq conjAsBoolList(ST, TL) = '_`,_[conjProps(ST, TermSet(TL))] .
+  op conjTermList : Term TermList -> Term .
+  eq conjTermList(ST, PT) = '_|=_[ST, PT] .
+  eq conjTermList(ST, TL) = '_`,_[conjTermListInside(ST, TL)] .
 
   --- StateSet PropSet -> StateSet
   op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
   eq propSetInstSet(empty, TL) = empty .
   eq propSetInstSet({ST,SUB,RN | T} || SRS, TL)
-   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(addBoolList(trMod(##m##)), conjAsBoolList(ST, TL)))
+   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(addBoolList(trMod(##m##)), conjTermListInside(ST, TL)))
      || propSetInstSet(SRS, TL) .
   
   op filterPropVars : StepResult VariantSet ~> StepResultSet .
