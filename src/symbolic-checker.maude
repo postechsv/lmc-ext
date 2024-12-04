@@ -566,8 +566,8 @@ mod META-SYMBOLIC-COND-CONNECTOR is
   var TP : Type . 
   vars SUB SUB' SUB'' : Substitution .  
   var N : Nat .
-  var SR : StepResult .  
-  var SRS : StepResultSet . 
+  var SR : ResultTriple .  
+  var SRS : ResultTripleSet . 
   vars CD CD' : EqCondition . 
   var RS : RuleSet .
   var RN : RuleName .
@@ -576,18 +576,18 @@ mod META-SYMBOLIC-COND-CONNECTOR is
  crl [init-cond] : 
        < init(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',SUB',RN | T} || SRS := variant(ST,CD) .
+  if {ST',TP,SUB'} | SRS := variant(ST,CD) .
 
  crl [mid-cond] : 
        < mid(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',SUB',RN | T} || SRS := next(ST,CD) .
+  if {ST',TP,SUB'} | SRS := next(ST,CD) .
 
-  ops next variant : Term EqCondition -> StepResultSet .
+  ops next variant : Term EqCondition -> ResultTripleSet .
   eq next(ST,CD)    
    = propSetInstSet(condSetInstSet(metaNarrow2(trMod(##m##), ST),CD), ##f##) .
   eq variant(ST,CD) 
-   = propSetInstSet(condSetInstSet({ST,none,unlabeled | ST},CD), 
+   = propSetInstSet(condSetInstSet({ST,leastSort((##m##),ST),none},CD), 
                     ##f##) .
 
 --- condition should be already considered by variant narrowing
@@ -609,8 +609,8 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
   var N : Nat . 
   var B : Bool . 
   var RS : RuleSet .
-  var SR : StepResult .  
-  var SRS : StepResultSet . 
+  var SR : ResultTriple .  
+  var SRS : ResultTripleSet . 
   vars CD CD' : EqCondition .  
   var VS : VariantSet .
   var P : Parent .
@@ -620,12 +620,12 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
  crl [init-cond] : 
        < init(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',SUB',RN | T} || SRS := variant(ST) /\ condOK(CD << SUB') .
+  if {ST',TP,SUB'} | SRS := variant(ST) /\ condOK(CD << SUB') .
 
  crl [mid-cond]  : 
        < mid(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',SUB',RN | T} || SRS := next(ST) /\ condOK(CD << SUB') .
+  if {ST',TP,SUB'} | SRS := next(ST) /\ condOK(CD << SUB') .
 
 --- Another method to check a condition.
   op condOK : EqCondition ~> Bool .
