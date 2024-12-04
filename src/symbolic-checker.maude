@@ -263,11 +263,11 @@ mod META-LMC-THEORY is
 --- meta rules
  crl [init] : < init(ST) > 
            => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST'))) 
-  if {ST',TP,SUB'} | SRS := variant (ST) . 
+  if {ST',TP,SUB'} | SRS := variant(ST) [print ST'] . 
 
  crl [mid]  :  < mid(ST) > 
            => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')))
-  if {ST',TP,SUB'} | SRS := next(ST) .
+  if {ST',TP,SUB'} | SRS := next(ST) [print ST'] .
 endm
 
 fmod BOOL-LIST is
