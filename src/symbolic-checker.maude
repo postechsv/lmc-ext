@@ -392,7 +392,7 @@ mod META-SYMBOLIC-CONNECTOR is
 
 --- meta prop and state
   eq mid(ST) |= prop(PT) 
-   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.Bool .
+   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool .
 
 --- state folding
   eq init(ST) >= init(ST) = true .
@@ -400,7 +400,7 @@ mod META-SYMBOLIC-CONNECTOR is
    = metaMatch((##m##), ST, ST', nil, 0) :: Substitution .
   eq S1:State >= S2:State = false [owise] .
 
---- renameing folding
+--- renaming folding
   eq init(ST) ~= init(ST) = true .
   eq mid(ST) ~= mid(ST')
    = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
@@ -436,7 +436,7 @@ mod META-SYMBOLIC-CONNECTOR is
   eq prettyPrint(init(ST)) = eMetaPrettyPrint((##m##), ST) .
   eq prettyPrint(mid(ST))  = eMetaPrettyPrint((##m##), ST) .
 
-  eq prettyPrint(-[SUB]/ RN -) 
+  eq prettyPrint(=[SUB]=>RN) 
     = ---eMetaPrettyPrint((##m##), RS) '/ 
       prettyPrintSub(SUB) .
 
