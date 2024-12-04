@@ -78,8 +78,12 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
   op _>=_ : State State -> Bool .
   op _~=_ : State State -> Bool .
 
+  vars S1 S2 : Substitution .
+  var RN : RuleName .
+
   op _~_  : MetaEdge MetaEdge -> Bool .
   eq deadlock ~ deadlock = true .
+  eq =[S1]=>RN ~ =[S2]=>RN = true .
 
 --- print state during model checking (debugging purpose)
   op prettyPrint : State ~> QidList .
