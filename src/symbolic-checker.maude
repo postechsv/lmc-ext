@@ -220,10 +220,10 @@ fmod LMC-RESULT-SET is
   eq to4Tuple(M, {T,TP,Ct,Q,S,S',Q'})
    = {T, TP, S .. S'} .
 
-  op _|>_ : StepResult TermList -> StepResult .
-  eq (empty).StepResult |> TL = (empty).StepResult .
-  eq ({ST,S,RN | T} || SRS) |> TL = {ST,(S |> TL),RN | T} || (SRS |> TL) .
-  eq (failure || SRS ) |> TL = failure || (SRS |> TL) .
+  op _|>_ : ResultTripleSet TermList -> ResultTripleSet .
+  eq (empty).ResultTripleSet |> TL = (empty).ResultTripleSet .
+  eq ({T,TP,S} | SRS) |> TL = {T,TP,S |> TL} | (SRS |> TL) .
+  eq (failure | SRS ) |> TL = failure | (SRS |> TL) .
 
   op getRuleSet : TraceNarrow -> RuleSet .
   eq getRuleSet({T,S,TP,R} Tr) = R getRuleSet(Tr) .
