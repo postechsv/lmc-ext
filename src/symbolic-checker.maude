@@ -320,7 +320,7 @@ fmod META-NARROWING-INTERFACE is
 
   op metaNarrowCollect : Module Term Nat -> StepResultSet .
   ceq metaNarrowCollect(M, T, N) = if SRS == empty then empty else SRS || metaNarrowCollect(M, T, s N) fi
-    if SRS := toStepResult(T, metaNarrowingApply(M, T, empty, '@, N)) .
+    if SRS := to4Tuple(T, metaNarrowingApply(M, T, empty, '@, N)) .
 
   op metaGenVariant : Module Term -> VariantSet .
   eq metaGenVariant(M, T) = metaGenVariant(M, T, highestVar(T)) .
