@@ -576,12 +576,12 @@ mod META-SYMBOLIC-COND-CONNECTOR is
  crl [init-cond] : 
        < init(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := variant(ST,CD) .
+  if {ST',TP,SUB'} | SRS := variant(ST,CD) [print ST'] .
 
  crl [mid-cond] : 
        < mid(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := next(ST,CD) .
+  if {ST',TP,SUB'} | SRS := next(ST,CD) [print ST'] .
 
   ops next variant : Term EqCondition -> ResultTripleSet .
   eq next(ST,CD)    
@@ -620,12 +620,12 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
  crl [init-cond] : 
        < init(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := variant(ST) /\ condOK(CD << SUB') .
+  if {ST',TP,SUB'} | SRS := variant(ST) /\ condOK(CD << SUB') [print ST'] .
 
  crl [mid-cond]  : 
        < mid(ST,CD) >
     => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := next(ST) /\ condOK(CD << SUB') .
+  if {ST',TP,SUB'} | SRS := next(ST) /\ condOK(CD << SUB') [print ST'] .
 
 --- Another method to check a condition.
   op condOK : EqCondition ~> Bool .
