@@ -743,20 +743,19 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   op transRes : ModelCheckResult -> Term .
   eq transRes(B) = upTerm(B:Bool) .
   eq transRes(prefix TRL loop TRL')
-   = 'prefix_loop_[wrapTL('__,'nil.TransitionList,transTRs(TRL)), 
-                           wrapTL('__,'nil.TransitionList,transTRs(TRL'))] .
+   = 'prefix_loop_[wrapTL('__,'nil.TransitionList,transTRs(TRL)),wrapTL('__,'nil.TransitionList,transTRs(TRL'))] .
 
   op transTRs : TransitionList -> TermList .
-  eq transTRs(TR TRL) = transTR(TR), transTRs(TRL) .
+  eq transTRs(TR TRL) = transTR(TR),transTRs(TRL) .
   eq transTRs(nil)    = empty .
 
 --- transition (including conditions)
   op transTR : Transition -> TermList .
-  eq transTR({mid(ST), -[SUB]/ RN -})  
+  eq transTR({mid(ST), =[SUB]=>RN})  
    = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), upRuleName(RN)] .
   eq transTR({mid(ST), deadlock})  
-   = '`{_`,_`,_`}[ST, 'none.CESubstitution, upRuleName(deadlock)] .
-  eq transTR({init(ST), -[SUB]/ RN -}) = empty  .
+   = '`{_`,_`,_`}[ST,'none.CESubstitution, upRuleName(deadlock)] .
+  eq transTR({init(ST), =[SUB]=>RN}) = empty  .
 
   eq transTR({mid(ST,CD),ME})  = transTR({mid(ST),ME}) .
   eq transTR({init(ST,CD),ME}) = empty  .
