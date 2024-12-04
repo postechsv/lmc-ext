@@ -342,16 +342,17 @@ fmod META-NARROWING-INTERFACE is
   eq conjTermList(ST, TL) = '_`,_[conjTermListInside(ST, TL)] .
 
   --- StateSet PropSet -> StateSet
-  op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
-  eq propSetInstSet(empty, TL) = empty .
-  eq propSetInstSet({ST,SUB,RN | T} || SRS, TL)
-   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(addBoolList(trMod(##m##)), conjTermListInside(ST, TL)))
-     || propSetInstSet(SRS, TL) .
+  op propSetInstSet : ResultTripleSet TermList ~> ResultTripleSet . 
+  eq propSetInstSet(RTS, (PT,TL))
+   = propSetInstSet(propInstSet(RTS, PT), TL) .
+  eq propSetInstSet(RTS, empty) = RTS .
   
-  op filterPropVars : StepResult VariantSet ~> StepResultSet .
-  eq filterPropVars({ST,SUB,RN | T}, emptyVariantSet) = empty .
-  eq filterPropVars({ST,SUB,RN | T}, {PT,SUB1,N,P,B} # VS) 
-   = (if inst?(PT) then cleanRedundant({ST << SUB1,summarize(T, SUB .. SUB1),RN | T}) |> T else empty fi) || filterPropVars({ST,SUB,RN | T}, VS) .
+  op filterPropVars : ResultTriple VariantSet ~> ResultTripleSet .
+  eq filterPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS)
+   = if inst?(T) then {cleanRedundant(ST << SUB1), TP, summarize(SUB .. SUB1)}
+     else empty fi
+   | filterPropVars({ST,TP,SUB}, VS) .
+  eq filterPropVars(RT, emptyVariantSet) = empty .
 
   op inst? : Term -> Bool .
   ceq inst?(T) = true if isGround(leastSort(upModule('GROUND-BOOL-LIST, false), T)) .
