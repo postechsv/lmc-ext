@@ -353,7 +353,7 @@ fmod META-NARROWING-INTERFACE is
   
   op filterPropVars : ResultTriple VariantSet ~> ResultTripleSet .
   eq filterPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS)
-   = if inst?(T) then {cleanRedundant(ST << SUB1), TP, summarize(SUB .. SUB1)}
+   = if inst?(T) then {ST << SUB1, TP, SUB .. SUB1}
      else empty fi
    | filterPropVars({ST,TP,SUB}, VS) .
   eq filterPropVars(RT, emptyVariantSet) = empty .
