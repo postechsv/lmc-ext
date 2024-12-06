@@ -350,6 +350,19 @@ fmod META-NARROWING-INTERFACE is
   eq propSetInstSet(RTS, (PT,TL))
    = propSetInstSet(propInstSet(RTS, PT), TL) .
   eq propSetInstSet(RTS, empty) = RTS .
+
+  op errorBool : -> Bool [ctor] .
+
+  op convertPropVars : ResultTriple VariantSet ~> ResultTripleSet .
+  eq convertPropVars({ST,TP,SUB}, emptyVariantSet) = empty .
+  ceq convertPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = (if (S == 'GroundBool or S == 'GroundBoolList) then { ST << SUB1, TP, SUB1 } else empty fi) | convertPropVars({ST,TP,SUB}, VS) 
+    if S := leastSort(trMod(##m##), T) .
+    
+  op isGroundBoolList : BoolList -> Bool .
+  eq isGroundBoolList(empty) = true .
+  eq isGroundBoolList(true, BL:BoolList) = isGroundBoolList(BL:BoolList) .
+  eq isGroundBoolList(false, BL:BoolList) = isGroundBoolList(BL:BoolList) .
+  eq isGroundBoolList(B:Bool, BL:BoolList) = false [owise] .
   
   op filterPropVars : ResultTriple VariantSet ~> ResultTripleSet .
   eq filterPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS)
@@ -357,7 +370,7 @@ fmod META-NARROWING-INTERFACE is
      else empty fi
    | filterPropVars({ST,TP,SUB}, VS) .
   eq filterPropVars(RT, emptyVariantSet) = empty .
-  
+
   --- TODO: by not filtering, we may allow more patterns that are not reduced 
   --- to true/false. However, it easily generates spurious counterexamples.. 
   --- We may adopt this with abstract refinement techniques..
