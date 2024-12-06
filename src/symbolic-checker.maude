@@ -202,6 +202,7 @@ endfm
 
 mod META-LMC-PARAMETERS-TEST is
     pr META-LMC-PARAMETERS .
+    pr META-LEVEL .
 endm
 
 fmod LMC-RESULT-SET is
