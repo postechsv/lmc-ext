@@ -66,7 +66,7 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
 --- meta transition
   sorts MetaEdge MetaConf .
   op deadlock : -> MetaEdge [ctor] .
-  op =[_]=>_ : Substitution RuleName -> MetaEdge [ctor] .
+  op =[_]=> : Substitution -> MetaEdge [ctor] .
   op <_> : State -> MetaConf [ctor] .
   op _|=>_ : MetaEdge State -> MetaConf [ctor] .
 
@@ -322,7 +322,7 @@ fmod META-NARROWING-INTERFACE is
   var B : Bool .
   vars V1 V2 V3 : Variable .
   var RN : RuleName .
-  
+
   op metaNarrow2 : Module Term -> StepResult .
   eq metaNarrow2(M,T) = metaNarrowCollect(M, T, 0) |> T .
 
