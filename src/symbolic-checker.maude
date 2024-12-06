@@ -357,9 +357,15 @@ fmod META-NARROWING-INTERFACE is
      else empty fi
    | filterPropVars({ST,TP,SUB}, VS) .
   eq filterPropVars(RT, emptyVariantSet) = empty .
-
-  op inst? : Term -> Bool .
-  ceq inst?(T) = true if isGround(leastSort(upModule('GROUND-BOOL-LIST, false), T)) .
+  
+  --- TODO: by not filtering, we may allow more patterns that are not reduced 
+  --- to true/false. However, it easily generates spurious counterexamples.. 
+  --- We may adopt this with abstract refinement techniques..
+  --- But with filtering, the |= equations should be total...
+ 
+  op inst? : Term ~> Bool .
+  eq inst?('true.GroundBool)  = true .
+  eq inst?('false.GroundBool) = true .
   eq inst?(T) = false [owise] .
   
   op isGround : Sort -> Bool .
