@@ -310,7 +310,6 @@ fmod META-NARROWING-INTERFACE is
   var RS : RuleSet .
   vars T T' T1 T2 ST ST' PT : Term .  
   var TL : TermList .  
-  var TS : TermSet .
   var C : Constant . 
   var TP : Type . 
   vars SUB SUB' SUB1 SUB2 SUBI : Substitution .  
