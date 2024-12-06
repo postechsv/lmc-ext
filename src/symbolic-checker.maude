@@ -83,7 +83,7 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
 
   op _~_  : MetaEdge MetaEdge -> Bool .
   eq deadlock ~ deadlock = true .
-  eq =[S1]=>RN ~ =[S2]=>RN = true .
+  eq =[S1]=> ~ =[S2]=> = true .
 
 --- print state during model checking (debugging purpose)
   op prettyPrint : State ~> QidList .
@@ -278,11 +278,11 @@ mod META-LMC-THEORY is
 
 --- meta rules
  crl [init] : < init(ST) > 
-           => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST'))) 
+           => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST'))) 
   if {ST',TP,SUB'} | SRS := variant(ST) [print ST'] . 
 
  crl [mid]  :  < mid(ST) > 
-           => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')))
+           => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')))
   if {ST',TP,SUB'} | SRS := next(ST) [print ST'] .
 endm
 
@@ -463,7 +463,7 @@ mod META-SYMBOLIC-CONNECTOR is
   eq prettyPrint(init(ST)) = eMetaPrettyPrint((##m##), ST) .
   eq prettyPrint(mid(ST))  = eMetaPrettyPrint((##m##), ST) .
 
-  eq prettyPrint(=[SUB]=>RN) 
+  eq prettyPrint(=[SUB]=>) 
     = ---eMetaPrettyPrint((##m##), RS) '/ 
       prettyPrintSub(SUB) .
 
@@ -606,12 +606,12 @@ mod META-SYMBOLIC-COND-CONNECTOR is
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
-    => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
   if {ST',TP,SUB'} | SRS := variant(ST,CD) [print ST'] .
 
  crl [mid-cond] : 
        < mid(ST,CD) >
-    => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
   if {ST',TP,SUB'} | SRS := next(ST,CD) [print ST'] .
 
   ops next variant : Term EqCondition -> ResultTripleSet .
@@ -650,12 +650,12 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
-    => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
   if {ST',TP,SUB'} | SRS := variant(ST) /\ condOK(CD << SUB') [print ST'] .
 
  crl [mid-cond]  : 
        < mid(ST,CD) >
-    => =[SUB']=>RN |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
   if {ST',TP,SUB'} | SRS := next(ST) /\ condOK(CD << SUB') [print ST'] .
 
 --- Another method to check a condition.
@@ -782,11 +782,11 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
 
 --- transition (including conditions)
   op transTR : Transition -> TermList .
-  eq transTR({mid(ST), =[SUB]=>RN})  
+  eq transTR({mid(ST), =[SUB]=>})  
    = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), upRuleName(RN)] .
   eq transTR({mid(ST), deadlock})  
    = '`{_`,_`,_`}[ST,'none.CESubstitution, upRuleName(deadlock)] .
-  eq transTR({init(ST), =[SUB]=>RN}) = empty  .
+  eq transTR({init(ST), =[SUB]=>}) = empty  .
 
   eq transTR({mid(ST,CD),ME})  = transTR({mid(ST),ME}) .
   eq transTR({init(ST,CD),ME}) = empty  .
