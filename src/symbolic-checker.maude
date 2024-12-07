@@ -160,6 +160,12 @@ fmod BOOL-LIST is
   op _,_ : BoolList BoolList -> BoolList [assoc ctor id: empty] .
 endfm
 
+fmod ENABLED-PROP is
+  pr SATISFACTION .
+
+  op enabled? : -> Prop [ctor] .
+endfm
+
 ****************************************
 ***  Full Maude Narrowing Connector  ***
 ****************************************  
