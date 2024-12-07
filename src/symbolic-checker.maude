@@ -512,7 +512,7 @@ mod META-SYMBOLIC-CONNECTOR is
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, B, D) 
-   = symbolicModelCheck(init(ST), O tilde((##m##),PT), B, D) 
+   = symbolicModelCheck(init(ST, alive), O tilde((##m##),PT), B, D) 
   if sortLeq((##m##), leastSort((##m##),ST), 'State)
   /\ sortLeq((##m##), leastSort((##m##),PT), 'Formula) .
 
@@ -631,7 +631,7 @@ mod META-SYMBOLIC-COND-CONNECTOR-BASE is
   op lmc-check : Term Term EqCondition Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, CD, B, D)
    = if CD == nil
-     then symbolicModelCheck(init(ST), O tilde((##m##),PT), B, D)
+     then symbolicModelCheck(init(ST, alive), O tilde((##m##),PT), B, D)
      else symbolicModelCheck(init(ST,CD), O tilde((##m##),PT), B, D)
      fi
   if sortLeq((##m##), leastSort((##m##),ST), 'State)
@@ -690,7 +690,7 @@ mod META-SYMBOLIC-COND-CONNECTOR is
 
 --- condition should be already considered by variant narrowing
   eq mid(ST,CD) >= mid(ST',CD')
-   = mid(ST) >= mid(ST') .
+   = mid(ST, alive) >= mid(ST', alive) .
   eq mid(ST,CD) ~= mid(ST',CD')
    = mid(ST,CD) >= mid(ST',CD') and-then mid(ST',CD') >= mid(ST,CD) .
 endm
