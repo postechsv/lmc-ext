@@ -868,6 +868,7 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   var D : Bound . 
   vars B BC BR : Bool . 
   var MR : ModelCheckResult .
+  var DS : DeadlockState .
 
 --- meta counterexample
   op transRes : ModelCheckResult -> Term .
@@ -881,13 +882,13 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
 
 --- transition (including conditions)
   op transTR : Transition -> TermList .
-  eq transTR({mid(ST), =[SUB]=>})  
+  eq transTR({mid(ST, DS), =[SUB]=>})  
    = '`{_`,_`,_`}[ST,wrapTL('_;_,'none.CESubstitution,transSUB(SUB)),''Test.Qid] .
-  eq transTR({mid(ST), deadlock})  
+  eq transTR({mid(ST, DS), deadlock})  
    = '`{_`,_`,_`}[ST,'none.CESubstitution,''Test.Qid] .
-  eq transTR({init(ST), ME}) = empty  .
+  eq transTR({init(ST, DS), ME}) = empty  .
 
-  eq transTR({mid(ST,CD),ME})  = transTR({mid(ST),ME}) .
+  eq transTR({mid(ST,CD),ME})  = transTR({mid(ST, alive),ME}) .
   eq transTR({init(ST,CD),ME}) = empty  .
 
 --- substitution
