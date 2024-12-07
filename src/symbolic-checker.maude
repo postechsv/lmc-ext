@@ -396,13 +396,23 @@ fmod META-NARROWING-INTERFACE is
   eq isGroundBoolList(true, BL:BoolList) = isGroundBoolList(BL:BoolList) .
   eq isGroundBoolList(false, BL:BoolList) = isGroundBoolList(BL:BoolList) .
   eq isGroundBoolList(B:Bool, BL:BoolList) = false [owise] .
-  
+
   op filterPropVars : ResultTriple VariantSet ~> ResultTripleSet .
   eq filterPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS)
    = if inst?(T) then {ST << SUB1, TP, SUB .. SUB1}
      else empty fi
    | filterPropVars({ST,TP,SUB}, VS) .
   eq filterPropVars(RT, emptyVariantSet) = empty .
+
+  op filterPropVarsCond : ResultTriple VariantSet ~> ResultTripleSet .
+  eq filterPropVarsCond(RT, emptyVariantSet) = empty .
+  ceq filterPropVarsCond({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = {ST << SUB1, TP, SUB .. SUB1} | filterPropVarsCond({ST,TP,SUB}, VS) if inst?(T) .
+  eq filterPropVarsCond({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = filterPropVarsCond({ST,TP,SUB}, VS) [owise] .
+  
+  op filterPropVars2 : ResultTriple VariantSet ~> ResultTripleSet .
+  ceq filterPropVars2({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = instTermList({ST,TP,SUB}, T, SUB1) | filterPropVars2({ST,TP,SUB}, VS) 
+    if RT := {ST,TP,SUB} /\ VR := {T,SUB1,N,P,B} .
+  eq filterPropVars2(RT, emptyVariantSet) = empty .
 
   --- TODO: by not filtering, we may allow more patterns that are not reduced 
   --- to true/false. However, it easily generates spurious counterexamples.. 
