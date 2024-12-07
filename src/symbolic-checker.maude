@@ -89,7 +89,7 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
   subsort Prop < Formula .
   op prop : Term -> Prop [ctor] .
 
- op _~_  : MetaEdge MetaEdge -> Bool .
+  op _~_  : MetaEdge MetaEdge -> Bool .
   eq deadlock ~ deadlock = true .
   eq =[S1:Substitution]=> ~ =[S2:Substitution]=> = true .
 
@@ -270,6 +270,10 @@ fmod LMC-RESULT-SET is
   op _#_ : VariantSet VariantSet -> VariantSet
     [ctor assoc comm id: emptyVariantSet prec 65 format (d d n d)] .
   eq X:Variant # X:Variant = X:Variant .
+  
+  sorts MarkedResult .
+
+  op m{_,_,_} : Term Substitution DeadlockState -> MarkedResult [ctor] .
 endfm
 
 mod META-LMC-THEORY is
