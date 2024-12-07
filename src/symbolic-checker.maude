@@ -1,18 +1,6 @@
 --- The Maude Logical Bounded Model Checker Interface
 --- Author: Kyungmin Bae <kbae4@illinois.edu>
 
----(
-Modified segments
-1. MetaEdge definition
-2. StepResult definition
-3. transTR (rule name to unlabeled)
-4. metaNarrow2 (metaENarrowShowAll -> metaNarrowCollect)
-5. toStepResult (originally to4Tuple)
-6. propSetInstSet
-7. filterPropVars
-8. transTR
-)
-
 load model-checker
 
 ****************************************
@@ -78,12 +66,9 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
   op _>=_ : State State -> Bool .
   op _~=_ : State State -> Bool .
 
-  vars S1 S2 : Substitution .
-  var RN : RuleName .
-
-  op _~_  : MetaEdge MetaEdge -> Bool .
+ op _~_  : MetaEdge MetaEdge -> Bool .
   eq deadlock ~ deadlock = true .
-  eq =[S1]=> ~ =[S2]=> = true .
+  eq =[S1:Substitution]=> ~ =[S2:Substitution]=> = true .
 
 --- print state during model checking (debugging purpose)
   op prettyPrint : State ~> QidList .
@@ -155,10 +140,23 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
      )] .
 endfm
 
+fmod BOOL-LIST is
+  sorts GroundBool GroundBoolList BoolList .
+  subsort GroundBool < Bool < BoolList .
+  subsort GroundBool < GroundBoolList < BoolList .
+
+  op true : -> GroundBool [ctor special (id-hook SystemTrue)] .
+  op false : -> GroundBool [ctor special (id-hook SystemFalse)] .
+
+  op empty : -> GroundBoolList [ctor] .
+  op _,_ : GroundBoolList GroundBoolList ->  GroundBoolList [assoc ctor id: empty] .
+
+  op _,_ : BoolList BoolList -> BoolList [assoc ctor id: empty] .
+endfm
 
 ****************************************
 ***  Full Maude Narrowing Connector  ***
-****************************************
+****************************************  
 
 load full-maude321
 
@@ -169,11 +167,11 @@ fmod META-LMC-PARAMETERS is
 
   var H : Header .  
   var IL : ImportList .  
-  var SS : SortSet .  
-  var SSDS : SubsortDeclSet .  
-  var OPDS : OpDeclSet . 
-  var MAS : MembAxSet .  
-  var EQS : EquationSet .  
+  var SS : SortSet .
+  var SSDS : SubsortDeclSet .
+  var OPDS : OpDeclSet .
+  var MAS : MembAxSet .
+  var EQS : EquationSet .
   var RLS : RuleSet .
   var STDS : StratDeclSet .
   var STDFS : StratDefSet .
@@ -196,8 +194,8 @@ fmod META-LMC-PARAMETERS is
   --- to remove all strat declarations for narrowing.
   op trMod : Module -> SModule [memo] . 
   eq trMod(smod H is IL sorts SS . SSDS OPDS MAS EQS RLS STDS STDFS endsm)
-   = mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm .
-  eq trMod(M:Module) = M:Module [owise] .
+      = extendMod(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm) .
+  eq trMod(M:Module) = extendMod(M:Module) [owise] .
 endfm
 
 mod META-LMC-PARAMETERS-TEST is
@@ -207,26 +205,13 @@ endm
 
 fmod LMC-RESULT-SET is
   pr FM-RESULT-CONTEXT-SET .
-  pr RULE-NAME .
-
-  sort StepResult StepResult? .
-  subsort StepResult < StepResult? .
-  op failure : -> StepResult? [ctor] .
-  op {_,_,_|_} : Term Substitution RuleName Term -> StepResult [ctor] .
-
-  sort StepResultSet .
-  subsort StepResult < StepResultSet .
-  op empty : -> StepResultSet [ctor] .
-  op _||_ : StepResultSet StepResultSet -> StepResultSet
-    [ctor assoc comm id: empty prec 65] .
-  eq X:StepResult || X:StepResult = X:StepResult .
 
   var M : Module . 
   vars NextVar : Nat . 
   vars S S' : Substitution .
-  vars T TS CtTS ST : Term . 
+  vars T TS CtTS : Term . 
   var TL : TermList . 
-  var TP : Type . 
+  var TP : Type .
   var R : Rule .
   var Tr : TraceNarrow . 
   var B : Flags . 
@@ -270,7 +255,6 @@ mod META-LMC-THEORY is
   var Q : Qid . 
   var TP : Type .  
   var SRS : ResultTripleSet .
-  var RN : RuleName .
 
   ops init mid : Term -> State [ctor] .
 
@@ -280,37 +264,25 @@ mod META-LMC-THEORY is
 --- meta rules
  crl [init] : < init(ST) > 
            => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST'))) 
-  if {ST',TP,SUB'} | SRS := variant(ST) [print ST'] . 
+  if {ST',TP,SUB'} | SRS := variant (ST) . 
 
  crl [mid]  :  < mid(ST) > 
            => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')))
-  if {ST',TP,SUB'} | SRS := next(ST) [print ST'] .
+  if {ST',TP,SUB'} | SRS := next(ST) .
 endm
-
-fmod BOOL-LIST is
-  sorts GroundBool GroundBoolList BoolList .
-  subsort GroundBool < Bool < BoolList .
-  subsort GroundBool < GroundBoolList < BoolList .
-
-  op true : -> GroundBool [ctor special (id-hook SystemTrue)] .
-  op false : -> GroundBool [ctor special (id-hook SystemFalse)] .
-
-  op empty : -> GroundBoolList [ctor] .
-  op _,_ : GroundBoolList GroundBoolList ->  GroundBoolList [assoc ctor id: empty ditto] .
-  op _,_ : BoolList BoolList -> BoolList [assoc ctor id: empty ditto] .
-endfm
 
 fmod META-NARROWING-INTERFACE is
   pr META-LMC-PARAMETERS .
   pr LMC-RESULT-SET .
   pr FM-META-NARROWING-SEARCH .
-  pr FM-TERMSET .
+  pr BOOL-LIST .
+  pr SATISFACTION .
 
-  var M : Module . 
+  var M : Module .
   var RS : RuleSet .
-  vars T T' T1 T2 ST ST' PT : Term .  
+  vars T T1 T2 ST PT : Term .
   var TL : TermList .  
-  var C : Constant . 
+  var C : Constant .
   var TP : Type . 
   vars SUB SUB1 SUB2 : Substitution .  
   vars NextVar NextVar' N : Nat . 
@@ -324,7 +296,7 @@ fmod META-NARROWING-INTERFACE is
     
   var X : ResultTripleSet .
 
-  op sizeOf : ResultTripleSet -> Nat .
+    op sizeOf : ResultTripleSet -> Nat .
   eq sizeOf(empty) = 0 .
   eq sizeOf(RT | RTS) = s sizeOf(RTS) .
 
@@ -344,7 +316,7 @@ fmod META-NARROWING-INTERFACE is
   eq metaGenVariant(M, T, NextVar) = metaGenVariant2(M, T, NextVar, 0) .
    
   op metaGenVariant2 : Module Term Nat Nat -> VariantSet .
- ceq metaGenVariant2(M, T, NextVar, N)
+  ceq metaGenVariant2(M, T, NextVar, N)
    = VR # metaGenVariant2(M,T,NextVar,s N) 
    if VR := metaGetVariant(M,T,empty,NextVar,N) .
   eq metaGenVariant2(M, T, NextVar, N) = emptyVariantSet [owise] .
@@ -498,7 +470,7 @@ mod META-SYMBOLIC-CONNECTOR is
   eq prettyPrint(init(ST)) = eMetaPrettyPrint((##m##), ST) .
   eq prettyPrint(mid(ST))  = eMetaPrettyPrint((##m##), ST) .
 
-  eq prettyPrint(=[SUB]=>) 
+  eq prettyPrint(=[SUB]=>)
     = ---eMetaPrettyPrint((##m##), RS) '/ 
       prettyPrintSub(SUB) .
 
@@ -532,33 +504,32 @@ fmod META-NARROWING-COND-INTERFACE is
   var TP : Type . 
   vars SUB SUB1 SUB2 : Substitution .  
   var N : Nat .
-  var SR : StepResult . 
-  var SRS : StepResultSet . 
+  var SR : ResultTriple . 
+  var SRS : ResultTripleSet . 
   var VS : VariantSet .
   var P : Parent . 
   var B : Bool .
-  var RN : RuleName .
 
 --- variant narrowing condition instantiations.
 
   --- StateSet EqCondition -> StateSet
-  op condSetInstSet : StepResultSet EqCondition ~> StepResultSet . 
+  op condSetInstSet : ResultTripleSet EqCondition ~> ResultTripleSet . 
   eq condSetInstSet(SRS, T = 'true.GroundBool /\ CD)
    = condSetInstSet(condInstSet(SRS, T), CD) .
   eq condSetInstSet(SRS, nil) = SRS .
 
   --- StateSet Prop -> StateSet
-  op condInstSet : StepResultSet Term ~> StepResultSet .
- ceq condInstSet({ST,SUB,RN | T} || SRS, T)
-   = filterCondVars({ST,SUB,RN | T}, VS) || condInstSet(SRS, T) 
+  op condInstSet : ResultTripleSet Term ~> ResultTripleSet .
+ ceq condInstSet({ST,TP,SUB} | SRS, T)
+   = filterCondVars({ST,TP,SUB}, VS) | condInstSet(SRS, T) 
   if VS := metaGenVariant(trMod(##m##), T << SUB) .
   eq condInstSet(empty, T) = empty .
 
   --- only true instances (hence the conditions should be complete and FVP)
-  op filterCondVars : StepResult VariantSet ~> StepResultSet .
-  eq filterCondVars({ST,SUB,RN | T}, {'true.GroundBool,SUB1,N,P,B} # VS)
-   = {ST << SUB1, SUB .. SUB1,RN | T} 
-   || filterCondVars({ST,SUB,RN | T}, VS) .
+  op filterCondVars : ResultTriple VariantSet ~> ResultTripleSet .
+  eq filterCondVars({ST,TP,SUB}, {'true.GroundBool,SUB1,N,P,B} # VS)
+   = {ST << SUB1, TP, SUB .. SUB1} 
+   | filterCondVars({ST,TP,SUB}, VS) .
   eq filterCondVars(SR, VS) = empty [owise] .
 
   --- applying substitution to condition
@@ -595,7 +566,7 @@ mod META-SYMBOLIC-COND-CONNECTOR-BASE is
    = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool .
 
 --- with condition
-  op lmc-check : Term Term EqCondition GroundBool Bound ~> BoundedModelCheckReport .
+  op lmc-check : Term Term EqCondition Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, CD, B, D)
    = if CD == nil
      then symbolicModelCheck(init(ST), O tilde((##m##),PT), B, D)
@@ -625,7 +596,7 @@ endm
 mod META-SYMBOLIC-COND-CONNECTOR is
   pr META-SYMBOLIC-COND-CONNECTOR-BASE .
 
-  var M : Module .  
+  var M : Module .
   vars T T' T1 T2 ST ST' PT CT : Term . 
   var TL : TermList .  
   var V : Variable .
@@ -636,18 +607,17 @@ mod META-SYMBOLIC-COND-CONNECTOR is
   var SRS : ResultTripleSet . 
   vars CD CD' : EqCondition . 
   var RS : RuleSet .
-  var RN : RuleName .
 
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
     => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := variant(ST,CD) [print ST'] .
+  if {ST',TP,SUB'} | SRS := variant(ST,CD) .
 
  crl [mid-cond] : 
        < mid(ST,CD) >
     => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := next(ST,CD) [print ST'] .
+  if {ST',TP,SUB'} | SRS := next(ST,CD) .
 
   ops next variant : Term EqCondition -> ResultTripleSet .
   eq next(ST,CD)    
@@ -680,18 +650,18 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
   vars CD CD' : EqCondition .  
   var VS : VariantSet .
   var P : Parent .
-  var RN : RuleName .
+
 
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
     => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := variant(ST) /\ condOK(CD << SUB') [print ST'] .
+  if {ST',TP,SUB'} | SRS := variant(ST) /\ condOK(CD << SUB') .
 
  crl [mid-cond]  : 
        < mid(ST,CD) >
     => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := next(ST) /\ condOK(CD << SUB') [print ST'] .
+  if {ST',TP,SUB'} | SRS := next(ST) /\ condOK(CD << SUB') .
 
 --- Another method to check a condition.
   op condOK : EqCondition ~> Bool .
@@ -776,7 +746,7 @@ fmod META-PROP-SET is
   eq #props(M, '~_[T])       = #props(M, T) .
   eq #props(M, '_/\_[T, T']) = #props(M, T), #props(M, T') .
   eq #props(M, '_\/_[T, T']) = #props(M, T), #props(M, T') .
-  eq #props(M, 'O_[T])       = #props(M, T) .
+  eq #props(M, 'O_[T])       = #props(M, T) .   
   eq #props(M, '_U_[T, T'])  = #props(M, T), #props(M, T') .
   eq #props(M, '_R_[T, T'])  = #props(M, T), #props(M, T') .
   eq #props(M, T)            = empty [owise] .
@@ -815,7 +785,7 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   eq transTRs(TR TRL) = transTR(TR),transTRs(TRL) .
   eq transTRs(nil)    = empty .
 
-  --- transition (including conditions)
+--- transition (including conditions)
   op transTR : Transition -> TermList .
   eq transTR({mid(ST), =[SUB]=>})  
    = '`{_`,_`,_`}[ST,wrapTL('_;_,'none.CESubstitution,transSUB(SUB)),''Test.Qid] .
@@ -991,14 +961,14 @@ mod LMC-COMMAND-PROCESSING is
      then << DB ; printLMCInfo(M,B,T1,T2,CD) printLMCOutput(M,getTerm(RP?)) >>
      else << DB ; getMsg(getTerm(RP?)) >>
      fi
-   if U := addEqs( 
+   if U := addEqs(
 	    (eq '##m##.Module = up(M) [none] .
 	     eq '##f##.TermList = upTerm(props(M,T2)) [none] .),
 	    upModule('META-SYMBOLIC-COND-CONNECTOR2, false)) /\
      T3  := up(getTerm(metaReduce(M,T1))) /\
      T4 := up(getTerm(metaReduce(M,T2))) /\
      RP? := metaReduce(U, 'lmc-check[T3,T4,upTerm(CD),upTerm(B),upTerm(D)]) /\
-     TLTL:TermList := props(M,T2) /\ TT:Term := upTerm(props(M,T2)) [print TLTL:TermList TT:Term] .
+     TLTL:TermList := props(M,T2) /\ TT:Term := upTerm(props(M,T2)) .
 
   op printLMCInfo : Module Bool Term Term Condition -> QidList .
   eq printLMCInfo(M, B, T1, T2, CD)
