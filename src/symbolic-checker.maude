@@ -815,13 +815,13 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   eq transTRs(TR TRL) = transTR(TR),transTRs(TRL) .
   eq transTRs(nil)    = empty .
 
---- transition (including conditions)
+  --- transition (including conditions)
   op transTR : Transition -> TermList .
   eq transTR({mid(ST), =[SUB]=>})  
-   = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), upRuleName(RN)] .
+   = '`{_`,_`,_`}[ST,wrapTL('_;_,'none.CESubstitution,transSUB(SUB)),''Test.Qid] .
   eq transTR({mid(ST), deadlock})  
-   = '`{_`,_`,_`}[ST,'none.CESubstitution, upRuleName(deadlock)] .
-  eq transTR({init(ST), =[SUB]=>}) = empty  .
+   = '`{_`,_`,_`}[ST,'none.CESubstitution,''Test.Qid] .
+  eq transTR({init(ST), ME}) = empty  .
 
   eq transTR({mid(ST,CD),ME})  = transTR({mid(ST),ME}) .
   eq transTR({init(ST,CD),ME}) = empty  .
