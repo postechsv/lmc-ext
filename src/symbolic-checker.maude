@@ -50,6 +50,21 @@ fmod DEADLOCK-CONDITION is
   op _-deadlock : State -> Bool .
 endfm
 
+fmod FOLDING-RELATION-SYNTAX is
+  pr META-LEVEL .
+  pr SATISFACTION .
+  pr NAT .
+
+  --- folding relation
+  op _>=_ : State State -> Bool .
+  op _~=_ : State State -> Bool .
+endfm
+
+fmod FOLDING-RELATION is
+  pr FOLDING-RELATION-SYNTAX .
+--- To be redefined later
+endfm
+
 --- core maude search function (using META-LEVEL)
 fmod BOUNDED-FOLDING-MODEL-CHECKER is
   pr RULE-NAME .
