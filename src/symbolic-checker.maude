@@ -423,12 +423,12 @@ fmod META-NARROWING-INTERFACE is
   eq inst?('true.GroundBool)  = true .
   eq inst?('false.GroundBool) = true .
   eq inst?(T) = false [owise] .
-  
-  op isGround : Sort -> Bool .
-  eq isGround('GroundBoolList) = true .
-  eq isGround('GroundBool) = true .
-  eq isGround(S:Sort) = false [owise] .
-  
+
+  op instTermList : ResultTriple Term Substitution -> ResultTripleSet .
+  eq instTermList({ST,TP,SUB}, T, SUB1) = {ST, TP, SUB} .
+  eq instTermList({ST,TP,SUB}, '_`,_['true.GroundBool, T], SUB1)  = {ST << SUB1,TP, SUB .. SUB1} | instTermList({ST,TP,SUB}, T, SUB1) .
+  eq instTermList({ST,TP,SUB}, '_`,_['false.GroundBool, T], SUB1)  = {ST << SUB1,TP, SUB .. SUB1} | instTermList({ST,TP,SUB}, T, SUB1) .
+  eq instTermList({ST,TP,SUB}, T, SUB1)  = empty [owise] .
 endfm
 
 mod META-SYMBOLIC-CONNECTOR is
