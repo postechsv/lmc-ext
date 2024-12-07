@@ -75,7 +75,8 @@ endfm
 fmod BOUNDED-FOLDING-MODEL-CHECKER is
   pr RULE-NAME .
   pr META-LEVEL .
-  pr SATISFACTION .
+  pr FOLDING-RELATION .
+
   including LTL .
 
 --- meta transition
@@ -202,7 +203,7 @@ fmod ENABLED-BOOL-LIST is
   subsort GroundBool < EnabledBool < EnabledBoolList .
 
   op _,_ : EnabledBoolList EnabledBoolList -> EnabledBoolList [assoc ctor id: empty] .
-endfm 
+endfm
 
 ****************************************
 ***  Full Maude Narrowing Connector  ***
@@ -266,17 +267,13 @@ fmod FOLDING-RELATION is
   eq mid(ST, DS) ~= mid(ST', DS')  
    = mid(ST, DS) >= mid(ST', DS') and-then mid(ST', DS') >= mid(ST, DS) .
   eq S1:State ~= S2:State = false [owise] .
-  
+
   eq ff = 1000 .
 endfm
 
-mod META-LMC-PARAMETERS-TEST is
-    pr META-LMC-PARAMETERS .
-    pr META-LEVEL .
-endm
-
 fmod LMC-RESULT-SET is
   pr FM-RESULT-CONTEXT-SET .
+  pr DEADLOCK-STATE .
 
   var M : Module . 
   vars NextVar : Nat . 
@@ -313,10 +310,11 @@ fmod LMC-RESULT-SET is
   op _#_ : VariantSet VariantSet -> VariantSet
     [ctor assoc comm id: emptyVariantSet prec 65 format (d d n d)] .
   eq X:Variant # X:Variant = X:Variant .
-  
-  sorts MarkedResult .
+
+  sorts MarkedResult MarkedResultSet .
 
   op m{_,_,_} : Term Substitution DeadlockState -> MarkedResult [ctor] .
+  subsort MarkedResult < MarkedResultSet .
 
   op empty : -> MarkedResultSet [ctor] .
   op _|_ : MarkedResultSet MarkedResultSet -> MarkedResultSet [ctor assoc comm id: empty] .
@@ -339,8 +337,7 @@ mod META-LMC-THEORY is
   var Q : Qid . 
   var TP : Type .  
   var SRS : ResultTripleSet .
-
-  ops init mid : Term -> State [ctor] .
+  var DS : DeadlockState .
 
 --- functions
   ops next variant : Term -> ResultTripleSet .
@@ -350,7 +347,7 @@ mod META-LMC-THEORY is
 
 --- meta rules
  crl [init] : < init(ST, DS) > 
-           => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST'))) 
+           => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')), DS) 
   if {ST',TP,SUB'} | SRS := variant (ST) . 
 
 ---(
@@ -372,7 +369,7 @@ fmod META-NARROWING-INTERFACE is
   pr META-LMC-PARAMETERS .
   pr LMC-RESULT-SET .
   pr FM-META-NARROWING-SEARCH .
-  pr BOOL-LIST .
+  pr ENABLED-BOOL-LIST .
   pr SATISFACTION .
 
   var M : Module .
@@ -384,7 +381,7 @@ fmod META-NARROWING-INTERFACE is
   vars SUB SUB1 SUB2 : Substitution .  
   vars NextVar NextVar' N : Nat . 
   var VR : Variant . 
-  var VS : VariantSet .
+  vars VS VS' : VariantSet .
   var RT : ResultTriple . 
   vars RTS RTS' : ResultTripleSet .
   var P : Parent . 
@@ -400,8 +397,21 @@ fmod META-NARROWING-INTERFACE is
   op metaNarrow2 : Module Term -> ResultTripleSet .
   --- eq metaNarrow2(M,T) = metaNarrowCollect(M,T,0,empty) |> T .
   ceq metaNarrow2(M,T) = X |> T
-    if X := metaNarrowCollect(M,T,0,empty) /\ M:Nat := sizeOf(X) .
+    if X := metaNarrowCollect(M,T,0,empty) .
 
+  var H : Header .
+  var IL : ImportList .  
+  var SS : SortSet .
+  var SSDS : SubsortDeclSet .
+  var OPDS : OpDeclSet .
+  var MAS : MembAxSet .
+  var EQS : EquationSet .
+  var RLS : RuleSet .
+  var STDS : StratDeclSet .
+  var STDFS : StratDefSet .
+
+  var ATRS : AttrSet .
+  
   op metaNarrowCollect : Module Term Nat ResultTripleSet -> ResultTripleSet .
   ceq metaNarrowCollect(M,T,N,RTS) = if RTS' == empty then RTS else metaNarrowCollect(M, T, s N, RTS | RTS') fi
     if RTS' := to4Tuple(M,metaNarrowingApply(M, T, empty, '@, N)) .
@@ -430,14 +440,14 @@ fmod META-NARROWING-INTERFACE is
   eq conjTermList(ST, TL) = '_`,_[conjTermListInside(ST, TL)] .
 
   --- StateSet PropSet -> StateSet
-  op propSetInstSetNew : ResultTripleSet TermList ~> ResultTripleSet . 
-  eq propSetInstSetNew(RTS, TL)
+  op propSetInstSet : ResultTripleSet TermList ~> ResultTripleSet . 
+  eq propSetInstSet(RTS, TL)
    = propInstSet2(RTS, TL) .
 
-  op propSetInstSet : ResultTripleSet TermList ~> ResultTripleSet . 
-  eq propSetInstSet(RTS, (PT,TL))
-   = propSetInstSet(propInstSet(RTS, PT), TL) .
-  eq propSetInstSet(RTS, empty) = RTS .
+  op propSetInstSetOld : ResultTripleSet TermList ~> ResultTripleSet . 
+  eq propSetInstSetOld(RTS, (PT,TL))
+   = propSetInstSetOld(propInstSet(RTS, PT), TL) .
+  eq propSetInstSetOld(RTS, empty) = RTS .
 
   --- StateSet Prop -> StateSet (trMod for genVariant)
   op propInstSet : ResultTripleSet Term ~> ResultTripleSet .
@@ -450,14 +460,14 @@ fmod META-NARROWING-INTERFACE is
   ceq propInstSet2({ST,TP,SUB} | RTS, TL)
    = convertPropVars({ST,TP,SUB}, VV:VariantSet)
         | propInstSet2(RTS, TL) if TT:Term := conjTermList(ST, TL) /\
-                                   VV:VariantSet := metaGenVariant(trMod(##m##), TT:Term) [print VV:VariantSet] .
+                                   VV:VariantSet := metaGenVariant(trMod(##m##), TT:Term) .
   eq propInstSet2(empty, TL) = empty .
 
   op errorBool : -> Bool [ctor] .
 
   op convertPropVars : ResultTriple VariantSet ~> ResultTripleSet .
   eq convertPropVars({ST,TP,SUB}, emptyVariantSet) = empty .
-  ceq convertPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = (if (S == 'GroundBool or S == 'GroundBoolList or S == 'EnabledBoolList)) then { ST << SUB1, TP, SUB1 } else empty fi) | convertPropVars({ST,TP,SUB}, VS) 
+  ceq convertPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = (if (S == 'GroundBool or S == 'GroundBoolList or S == 'EnabledBoolList) then { ST << SUB1, TP, SUB1 } else empty fi) | convertPropVars({ST,TP,SUB}, VS) 
     if S := leastSort(trMod(##m##), T) .
     
   op isGroundBoolList : BoolList -> Bool .
@@ -487,7 +497,7 @@ fmod META-NARROWING-INTERFACE is
   --- to true/false. However, it easily generates spurious counterexamples.. 
   --- We may adopt this with abstract refinement techniques..
   --- But with filtering, the |= equations should be total...
- 
+
   op inst? : Term ~> Bool .
   eq inst?('true.GroundBool)  = true .
   eq inst?('false.GroundBool) = true .
@@ -519,18 +529,18 @@ mod META-SYMBOLIC-CONNECTOR is
   var N : Nat . 
   var D : Bound .
   var RT : ResultTriple .  
-  var RTS : ResultTripleSet .
+  var RTS : ResultTripleSet . 
   vars DS DS' : DeadlockState .
 
 --- meta prop and state
   ceq mid(ST, DS) |= prop(PT) 
    = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool 
-     if T := getTerm(metaReduce((##m##), '_|=_[ST, PT])) [print T] .
+   if T := getTerm(metaReduce((##m##), '_|=_[ST, PT])) .
 
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
-  ceq next(ST)    
-   = propSetInstSet(metaNarrow2(trMod(##m##), ST), ##f##) if N:Nat := ff [print N:Nat] .
+  ceq next(ST)
+   = propSetInstSet(metaNarrow2(trMod(##m##), ST), ##f##) if N:Nat := ff .
   eq variant(ST) 
    = propSetInstSet({ST,leastSort((##m##),ST),none}, ##f##) .
 
