@@ -59,11 +59,14 @@ endfm
 fmod FOLDING-RELATION-SYNTAX is
   pr META-LEVEL .
   pr SATISFACTION .
+  pr DEADLOCK-STATE .
   pr NAT .
 
   --- folding relation
   op _>=_ : State State -> Bool .
   op _~=_ : State State -> Bool .
+
+  ops init mid : Term DeadlockState -> State [ctor] ..
 endfm
 
 fmod FOLDING-RELATION is
