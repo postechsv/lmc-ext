@@ -248,6 +248,26 @@ fmod META-LMC-PARAMETERS is
   eq trMod(M:Module) = extendMod(M:Module) [owise] .
 endfm
 
+fmod FOLDING-RELATION is
+  pr META-LMC-PARAMETERS .
+  pr FOLDING-RELATION-SYNTAX .
+
+  vars ST ST' : Term . 
+  vars DS DS' : DeadlockState .
+
+--- state folding
+  eq init(ST, DS) >= init(ST, DS') = true  .
+  eq mid(ST, DS) >= mid(ST', DS')
+   = metaMatch((##m##), ST, ST', nil, 0) :: Substitution .
+  eq S1:State >= S2:State = false [owise] .
+
+--- renaming folding
+  eq init(ST, DS) ~= init(ST, DS') = true .
+  eq mid(ST, DS) ~= mid(ST', DS')  
+   = mid(ST, DS) >= mid(ST', DS') and-then mid(ST', DS') >= mid(ST, DS) .
+  eq S1:State ~= S2:State = false [owise] .
+endfm
+
 mod META-LMC-PARAMETERS-TEST is
     pr META-LMC-PARAMETERS .
     pr META-LEVEL .
