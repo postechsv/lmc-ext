@@ -71,11 +71,6 @@ fmod FOLDING-RELATION-SYNTAX is
   op ff : -> Nat .
 endfm
 
-fmod FOLDING-RELATION is
-  pr FOLDING-RELATION-SYNTAX .
---- To be redefined later
-endfm
-
 --- core maude search function (using META-LEVEL)
 fmod BOUNDED-FOLDING-MODEL-CHECKER is
   pr RULE-NAME .
