@@ -297,14 +297,18 @@ mod META-LMC-THEORY is
   op metaDeadlock : Term -> Bool .
   eq metaDeadlock(ST) = downTerm(getTerm(metaReduce((##m##), '_-deadlock[ST])), false) .
 
---- meta ruless
+--- meta rules
  crl [init] : < init(ST, DS) > 
            => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST'))) 
   if {ST',TP,SUB'} | SRS := variant (ST) . 
 
  crl [mid]  :  < mid(ST) > 
            => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')))
-  if {ST',TP,SUB'} | SRS := next(ST) .
+  if {ST',TP,SUB'} | SRS := next(ST) /\ mid(ST) |= prop('enabled?.Prop)  .
+
+ crl [mid-deadlock] : < mid(ST) > 
+           => deadlock |=> mid(ST)
+  if {ST',TP,SUB'} | SRS := next(ST) /\ not (mid(ST) |= prop('enabled?.Prop))  .
 endm
 
 fmod META-NARROWING-INTERFACE is
