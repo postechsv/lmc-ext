@@ -521,18 +521,6 @@ mod META-SYMBOLIC-CONNECTOR is
    = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool 
      if T := getTerm(metaReduce((##m##), '_|=_[ST, PT])) [print T] .
 
---- state folding
-  eq init(ST) >= init(ST) = true .
-  eq mid(ST) >= mid(ST')
-   = metaMatch((##m##), ST, ST', nil, 0) :: Substitution .
-  eq S1:State >= S2:State = false [owise] .
-
---- renaming folding
-  eq init(ST) ~= init(ST) = true .
-  eq mid(ST) ~= mid(ST')
-   = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
-  eq S1:State ~= S2:State = false [owise] .
-
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
   ceq next(ST)    
