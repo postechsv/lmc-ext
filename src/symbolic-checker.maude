@@ -267,6 +267,9 @@ mod META-LMC-THEORY is
 --- functions
   ops next variant : Term -> ResultTripleSet .
 
+  op metaDeadlock : Term -> Bool .
+  eq metaDeadlock(ST) = downTerm(getTerm(metaReduce((##m##), '_-deadlock[ST])), false) .
+
 --- meta rules
  crl [init] : < init(ST) > 
            => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST'))) 
