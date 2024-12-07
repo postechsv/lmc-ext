@@ -192,6 +192,18 @@ fmod ENABLED-PROP is
   eq ST |= enabled? = isEnabled(ST) [variant] .
 endfm
 
+fmod ENABLED-BOOL-LIST is
+  pr ENABLED-PROP .
+  pr BOOL-LIST .
+  
+  sort EnabledBoolList .
+
+  subsort GroundBoolList < EnabledBoolList < BoolList .
+  subsort GroundBool < EnabledBool < EnabledBoolList .
+
+  op _,_ : EnabledBoolList EnabledBoolList -> EnabledBoolList [assoc ctor] .
+endfm 
+
 ****************************************
 ***  Full Maude Narrowing Connector  ***
 ****************************************  
