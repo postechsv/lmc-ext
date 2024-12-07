@@ -50,6 +50,12 @@ fmod DEADLOCK-CONDITION is
   op _-deadlock : State -> Bool .
 endfm
 
+fmod DEADLOCK-STATE is
+  sort DeadlockState .
+
+  ops alive dead : -> DeadlockState [ctor] .
+endfm
+
 fmod FOLDING-RELATION-SYNTAX is
   pr META-LEVEL .
   pr SATISFACTION .
