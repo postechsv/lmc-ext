@@ -295,6 +295,10 @@ fmod LMC-RESULT-SET is
   sorts MarkedResult .
 
   op m{_,_,_} : Term Substitution DeadlockState -> MarkedResult [ctor] .
+
+  op empty : -> MarkedResultSet [ctor] .
+  op _|_ : MarkedResultSet MarkedResultSet -> MarkedResultSet [ctor assoc comm id: empty] .
+  eq X:MarkedResult | X:MarkedResult = X:MarkedResult .
 endfm
 
 mod META-LMC-THEORY is
