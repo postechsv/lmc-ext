@@ -297,8 +297,8 @@ mod META-LMC-THEORY is
   op metaDeadlock : Term -> Bool .
   eq metaDeadlock(ST) = downTerm(getTerm(metaReduce((##m##), '_-deadlock[ST])), false) .
 
---- meta rules
- crl [init] : < init(ST) > 
+--- meta ruless
+ crl [init] : < init(ST, DS) > 
            => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST'))) 
   if {ST',TP,SUB'} | SRS := variant (ST) . 
 
@@ -458,10 +458,11 @@ mod META-SYMBOLIC-CONNECTOR is
   var N : Nat . 
   var D : Bound .
   var RT : ResultTriple .  
-  var RTS : ResultTripleSet . 
+  var RTS : ResultTripleSet .
+  vars DS DS' : DeadlockState .
 
 --- meta prop and state
-  eq mid(ST) |= prop(PT) 
+  eq mid(ST, DS) |= prop(PT) 
    = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool .
 
 --- state folding
