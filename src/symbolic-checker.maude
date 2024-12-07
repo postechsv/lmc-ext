@@ -66,7 +66,9 @@ fmod FOLDING-RELATION-SYNTAX is
   op _>=_ : State State -> Bool .
   op _~=_ : State State -> Bool .
 
-  ops init mid : Term DeadlockState -> State [ctor] ..
+  ops init mid : Term DeadlockState -> State [ctor] .
+
+  op ff : -> Nat .
 endfm
 
 fmod FOLDING-RELATION is
@@ -269,6 +271,8 @@ fmod FOLDING-RELATION is
   eq mid(ST, DS) ~= mid(ST', DS')  
    = mid(ST, DS) >= mid(ST', DS') and-then mid(ST', DS') >= mid(ST, DS) .
   eq S1:State ~= S2:State = false [owise] .
+  
+  eq ff = 1000 .
 endfm
 
 mod META-LMC-PARAMETERS-TEST is
@@ -441,7 +445,7 @@ fmod META-NARROWING-INTERFACE is
   ceq propInstSet2({ST,TP,SUB} | RTS, TL)
    = convertPropVars({ST,TP,SUB}, VV:VariantSet)
         | propInstSet2(RTS, TL) if TT:Term := conjTermList(ST, TL) /\
-                                   VV:VariantSet := metaGenVariant(trMod(##m##), TT:Term) .
+                                   VV:VariantSet := metaGenVariant(trMod(##m##), TT:Term) [print VV:VariantSet] .
   eq propInstSet2(empty, TL) = empty .
 
   op errorBool : -> Bool [ctor] .
@@ -514,8 +518,9 @@ mod META-SYMBOLIC-CONNECTOR is
   vars DS DS' : DeadlockState .
 
 --- meta prop and state
-  eq mid(ST, DS) |= prop(PT) 
-   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool .
+  ceq mid(ST, DS) |= prop(PT) 
+   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool 
+     if T := getTerm(metaReduce((##m##), '_|=_[ST, PT])) [print T] .
 
 --- state folding
   eq init(ST) >= init(ST) = true .
@@ -531,8 +536,8 @@ mod META-SYMBOLIC-CONNECTOR is
 
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
-  eq next(ST)    
-   = propSetInstSet(metaNarrow2(trMod(##m##), ST), ##f##) .
+  ceq next(ST)    
+   = propSetInstSet(metaNarrow2(trMod(##m##), ST), ##f##) if N:Nat := ff [print N:Nat] .
   eq variant(ST) 
    = propSetInstSet({ST,leastSort((##m##),ST),none}, ##f##) .
 
