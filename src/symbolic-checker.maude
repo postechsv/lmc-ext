@@ -457,7 +457,7 @@ fmod META-NARROWING-INTERFACE is
 
   op convertPropVars : ResultTriple VariantSet ~> ResultTripleSet .
   eq convertPropVars({ST,TP,SUB}, emptyVariantSet) = empty .
-  ceq convertPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = (if (S == 'GroundBool or S == 'GroundBoolList) then { ST << SUB1, TP, SUB1 } else empty fi) | convertPropVars({ST,TP,SUB}, VS) 
+  ceq convertPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = (if (S == 'GroundBool or S == 'GroundBoolList or S == 'EnabledBoolList)) then { ST << SUB1, TP, SUB1 } else empty fi) | convertPropVars({ST,TP,SUB}, VS) 
     if S := leastSort(trMod(##m##), T) .
     
   op isGroundBoolList : BoolList -> Bool .
