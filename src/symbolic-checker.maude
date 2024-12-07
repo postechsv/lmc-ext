@@ -180,7 +180,16 @@ endfm
 fmod ENABLED-PROP is
   pr SATISFACTION .
 
-  op enabled? : -> Prop [ctor] .
+  sort EnabledBool .
+  subsort EnabledBool < Bool .
+
+  var ST : State .
+
+  op enabled? : -> Prop .  
+
+  op isEnabled : State -> EnabledBool .
+
+  eq ST |= enabled? = isEnabled(ST) [variant] .
 endfm
 
 ****************************************
@@ -336,7 +345,7 @@ fmod META-NARROWING-INTERFACE is
     
   var X : ResultTripleSet .
 
-    op sizeOf : ResultTripleSet -> Nat .
+  op sizeOf : ResultTripleSet -> Nat .
   eq sizeOf(empty) = 0 .
   eq sizeOf(RT | RTS) = s sizeOf(RTS) .
 
