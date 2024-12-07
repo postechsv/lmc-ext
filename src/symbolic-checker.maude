@@ -361,10 +361,28 @@ fmod META-NARROWING-INTERFACE is
   eq conjTermList(ST, TL) = '_`,_[conjTermListInside(ST, TL)] .
 
   --- StateSet PropSet -> StateSet
+  op propSetInstSetNew : ResultTripleSet TermList ~> ResultTripleSet . 
+  eq propSetInstSetNew(RTS, TL)
+   = propInstSet2(RTS, TL) .
+
   op propSetInstSet : ResultTripleSet TermList ~> ResultTripleSet . 
   eq propSetInstSet(RTS, (PT,TL))
    = propSetInstSet(propInstSet(RTS, PT), TL) .
   eq propSetInstSet(RTS, empty) = RTS .
+
+  --- StateSet Prop -> StateSet (trMod for genVariant)
+  op propInstSet : ResultTripleSet Term ~> ResultTripleSet .
+  eq propInstSet({ST,TP,SUB} | RTS, PT)
+   = filterPropVarsCond({ST,TP,SUB}, metaGenVariant(trMod(##m##), '_|=_[ST, PT]))
+   | propInstSet(RTS, PT) .
+  eq propInstSet(empty, PT) = empty .
+
+  op propInstSet2 : ResultTripleSet TermList ~> ResultTripleSet .
+  ceq propInstSet2({ST,TP,SUB} | RTS, TL)
+   = convertPropVars({ST,TP,SUB}, VV:VariantSet)
+        | propInstSet2(RTS, TL) if TT:Term := conjTermList(ST, TL) /\
+                                   VV:VariantSet := metaGenVariant(trMod(##m##), TT:Term) .
+  eq propInstSet2(empty, TL) = empty .
 
   op errorBool : -> Bool [ctor] .
 
