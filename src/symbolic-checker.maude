@@ -201,7 +201,7 @@ fmod ENABLED-BOOL-LIST is
   subsort GroundBoolList < EnabledBoolList < BoolList .
   subsort GroundBool < EnabledBool < EnabledBoolList .
 
-  op _,_ : EnabledBoolList EnabledBoolList -> EnabledBoolList [assoc ctor] .
+  op _,_ : EnabledBoolList EnabledBoolList -> EnabledBoolList [assoc ctor id: empty] .
 endfm 
 
 ****************************************
