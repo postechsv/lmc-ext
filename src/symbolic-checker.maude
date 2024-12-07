@@ -561,8 +561,8 @@ mod META-SYMBOLIC-CONNECTOR is
   eq tilde(M, '_R_[T, T'])    = tilde(M, T) R tilde(M, T') .
 
 --- pretty print (for debugging)
-  eq prettyPrint(init(ST)) = eMetaPrettyPrint((##m##), ST) .
-  eq prettyPrint(mid(ST))  = eMetaPrettyPrint((##m##), ST) .
+  eq prettyPrint(init(ST, DS)) = eMetaPrettyPrint((##m##), ST) .
+  eq prettyPrint(mid(ST, DS))  = eMetaPrettyPrint((##m##), ST) .
 
   eq prettyPrint(=[SUB]=>)
     = ---eMetaPrettyPrint((##m##), RS) '/ 
@@ -681,9 +681,9 @@ mod META-SYMBOLIC-COND-CONNECTOR-BASE is
 
 --- pretty print (for debugging)
   eq prettyPrint(init(ST,CD)) 
-   = prettyPrint(init(ST)) '\n '\t eMetaPrettyPrint((##m##), CD) .
+   = prettyPrint(init(ST, alive)) '\n '\t eMetaPrettyPrint((##m##), CD) .
   eq prettyPrint(mid(ST,CD)) 
-   = prettyPrint(mid(ST)) '\n '\t eMetaPrettyPrint((##m##), CD) .
+   = prettyPrint(mid(ST, alive)) '\n '\t eMetaPrettyPrint((##m##), CD) .
 endm
 
 --- Conditions are solved for generating states by variant narrowing
