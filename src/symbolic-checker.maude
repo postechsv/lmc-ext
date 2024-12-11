@@ -15,6 +15,23 @@ fmod RULE-NAME is
   ops unlabeled deadlock : -> RuleName .
 endfm
 
+fmod TERMSET is
+  pr META-LEVEL .
+
+  sort TermSet .
+  subsort Term < TermSet .
+  op emptyTermSet : -> TermSet [ctor] .
+  op _|_ : TermSet TermSet -> TermSet
+    [ctor assoc comm id: emptyTermSet format (d n d d)] .
+  eq X:Term | X:Term = X:Term .
+
+  op TermSet : TermList -> TermSet .
+  eq TermSet(empty)
+   = emptyTermSet .
+  eq TermSet((T:Term,TL:TermList))
+   = T:Term | TermSet(TL:TermList) .
+endfm
+
 fmod STATE-SYNTAX is
     pr META-MODULE .
     pr SATISFACTION .
