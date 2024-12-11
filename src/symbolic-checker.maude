@@ -290,27 +290,26 @@ fmod LMC-RESULT-SET is
   var M : Module . 
   vars NextVar : Nat . 
   vars S S' : Substitution .
-  vars T TS CtTS : Term . 
+  vars T TS CtTS ST : Term . 
   var TL : TermList . 
-  var TP : Type .
+  var TP : Type . 
   var R : Rule .
   var Tr : TraceNarrow . 
   var B : Flags . 
   vars Ct CtS : Context .  
-  var RTS : ResultContextSet . 
-  var SRS : ResultTripleSet .
-  vars Q Q' : Qid .
+  var NAR : NarrowingApplyResult . 
+  var SRS : StepResultSet .
+  var RN : RuleName .
 
-  op to4Tuple : Module NarrowingApplyResult? -> ResultTripleSet .
-  eq to4Tuple(M, failure) = empty .
-  eq to4Tuple(M, failureIncomplete) = empty .
-  eq to4Tuple(M, {T,TP,Ct,Q,S,S',Q'})
-   = {T, TP, S .. S'} .
+  op toStepResult : Term NarrowingApplyResult? -> StepResult .
+  eq toStepResult(T, failure) = empty .
+  eq toStepResult(T, failureIncomplete) = empty .
+  eq toStepResult(T, NAR) = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} .
 
-  op _|>_ : ResultTripleSet TermList -> ResultTripleSet .
-  eq (empty).ResultTripleSet |> TL = (empty).ResultTripleSet .
-  eq ({T,TP,S} | SRS) |> TL = {T,TP,S |> TL} | (SRS |> TL) .
-  eq (failure | SRS ) |> TL = failure | (SRS |> TL) .
+  op _|>_ : StepResult TermList -> StepResult .
+  eq (empty).StepResult |> TL = (empty).StepResult .
+  eq ({ST,S,RN | T} || SRS) |> TL = {ST,(S |> TL),RN | T} || (SRS |> TL) .
+  eq (failure || SRS ) |> TL = failure || (SRS |> TL) .
 
   op getRuleSet : TraceNarrow -> RuleSet .
   eq getRuleSet({T,S,TP,R} Tr) = R getRuleSet(Tr) .
