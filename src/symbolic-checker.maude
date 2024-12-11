@@ -73,18 +73,6 @@ endfm
 ***    Logical Model Checker on META-LEVEL     ***
 **************************************************
 
-fmod DEADLOCK-CONDITION is
-  pr SATISFACTION .
-
-  op _-deadlock : State -> Bool .
-endfm
-
-fmod DEADLOCK-STATE is
-  sort DeadlockState .
-
-  ops alive dead : -> DeadlockState [ctor] .
-endfm
-
 --- core maude search function (using META-LEVEL)
 fmod BOUNDED-FOLDING-MODEL-CHECKER is
   pr RULE-NAME .
