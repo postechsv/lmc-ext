@@ -273,7 +273,19 @@ endfm
 
 fmod LMC-RESULT-SET is
   pr FM-RESULT-CONTEXT-SET .
-  pr DEADLOCK-STATE .
+  pr RULE-NAME .
+
+  sort StepResult StepResult? .
+  subsort StepResult < StepResult? .
+  op failure : -> StepResult? [ctor] .
+  op {_,_,_|_} : Term Substitution RuleName Term -> StepResult [ctor] .
+
+  sort StepResultSet .
+  subsort StepResult < StepResultSet .
+  op empty : -> StepResultSet [ctor] .
+  op _||_ : StepResultSet StepResultSet -> StepResultSet
+    [ctor assoc comm id: empty prec 65] .
+  eq X:StepResult || X:StepResult = X:StepResult .
 
   var M : Module . 
   vars NextVar : Nat . 
