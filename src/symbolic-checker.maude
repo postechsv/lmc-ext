@@ -68,21 +68,6 @@ fmod DEADLOCK-STATE is
   ops alive dead : -> DeadlockState [ctor] .
 endfm
 
-fmod FOLDING-RELATION-SYNTAX is
-  pr META-LEVEL .
-  pr SATISFACTION .
-  pr DEADLOCK-STATE .
-  pr NAT .
-
-  --- folding relation
-  op _>=_ : State State -> Bool .
-  op _~=_ : State State -> Bool .
-
-  ops init mid : Term DeadlockState -> State [ctor] .
-
-  op ff : -> Nat .
-endfm
-
 --- core maude search function (using META-LEVEL)
 fmod BOUNDED-FOLDING-MODEL-CHECKER is
   pr RULE-NAME .
@@ -101,7 +86,7 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
 --- propositions
   subsort Prop < Formula .
   op prop : Term -> Prop [ctor] .
-  
+
 --- folding relation
   op _>=_ : State State -> Bool .
   op _~=_ : State State -> Bool .
