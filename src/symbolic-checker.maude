@@ -405,10 +405,8 @@ fmod META-NARROWING-INTERFACE is
   eq sizeOf(empty) = 0 .
   eq sizeOf(RT | RTS) = s sizeOf(RTS) .
 
-  op metaNarrow2 : Module Term -> ResultTripleSet .
-  --- eq metaNarrow2(M,T) = metaNarrowCollect(M,T,0,empty) |> T .
-  ceq metaNarrow2(M,T) = X |> T
-    if X := metaNarrowCollect(M,T,0,empty) .
+  op metaNarrow2 : Module Term -> StepResult .
+  eq metaNarrow2(M,T) = metaNarrowCollect(M, T, 0) |> T .
 
   var H : Header .
   var IL : ImportList .  
@@ -423,9 +421,9 @@ fmod META-NARROWING-INTERFACE is
 
   var ATRS : AttrSet .
   
-  op metaNarrowCollect : Module Term Nat ResultTripleSet -> ResultTripleSet .
-  ceq metaNarrowCollect(M,T,N,RTS) = if RTS' == empty then RTS else metaNarrowCollect(M, T, s N, RTS | RTS') fi
-    if RTS' := to4Tuple(M,metaNarrowingApply(M, T, empty, '@, N)) .
+  op metaNarrowCollect : Module Term Nat -> StepResultSet .
+  ceq metaNarrowCollect(M, T, N) = if SRS == empty then empty else SRS || metaNarrowCollect(M, T, s N) fi
+    if SRS := toStepResult(T, metaNarrowingApply(M, T, empty, '@, N)) .
 
   op metaGenVariant : Module Term -> VariantSet .
   eq metaGenVariant(M, T) = metaGenVariant(M, T, highestVar(T)) .
