@@ -449,74 +449,29 @@ fmod META-NARROWING-INTERFACE is
   eq conjTermList(ST, TL) = '_`,_[conjTermListInside(ST, TL)] .
 
   --- StateSet PropSet -> StateSet
-  op propSetInstSet : ResultTripleSet TermList ~> ResultTripleSet . 
-  eq propSetInstSet(RTS, TL)
-   = propInstSet2(RTS, TL) .
+  op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
+  eq propSetInstSet(empty, TL) = empty .
+  eq propSetInstSet(SR || SRS, TL) = cleanRedundant(SR) || propSetInstSet(SRS, TL) .
 
-  op propSetInstSetOld : ResultTripleSet TermList ~> ResultTripleSet . 
-  eq propSetInstSetOld(RTS, (PT,TL))
-   = propSetInstSetOld(propInstSet(RTS, PT), TL) .
-  eq propSetInstSetOld(RTS, empty) = RTS .
+  op propSetInitInstSet : StepResultSet TermList ~> StepResultSet . 
+  eq propSetInitInstSet(empty, TL) = empty .
+  eq propSetInitInstSet({ST,SUB,RN | T} || SRS, TL)
+   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(addBoolList(trMod(##m##)), conjAsBoolList(ST, TL)))
+     || propSetInitInstSet(SRS, TL) .
 
-  --- StateSet Prop -> StateSet (trMod for genVariant)
-  op propInstSet : ResultTripleSet Term ~> ResultTripleSet .
-  eq propInstSet({ST,TP,SUB} | RTS, PT)
-   = filterPropVarsCond({ST,TP,SUB}, metaGenVariant(trMod(##m##), '_|=_[ST, PT]))
-   | propInstSet(RTS, PT) .
-  eq propInstSet(empty, PT) = empty .
+  op filterPropVars : StepResult VariantSet ~> StepResultSet .
+  eq filterPropVars({ST,SUB,RN | T}, emptyVariantSet) = empty .
+  eq filterPropVars({ST,SUB,RN | T}, {PT,SUB1,N,P,B} # VS) 
+   = (if inst?(PT) then cleanRedundant({ST << SUB1,summarize(T, SUB .. SUB1),RN | T}) |> T else empty fi) || filterPropVars({ST,SUB,RN | T}, VS) .
 
-  op propInstSet2 : ResultTripleSet TermList ~> ResultTripleSet .
-  ceq propInstSet2({ST,TP,SUB} | RTS, TL)
-   = convertPropVars({ST,TP,SUB}, VV:VariantSet)
-        | propInstSet2(RTS, TL) if TT:Term := conjTermList(ST, TL) /\
-                                   VV:VariantSet := metaGenVariant(trMod(##m##), TT:Term) .
-  eq propInstSet2(empty, TL) = empty .
-
-  op errorBool : -> Bool [ctor] .
-
-  op convertPropVars : ResultTriple VariantSet ~> ResultTripleSet .
-  eq convertPropVars({ST,TP,SUB}, emptyVariantSet) = empty .
-  ceq convertPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = (if (S == 'GroundBool or S == 'GroundBoolList or S == 'EnabledBoolList) then { ST << SUB1, TP, SUB1 } else empty fi) | convertPropVars({ST,TP,SUB}, VS) 
-    if S := leastSort(trMod(##m##), T) .
-    
-  op isGroundBoolList : BoolList -> Bool .
-  eq isGroundBoolList(empty) = true .
-  eq isGroundBoolList(true, BL:BoolList) = isGroundBoolList(BL:BoolList) .
-  eq isGroundBoolList(false, BL:BoolList) = isGroundBoolList(BL:BoolList) .
-  eq isGroundBoolList(B:Bool, BL:BoolList) = false [owise] .
-
-  op filterPropVars : ResultTriple VariantSet ~> ResultTripleSet .
-  eq filterPropVars({ST,TP,SUB}, {T,SUB1,N,P,B} # VS)
-   = if inst?(T) then {ST << SUB1, TP, SUB .. SUB1}
-     else empty fi
-   | filterPropVars({ST,TP,SUB}, VS) .
-  eq filterPropVars(RT, emptyVariantSet) = empty .
-
-  op filterPropVarsCond : ResultTriple VariantSet ~> ResultTripleSet .
-  eq filterPropVarsCond(RT, emptyVariantSet) = empty .
-  ceq filterPropVarsCond({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = {ST << SUB1, TP, SUB .. SUB1} | filterPropVarsCond({ST,TP,SUB}, VS) if inst?(T) .
-  eq filterPropVarsCond({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = filterPropVarsCond({ST,TP,SUB}, VS) [owise] .
-  
-  op filterPropVars2 : ResultTriple VariantSet ~> ResultTripleSet .
-  ceq filterPropVars2({ST,TP,SUB}, {T,SUB1,N,P,B} # VS) = instTermList({ST,TP,SUB}, T, SUB1) | filterPropVars2({ST,TP,SUB}, VS) 
-    if RT := {ST,TP,SUB} /\ VR := {T,SUB1,N,P,B} .
-  eq filterPropVars2(RT, emptyVariantSet) = empty .
-
-  --- TODO: by not filtering, we may allow more patterns that are not reduced 
-  --- to true/false. However, it easily generates spurious counterexamples.. 
-  --- We may adopt this with abstract refinement techniques..
-  --- But with filtering, the |= equations should be total...
-
-  op inst? : Term ~> Bool .
-  eq inst?('true.GroundBool)  = true .
-  eq inst?('false.GroundBool) = true .
+  op inst? : Term -> Bool .
+  ceq inst?(T) = true if isGround(leastSort(upModule('GROUND-BOOL-LIST, false), T)) .
   eq inst?(T) = false [owise] .
-
-  op instTermList : ResultTriple Term Substitution -> ResultTripleSet .
-  eq instTermList({ST,TP,SUB}, T, SUB1) = {ST, TP, SUB} .
-  --- eq instTermList({ST,TP,SUB}, '_`,_['true.GroundBool, T], SUB1)  = {ST << SUB1,TP, SUB .. SUB1} | instTermList({ST,TP,SUB}, T, SUB1) .
-  --- eq instTermList({ST,TP,SUB}, '_`,_['false.GroundBool, T], SUB1)  = {ST << SUB1,TP, SUB .. SUB1} | instTermList({ST,TP,SUB}, T, SUB1) .
-  --- eq instTermList({ST,TP,SUB}, T, SUB1)  = empty [owise] .
+  
+  op isGround : Sort -> Bool .
+  eq isGround('GroundBoolList) = true .
+  eq isGround('GroundBool) = true .
+  eq isGround(S:Sort) = false [owise] .
 endfm
 
 mod META-SYMBOLIC-CONNECTOR is
