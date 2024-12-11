@@ -15,6 +15,18 @@ fmod RULE-NAME is
   ops unlabeled deadlock : -> RuleName .
 endfm
 
+fmod STATE-SYNTAX is
+    pr META-MODULE .
+    pr SATISFACTION .
+    pr TERMSET .
+
+    sorts BaseState CompState ExState .
+    subsorts BaseState CompState ExState < State .
+
+    op comp : BaseState -> CompState .
+    op _n_ : CompState CompState -> CompState [assoc comm] .
+endfm
+
 fmod SYMBOLIC-CHECKER is
   pr RULE-NAME .
   pr SATISFACTION .
