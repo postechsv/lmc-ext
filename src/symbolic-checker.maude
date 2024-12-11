@@ -101,10 +101,13 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
 --- propositions
   subsort Prop < Formula .
   op prop : Term -> Prop [ctor] .
+  
+--- folding relation
+  op _>=_ : State State -> Bool .
+  op _~=_ : State State -> Bool .
 
   op _~_  : MetaEdge MetaEdge -> Bool .
   eq deadlock ~ deadlock = true .
-  eq =[S1:Substitution]=> ~ =[S2:Substitution]=> = true .
 
 --- print state during model checking (debugging purpose)
   op prettyPrint : State ~> QidList .
