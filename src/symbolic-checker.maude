@@ -169,21 +169,6 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
      )] .
 endfm
 
-fmod ENABLED-PROP is
-  pr SATISFACTION .
-
-  sort EnabledBool .
-  subsort EnabledBool < Bool .
-
-  var ST : State .
-
-  op enabled? : -> Prop .  
-
-  op isEnabled : State -> EnabledBool .
-
-  eq ST |= enabled? = isEnabled(ST) [variant] .
-endfm
-
 fmod ENABLED-BOOL-LIST is
   pr ENABLED-PROP .
   pr BOOL-LIST .
