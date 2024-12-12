@@ -298,15 +298,6 @@ fmod LMC-RESULT-SET is
   op _#_ : VariantSet VariantSet -> VariantSet
     [ctor assoc comm id: emptyVariantSet prec 65 format (d d n d)] .
   eq X:Variant # X:Variant = X:Variant .
-
-  sorts MarkedResult MarkedResultSet .
-
-  op m{_,_,_} : Term Substitution DeadlockState -> MarkedResult [ctor] .
-  subsort MarkedResult < MarkedResultSet .
-
-  op empty : -> MarkedResultSet [ctor] .
-  op _|_ : MarkedResultSet MarkedResultSet -> MarkedResultSet [ctor assoc comm id: empty] .
-  eq X:MarkedResult | X:MarkedResult = X:MarkedResult .
 endfm
 
 mod META-LMC-THEORY is
