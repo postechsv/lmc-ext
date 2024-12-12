@@ -300,6 +300,36 @@ fmod LMC-RESULT-SET is
   eq X:Variant # X:Variant = X:Variant .
 endfm
 
+fmod RULE-TERM-RENAMING is
+    pr META-LEVEL .
+    pr INT .
+    pr STRING .
+    pr CONVERSION .
+    
+    op renameRuleTerms : TermList -> TermList .
+    eq renameRuleTerms(empty) = empty .
+    eq renameRuleTerms((T:Term, TL:TermList)) = renameRuleTerm(T:Term), renameRuleTerms(TL:TermList) .
+    
+    var V : Variable .
+    
+    op renameRuleTerm : Term -> Term .
+    eq renameRuleTerm(C:Constant) = C:Constant .
+    eq renameRuleTerm(F:Qid[TL:TermList]) = F:Qid[renameRuleTerms(TL:TermList)] .
+    eq renameRuleTerm(V) = 
+      if rfind(string(V), "#", length(string(V))) =/= notFound and rfind(string(V), ":", length(string(V))) =/= notFound and
+         (rat(substr(string(V),
+                    rfind(string(V), "#", length(string(V))) + 1,
+                    rfind(string(V), ":", length(string(V))) + (- 1))
+            ,10) :: Nat)
+      then qid("##" + substr(string(V),
+                            rfind(string(V), "#", length(string(V))) + 1,
+                            rfind(string(V), ":", length(string(V))) + (- 1)) + ":" 
+                   + substr(string(V),
+                            rfind(string(V), ":", length(string(V))) + 1,
+                            length(string(V)) + (- 1)))
+      else V fi .
+endfm
+
 mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
   pr META-LMC-PARAMETERS .
