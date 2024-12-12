@@ -25,6 +25,10 @@ fmod TERMSET is
     [ctor assoc comm id: emptyTermSet format (d n d d)] .
   eq X:Term | X:Term = X:Term .
   
+  op _in_ : Term TermSet -> Bool .
+  eq T:Term in (T:Term | TS:TermSet) = true .
+  eq T:Term in TS:TermSet = false [owise] .
+
   op TermSet : TermList -> TermSet .
   eq TermSet(empty)
    = emptyTermSet .
