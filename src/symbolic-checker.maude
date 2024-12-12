@@ -169,18 +169,6 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
      )] .
 endfm
 
-fmod ENABLED-BOOL-LIST is
-  pr ENABLED-PROP .
-  pr BOOL-LIST .
-  
-  sort EnabledBoolList .
-
-  subsort GroundBoolList < EnabledBoolList < BoolList .
-  subsort GroundBool < EnabledBool < EnabledBoolList .
-
-  op _,_ : EnabledBoolList EnabledBoolList -> EnabledBoolList [assoc ctor id: empty] .
-endfm
-
 ****************************************
 ***  Full Maude Narrowing Connector  ***
 ****************************************  
