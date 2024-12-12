@@ -330,6 +330,40 @@ fmod RULE-TERM-RENAMING is
       else V fi .
 endfm
 
+mod PROP-PATTERN-SET is
+  pr FM-TERMSET .
+  pr STATE-SYNTAX .
+  pr RULE-TERM-RENAMING .
+  pr MOVE-DOWN .
+
+  sort PropPattern .
+
+  op propPattern : Term -> PropPattern [ctor] .
+  op complementPattern : TermSet Term -> PropPattern [ctor] .
+
+  sort PropPatternSet .
+  subsort PropPattern < PropPatternSet .
+  op emptyPropPatternSet : -> PropPatternSet [ctor] .
+  op __ : PropPatternSet PropPatternSet -> PropPatternSet [assoc comm ctor id: emptyPropPatternSet] .
+
+  eq PPS:PropPatternSet PPS:PropPatternSet = PPS:PropPatternSet .
+
+  sort PropPatternEntry .
+  op _:-_ : Term PropPatternSet -> PropPatternEntry [ctor] .
+
+  sort PropPatternEntrySet .
+  subsort PropPatternEntry < PropPatternEntrySet .
+  op emptyPropPatternEntrySet : -> PropPatternEntrySet [ctor] .
+  op __ : PropPatternEntrySet PropPatternEntrySet -> PropPatternEntrySet [assoc comm ctor id: emptyPropPatternEntrySet] .
+
+  sort PropPatternSetSet .
+  subsort PropPatternSet < PropPatternSetSet .
+  op emptyPropPatternSetSet : -> PropPatternSetSet [ctor] .
+  op _|_ : PropPatternSetSet PropPatternSetSet -> PropPatternSetSet [assoc comm ctor id: emptyPropPatternSetSet] .
+
+  eq PPSS:PropPatternSetSet | PPSS:PropPatternSetSet = PPSS:PropPatternSetSet .
+endm
+
 mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
   pr META-LMC-PARAMETERS .
