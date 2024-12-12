@@ -334,25 +334,20 @@ mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
   pr META-LMC-PARAMETERS .
   pr BOUNDED-FOLDING-MODEL-CHECKER .
-  pr ENABLED-PROP .
-  pr FOLDING-RELATION-SYNTAX .
-  pr DEADLOCK-CONDITION .
-  pr DEADLOCK-STATE .
 
-  vars T1 T2 ST ST' : Term . 
+  vars T T1 T2 ST ST' : Term . 
   vars SUB SUB' : Substitution .  
-  var RS : RuleSet . 
+  var RS : RuleSet .  
   var CD : Condition . 
   var Q : Qid . 
   var TP : Type .  
-  var SRS : ResultTripleSet .
-  var DS : DeadlockState .
+  var SRS : StepResultSet . 
+  var RN : RuleName .
+
+  ops init mid : Term -> State [ctor] .
 
 --- functions
-  ops next variant : Term -> ResultTripleSet .
-
-  op metaDeadlock : Term -> Bool .
-  eq metaDeadlock(ST) = downTerm(getTerm(metaReduce((##m##), '_-deadlock[ST])), false) .
+  ops next variant : Term -> StepResultSet .
 
 --- meta rules
  crl [init] : < init(ST) > 
