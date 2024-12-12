@@ -234,15 +234,15 @@ fmod FOLDING-RELATION is
   vars DS DS' : DeadlockState .
 
 --- state folding
-  eq init(ST, DS) >= init(ST, DS') = true  .
-  eq mid(ST, DS) >= mid(ST', DS')
+  eq init(ST) >= init(ST, DS') = true  .
+  eq mid(ST) >= mid(ST', DS')
    = metaMatch((##m##), ST, ST', nil, 0) :: Substitution .
   eq S1:State >= S2:State = false [owise] .
 
 --- renaming folding
-  eq init(ST, DS) ~= init(ST, DS') = true .
-  eq mid(ST, DS) ~= mid(ST', DS')  
-   = mid(ST, DS) >= mid(ST', DS') and-then mid(ST', DS') >= mid(ST, DS) .
+  eq init(ST) ~= init(ST, DS') = true .
+  eq mid(ST) ~= mid(ST', DS')  
+   = mid(ST) >= mid(ST', DS') and-then mid(ST', DS') >= mid(ST) .
   eq S1:State ~= S2:State = false [owise] .
 
   eq ff = 1000 .
@@ -493,7 +493,7 @@ mod META-SYMBOLIC-CONNECTOR is
   vars DS DS' : DeadlockState .
 
 --- meta prop and state
-  ceq mid(ST, DS) |= prop(PT) 
+  ceq mid(ST) |= prop(PT) 
    = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool 
    if T := getTerm(metaReduce((##m##), '_|=_[ST, PT])) .
 
@@ -524,8 +524,8 @@ mod META-SYMBOLIC-CONNECTOR is
   eq tilde(M, '_R_[T, T'])    = tilde(M, T) R tilde(M, T') .
 
 --- pretty print (for debugging)
-  eq prettyPrint(init(ST, DS)) = eMetaPrettyPrint((##m##), ST) .
-  eq prettyPrint(mid(ST, DS))  = eMetaPrettyPrint((##m##), ST) .
+  eq prettyPrint(init(ST)) = eMetaPrettyPrint((##m##), ST) .
+  eq prettyPrint(mid(ST))  = eMetaPrettyPrint((##m##), ST) .
 
   eq prettyPrint(=[SUB]=>)
     = ---eMetaPrettyPrint((##m##), RS) '/ 
@@ -845,11 +845,11 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
 
 --- transition (including conditions)
   op transTR : Transition -> TermList .
-  eq transTR({mid(ST, DS), =[SUB]=>})  
+  eq transTR({mid(ST), =[SUB]=>})  
    = '`{_`,_`,_`}[ST,wrapTL('_;_,'none.CESubstitution,transSUB(SUB)),''Test.Qid] .
-  eq transTR({mid(ST, DS), deadlock})  
+  eq transTR({mid(ST), deadlock})  
    = '`{_`,_`,_`}[ST,'none.CESubstitution,''Test.Qid] .
-  eq transTR({init(ST, DS), ME}) = empty  .
+  eq transTR({init(ST), ME}) = empty  .
 
   eq transTR({mid(ST,CD),ME})  = transTR({mid(ST, alive),ME}) .
   eq transTR({init(ST,CD),ME}) = empty  .
