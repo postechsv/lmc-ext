@@ -425,6 +425,18 @@ mod PROP-PATTERN-OPERATION is
 
   op evalProps : Term PropPatternSet -> Term .
   eq evalProps(ST, PPS) = conjBoolTerms(evalPropsTermList(ST, PPS)) .
+
+  op upTerms : TermList -> TermList .
+  eq upTerms(empty) = empty .
+  eq upTerms((T, TL)) = upTerm(T), upTerms(TL) .
+
+  op toConstraints : TermSet -> TermList .
+  eq toConstraints(emptyTermSet) = empty .
+  eq toConstraints(T | TS) = T , toConstraints(TS) .
+
+  op getConstraintPatterns : PropPatternSet -> TermList .
+  eq getConstraintPatterns(complementPattern(TS, BT) PPS) = upTerms(toConstraints(TS)), getConstraintPatterns(PPS) .
+  eq getConstraintPatterns(PPS) = empty [owise] .
 endm
 
 mod COMPRESSED-CONSTRAINTS is
