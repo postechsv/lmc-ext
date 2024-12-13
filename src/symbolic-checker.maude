@@ -198,13 +198,6 @@ fmod META-LMC-PARAMETERS is
   vars T1 T2 : Term .
   var ATRS : AttrSet .
 
-  op enabledEq : RuleSet -> EquationSet [memo] .
-  eq enabledEq(none) = none .
-  eq enabledEq((rl T1 => T2 [ATRS] .) RLS) = (eq 'isEnabled[T1] = 'true.GroundBool [variant] .) enabledEq(RLS) .
-
-  op addEnabled : Module -> Module [memo] .
-  eq addEnabled(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm) = mod H is IL sorts SS . SSDS OPDS MAS (EQS enabledEq(RLS)) RLS endm .
-
   --- as Full Maude internally generates StratModule, we need
   --- to remove all strat declarations for narrowing.
 
