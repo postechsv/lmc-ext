@@ -46,6 +46,29 @@ fmod STATE-SYNTAX is
 
     op comp : BaseState -> CompState .
     op _n_ : CompState CompState -> CompState [assoc comm] .
+
+    sort Constraint .
+    op _\{_} : BaseState TermSet -> Constraint [ctor] .
+
+    sort ConstraintSet .
+    subsort Constraint < ConstraintSet .
+    op emptyConstraintSet : -> ConstraintSet [ctor] .
+    op __ : ConstraintSet ConstraintSet -> ConstraintSet [assoc comm ctor id: emptyConstraintSet] .
+
+    var B : Bool .
+    op _*_ : Bool Bool -> Bool [assoc comm] .
+    eq true * B = B .
+    eq false * B = B .
+
+    op {{{_;_;_}}} : BaseState Bool ConstraintSet -> ExState [ctor] .
+
+    var BS : BaseState .
+
+    op initExtend : BaseState -> ExState .
+    eq initExtend(BS) = {{{ BS ; true ; emptyConstraintSet }}} .
+
+    sort ExStatePair .
+    op pair : ExState ExState -> ExStatePair [ctor] .
 endfm
 
 fmod SYMBOLIC-CHECKER is
@@ -424,7 +447,7 @@ endm
 
 mod STATE-TERM-MANIPULATION is
   pr COMPRESSED-CONSTRAINTS .
-  
+
   var N : Nat .
 
   op collectVariantsN : Module Term Nat -> TermSet .
