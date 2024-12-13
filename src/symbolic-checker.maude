@@ -422,6 +422,52 @@ mod COMPRESSED-CONSTRAINTS is
   eq appendConstraint(ST', TL, CS) = '__[CS, '_\`{_`}[ST', '_|_[TL]]] [owise] .
 endm
 
+mod STATE-TERM-MANIPULATION is
+  pr COMPRESSED-CONSTRAINTS .
+  
+  var N : Nat .
+
+  op collectVariantsN : Module Term Nat -> TermSet .
+  ceq collectVariantsN(M, T, N) = if (VV:Variant? :: Variant) then (getTerm(VV:Variant?) | collectVariantsN(M, T, s N)) else emptyTermSet fi
+    if VV:Variant? := metaGetIrredundantVariant(M, T, empty, '%, N) .
+
+  op collectVariants : Module Term -> TermSet .
+  eq collectVariants(M, T) = collectVariantsN(M, T, 0) .
+
+  op filterExStatePairs : TermSet -> TermSet .
+  eq filterExStatePairs(emptyTermSet) = emptyTermSet .
+  eq filterExStatePairs(('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'true.Bool, CS]]) | TS) = ('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'true.Bool, CS]]) | filterExStatePairs(TS) .
+  eq filterExStatePairs(('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'false.Bool, CS]]) | TS) = ('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'false.Bool, CS]]) | filterExStatePairs(TS) .
+  eq filterExStatePairs(T | TS) = filterExStatePairs(TS) [owise] .
+
+  op rulesFromVariants : TermSet AttrSet -> RuleSet .
+  eq rulesFromVariants(emptyTermSet, ATRS) = none .
+  eq rulesFromVariants(('pair[ST, ST']) | TS, ATRS) = (rl renameRuleTerm(ST) => renameRuleTerm(ST') [ATRS] .) rulesFromVariants(TS, ATRS) .
+
+  op getRuleVariants : Module Rule -> RuleSet .
+  eq getRuleVariants(M, (rl ST => ST' [ATRS] .)) = rulesFromVariants(filterExStatePairs(collectVariants(M, ('pair[ST, ST']))), ATRS) .
+  
+  op conjConstraints : TermList -> Term .
+  eq conjConstraints(PT) = upTerm(PT) .
+  eq conjConstraints(TL) = '_|_[upTerms(TL)] .
+
+  op unconjConstraints : Term -> TermList .
+  eq unconjConstraints('_|_[empty]) = empty .
+  eq unconjConstraints('_|_[PT, TL]) = downTerm(PT), unconjConstraints('_|_[TL]) .
+  eq unconjConstraints(PT) = downTerm(PT) [owise] .
+
+  var CSS : CompressedConstraints? .
+
+  op filterLastConstraint : Module RuleSet -> RuleSet .
+  eq filterLastConstraint(M, none) = none .
+  ceq filterLastConstraint(M, (rl ST => '`{`{`{_;_;_`}`}`}[ST', BT, '__[CS, '_\`{_`}[ST', PT]]] [ATRS] .) RLS) = 
+    (if CSS == impossible then none
+      else if CSS == empty then (rl ST => '`{`{`{_;_;_`}`}`}[ST', BT, CS] [ATRS] .)
+      else (rl ST => '`{`{`{_;_;_`}`}`}[ST', BT, '__[CS, '_\`{_`}[ST', conjConstraints(CSS)]]] [ATRS] .) fi fi) filterLastConstraint(M, RLS) 
+    if CSS := compressConstraints(M, ST', unconjConstraints(PT)) .
+  eq filterLastConstraint(M, RL RLS) = RL filterLastConstraint(M, RLS) .
+endm
+
 mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
   pr META-LMC-PARAMETERS .
