@@ -392,6 +392,36 @@ mod PROP-PATTERN-OPERATION is
   eq productPatterns((P :- PPS) PPES) = insertPatterns(PPS, productPatterns(PPES)) [owise] .
 endm
 
+mod COMPRESSED-CONSTRAINTS is
+  pr META-LEVEL .
+
+  sort CompressedConstraints? .
+  subsort TermList < CompressedConstraints? .
+
+  op impossible : -> CompressedConstraints? [ctor] .
+
+  var M : Module .
+
+  --- if ST and PT is not unifiable, PT is redundant
+  --- if ST is included in PT, ST \ {PT} is impossible
+  op compressConstraintsH : Module Term TermList TermList -> CompressedConstraints? .
+  eq compressConstraintsH(M, ST, empty, RTL) = RTL .
+  eq compressConstraintsH(M, ST, (PT, TL), RTL)
+      = if metaMatch(M, PT, ST, nil, 0) :: Substitution
+        then impossible
+        else if metaUnify(M, ST =? PT, '%, 0) == noUnifier 
+        then compressConstraintsH(M, ST, TL, RTL)
+        else compressConstraintsH(M, ST, TL, (RTL, PT)) fi fi .
+  
+  op compressConstraints : Module Term TermList -> CompressedConstraints? .
+  eq compressConstraints(M, ST, TL) = compressConstraintsH(M, ST, TL, empty) .
+
+  op appendConstraint : Term TermList Term -> Term .
+  eq appendConstraint(ST', empty, CS) = CS .
+  eq appendConstraint(ST', PT, CS) = '__[CS, '_\`{_`}[ST', PT]] .
+  eq appendConstraint(ST', TL, CS) = '__[CS, '_\`{_`}[ST', '_|_[TL]]] [owise] .
+endm
+
 mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
   pr META-LMC-PARAMETERS .
