@@ -491,6 +491,41 @@ mod STATE-TERM-MANIPULATION is
   eq filterLastConstraint(M, RL RLS) = RL filterLastConstraint(M, RLS) .
 endm
 
+mod RULE-EXPANSION is
+  pr PROP-PATTERN-OPERATION .
+  pr STATE-TERM-MANIPULATION .
+
+  var RL : Rule .
+
+  op expandRuleSet : Module RuleSet PropPatternSetSet -> RuleSet .
+  eq expandRuleSet(M, none, PPSS) = none .
+  eq expandRuleSet(M, RL RLS, PPSS) = expandRule(M, RL, PPSS) expandRuleSet(M, RLS, PPSS) .
+
+  var Q : Qid .
+  var IL : ImportList .
+  var SS : SortSet .
+  var SSDS : SubsortDeclSet .
+  var OPDS : OpDeclSet .
+  var MAS : MembAxSet .
+
+  op expandRules : Module TermList -> Module [memo] .
+  ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS expandRuleSet(M, RLS, productPatterns(extractPatterns(EQS, TermSet(TL)))) endm) 
+      if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M .
+
+  op reduceFromPatternSet : Module PropPatternSet Term Term -> Bool .
+  eq reduceFromPatternSet(M, emptyPropPatternSet, EST, P) = false .
+  ceq reduceFromPatternSet(M, propPattern(P) PPS, EST, P) = if BT == 'true.Bool then true else reduceFromPatternSet(M, PPS, EST, P) fi
+      if '`{`{`{_;_;_`}`}`}[ST, BT', CS] := EST /\ BT := getTerm(metaReduce(M, '_|=_[ST, P])) .
+  ceq reduceFromPatternSet(M, complementPattern(PT, BT) PPS, EST, P) = if BT == 'true.Bool and not metaMatch(M, ST, PT, nil, 0) :: Substitution then true else reduceFromPatternSet(M, PPS, ST, P) fi 
+      if '`{`{`{_;_;_`}`}`}[ST, BT', CS] := EST .
+
+  op reduceFromPatterns : Module PropPatternEntrySet Term Term -> Bool .
+  eq reduceFromPatterns(M, (P :- PPS) PPES, ST, P) = reduceFromPatternSet(M, PPS, ST, P) .
+
+  op reduceComplementEqs : Module TermList Term Term -> Bool .
+  eq reduceComplementEqs(M, TL, ST, P) = reduceFromPatterns(M, extractPatterns(getEqs(M), TermSet(TL)), ST, P) .
+endm
+
 mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
   pr META-LMC-PARAMETERS .
