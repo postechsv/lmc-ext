@@ -855,7 +855,7 @@ mod META-SYMBOLIC-COND-CONNECTOR-BASE is
 
 --- meta prop and state
   eq mid(ST,CD) |= prop(PT) 
-   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool .
+   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.Bool .
 
 --- with condition
   op lmc-check : Term Term EqCondition Bool Bound ~> BoundedModelCheckReport .
@@ -873,15 +873,15 @@ mod META-SYMBOLIC-COND-CONNECTOR-BASE is
 --- abstraction, but it will be more correct since we do not worry about
 --- whether some variables is removed by such equations...
   op condNorm : EqCondition ~> EqCondition .
-  eq condNorm(T = 'true.GroundBool /\ CD)
-   = getTerm(metaNormalize((##m##),T)) = 'true.GroundBool /\ condNorm(CD) .
+  eq condNorm(T = 'true.Bool /\ CD)
+   = getTerm(metaNormalize((##m##),T)) = 'true.Bool /\ condNorm(CD) .
   eq condNorm(nil) = nil .
 
 --- pretty print (for debugging)
   eq prettyPrint(init(ST,CD)) 
-   = prettyPrint(init(ST, alive)) '\n '\t eMetaPrettyPrint((##m##), CD) .
+   = prettyPrint(init(ST)) '\n '\t eMetaPrettyPrint((##m##), CD) .
   eq prettyPrint(mid(ST,CD)) 
-   = prettyPrint(mid(ST, alive)) '\n '\t eMetaPrettyPrint((##m##), CD) .
+   = prettyPrint(mid(ST)) '\n '\t eMetaPrettyPrint((##m##), CD) .
 endm
 
 --- Conditions are solved for generating states by variant narrowing
