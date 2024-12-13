@@ -688,12 +688,14 @@ mod META-SYMBOLIC-CONNECTOR is
   pr META-NARROWING-INTERFACE .
   pr DECL-META-PRETTY-PRINT 
    * (op addOps to addOpsSE, op addEqs to addEqsSE, op addSorts to addSortsSE) .
+  pr RULE-EXPANSION .
 
   var M : Module .  
-  vars T T' T1 T2 ST ST' PT CT : Term . 
+  vars T T' T1 T2 ST ST' BT BT' PT CT CS CS' C C' : Term . 
+  vars CSS CSS' : TermSet .
   var RN : RuleName . 
   var RS : RuleSet . 
-  var TL : TermList .  
+  vars TL TL' : TermList .  
   var V : Variable . 
   var TP : Type . 
   vars SUB SUB' SUB'' : Substitution .  
@@ -702,7 +704,6 @@ mod META-SYMBOLIC-CONNECTOR is
   var D : Bound .
   var RT : ResultTriple .  
   var RTS : ResultTripleSet . 
-  vars DS DS' : DeadlockState .
 
 --- meta prop and state
   ceq mid(ST) |= prop(PT) 
@@ -711,10 +712,10 @@ mod META-SYMBOLIC-CONNECTOR is
 
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
-  ceq next(ST)
-   = propSetInstSet(metaNarrow2(trMod(##m##), ST), ##f##) if N:Nat := ff .
+  eq next(ST)    
+   = propSetInstSet(metaNarrow2(expandRules(trMod(##m##), ##f##), ST), ##f##) .
   eq variant(ST) 
-   = propSetInstSet({ST,leastSort((##m##),ST),none}, ##f##) .
+   = propSetInitInstSet({ST,none,unlabeled | ST}, ##f##) .
 
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
@@ -739,7 +740,7 @@ mod META-SYMBOLIC-CONNECTOR is
   eq prettyPrint(init(ST)) = eMetaPrettyPrint((##m##), ST) .
   eq prettyPrint(mid(ST))  = eMetaPrettyPrint((##m##), ST) .
 
-  eq prettyPrint(=[SUB]=>)
+  eq prettyPrint(-[SUB]/ RN -) 
     = ---eMetaPrettyPrint((##m##), RS) '/ 
       prettyPrintSub(SUB) .
 
