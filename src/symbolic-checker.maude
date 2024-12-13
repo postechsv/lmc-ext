@@ -705,11 +705,32 @@ mod META-SYMBOLIC-CONNECTOR is
   var RT : ResultTriple .  
   var RTS : ResultTripleSet . 
 
---- meta prop and state
-  ceq mid(ST) |= prop(PT) 
-   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.GroundBool 
-   if T := getTerm(metaReduce((##m##), '_|=_[ST, PT])) .
+  --- backup : getTerm(metaReduce((##m##), '_|=_[ST, PT]))
+  --- meta prop and state
+  ceq mid(ST) |= prop(PT) = B if B := reduceComplementEqs(##m##, ##f##, ST, PT) .
 
+  --- A constraint>= B if B has comparably stronger constraints than A
+  op _constraint>=_ : TermSet TermSet -> Bool .
+  eq CSS constraint>= (CSS | CSS') = true .
+  eq CSS constraint>= CSS' = false [owise] .
+
+  op constraintSet : Term -> TermSet .
+  eq constraintSet('__[TL]) = TermSet(TL) .
+  eq constraintSet('emptyConstraintSet.ConstraintSet) = emptyTermSet .
+  eq constraintSet(T) = T [owise] .
+
+--- state folding
+  eq init(ST) >= init(ST) = true .
+  eq mid('`{`{`{_;_;_`}`}`}[ST, BT, CS]) >= mid('`{`{`{_;_;_`}`}`}[ST', BT', CS'])
+   = (metaMatch((##m##), ST, ST', nil, 0) :: Substitution) and (constraintSet(CS) constraint>= constraintSet(CS')) .
+  eq S1:State >= S2:State = false [owise] .
+
+--- renameing folding
+  eq init(ST) ~= init(ST) = true .
+  eq mid(ST) ~= mid(ST')
+   = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
+  eq S1:State ~= S2:State = false [owise] .
+  
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
   eq next(ST)    
