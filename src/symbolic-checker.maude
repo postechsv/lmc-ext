@@ -413,6 +413,18 @@ mod PROP-PATTERN-OPERATION is
   eq productPatterns(emptyPropPatternEntrySet) = emptyPropPatternSet .
   eq productPatterns((P :- emptyPropPatternSet) PPES) = emptyPropPatternSet .
   eq productPatterns((P :- PPS) PPES) = insertPatterns(PPS, productPatterns(PPES)) [owise] .
+
+  op evalPropsTermList : Term PropPatternSet -> TermList .
+  eq evalPropsTermList(ST, emptyPropPatternSet) = empty .
+  eq evalPropsTermList(ST, propPattern(P) PPS) = '_|=_[ST, P], evalPropsTermList(ST, PPS) .
+  eq evalPropsTermList(ST, complementPattern(TS, BT) PPS) = BT, evalPropsTermList(ST, PPS) .
+
+  op conjBoolTerms : TermList -> Term .
+  eq conjBoolTerms(BT) = BT .
+  eq conjBoolTerms(TL) = '_*_[TL] [owise] .
+
+  op evalProps : Term PropPatternSet -> Term .
+  eq evalProps(ST, PPS) = conjBoolTerms(evalPropsTermList(ST, PPS)) .
 endm
 
 mod COMPRESSED-CONSTRAINTS is
