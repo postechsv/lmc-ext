@@ -730,7 +730,7 @@ mod META-SYMBOLIC-CONNECTOR is
   eq mid(ST) ~= mid(ST')
    = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
   eq S1:State ~= S2:State = false [owise] .
-  
+
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
   eq next(ST)    
@@ -795,32 +795,33 @@ fmod META-NARROWING-COND-INTERFACE is
   var TP : Type . 
   vars SUB SUB1 SUB2 : Substitution .  
   var N : Nat .
-  var SR : ResultTriple . 
-  var SRS : ResultTripleSet . 
+  var SR : StepResult . 
+  var SRS : StepResultSet . 
   var VS : VariantSet .
   var P : Parent . 
   var B : Bool .
+  var RN : RuleName .
 
 --- variant narrowing condition instantiations.
 
   --- StateSet EqCondition -> StateSet
-  op condSetInstSet : ResultTripleSet EqCondition ~> ResultTripleSet . 
-  eq condSetInstSet(SRS, T = 'true.GroundBool /\ CD)
+  op condSetInstSet : StepResultSet EqCondition ~> StepResultSet . 
+  eq condSetInstSet(SRS, T = 'true.Bool /\ CD)
    = condSetInstSet(condInstSet(SRS, T), CD) .
   eq condSetInstSet(SRS, nil) = SRS .
 
   --- StateSet Prop -> StateSet
-  op condInstSet : ResultTripleSet Term ~> ResultTripleSet .
- ceq condInstSet({ST,TP,SUB} | SRS, T)
-   = filterCondVars({ST,TP,SUB}, VS) | condInstSet(SRS, T) 
+  op condInstSet : StepResultSet Term ~> StepResultSet .
+ ceq condInstSet({ST,SUB,RN | T} || SRS, T)
+   = filterCondVars({ST,SUB,RN | T}, VS) || condInstSet(SRS, T) 
   if VS := metaGenVariant(trMod(##m##), T << SUB) .
   eq condInstSet(empty, T) = empty .
 
   --- only true instances (hence the conditions should be complete and FVP)
-  op filterCondVars : ResultTriple VariantSet ~> ResultTripleSet .
-  eq filterCondVars({ST,TP,SUB}, {'true.GroundBool,SUB1,N,P,B} # VS)
-   = {ST << SUB1, TP, SUB .. SUB1} 
-   | filterCondVars({ST,TP,SUB}, VS) .
+  op filterCondVars : StepResult VariantSet ~> StepResultSet .
+  eq filterCondVars({ST,SUB,RN | T}, {'true.Bool,SUB1,N,P,B} # VS)
+   = {ST << SUB1, SUB .. SUB1,RN | T} 
+   || filterCondVars({ST,SUB,RN | T}, VS) .
   eq filterCondVars(SR, VS) = empty [owise] .
 
   --- applying substitution to condition
