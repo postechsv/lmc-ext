@@ -529,8 +529,8 @@ fmod GROUND-BOOL-LIST is
   op false : -> GroundBool [ctor special (id-hook SystemFalse)] .
 
   op empty : -> GroundBoolList [ctor] .
-  op _,_ : GroundBoolList GroundBoolList ->  GroundBoolList [assoc ctor id: empty ditto] .
-  op _,_ : BoolList BoolList -> BoolList [assoc ctor id: empty ditto] .
+  op _,_ : GroundBoolList GroundBoolList ->  GroundBoolList [assoc ctor id: empty] .
+  op _,_ : BoolList BoolList -> BoolList [assoc ctor id: empty] .
 endfm
 
 fmod META-NARROWING-INTERFACE is
