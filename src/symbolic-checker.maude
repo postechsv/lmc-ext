@@ -325,7 +325,31 @@ fmod RULE-TERM-RENAMING is
                    + substr(string(V),
                             rfind(string(V), ":", length(string(V))) + 1,
                             length(string(V)) + (- 1)))
-      else V fi .
+      else 
+      if rfind(string(V), "%", length(string(V))) =/= notFound and rfind(string(V), ":", length(string(V))) =/= notFound and
+         (rat(substr(string(V),
+                    rfind(string(V), "%", length(string(V))) + 1,
+                    rfind(string(V), ":", length(string(V))) + (- 1))
+            ,10) :: Nat)
+      then qid("%%" + substr(string(V),
+                            rfind(string(V), "%", length(string(V))) + 1,
+                            rfind(string(V), ":", length(string(V))) + (- 1)) + ":" 
+                   + substr(string(V),
+                            rfind(string(V), ":", length(string(V))) + 1,
+                            length(string(V)) + (- 1)))
+      else
+      if rfind(string(V), "@", length(string(V))) =/= notFound and rfind(string(V), ":", length(string(V))) =/= notFound and
+         (rat(substr(string(V),
+                    rfind(string(V), "@", length(string(V))) + 1,
+                    rfind(string(V), ":", length(string(V))) + (- 1))
+            ,10) :: Nat)
+      then qid("@@" + substr(string(V),
+                            rfind(string(V), "@", length(string(V))) + 1,
+                            rfind(string(V), ":", length(string(V))) + (- 1)) + ":" 
+                   + substr(string(V),
+                            rfind(string(V), ":", length(string(V))) + 1,
+                            length(string(V)) + (- 1)))
+      else V fi fi fi .
 endfm
 
 mod PROP-PATTERN-SET is
