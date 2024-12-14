@@ -938,28 +938,28 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
   var N : Nat . 
   var B : Bool . 
   var RS : RuleSet .
-  var SR : ResultTriple .  
-  var SRS : ResultTripleSet . 
+  var SR : StepResult .  
+  var SRS : StepResultSet . 
   vars CD CD' : EqCondition .  
   var VS : VariantSet .
   var P : Parent .
-
+  var RN : RuleName .
 
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
-    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := variant(ST) /\ condOK(CD << SUB') .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := variant(ST) /\ condOK(CD << SUB') .
 
  crl [mid-cond]  : 
        < mid(ST,CD) >
-    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := next(ST) /\ condOK(CD << SUB') .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := next(ST) /\ condOK(CD << SUB') .
 
 --- Another method to check a condition.
   op condOK : EqCondition ~> Bool .
-  eq condOK(T1 = 'true.GroundBool /\ CD)
-   = if getTerm(metaReduce((##m##), T1)) == 'false.GroundBool then false else true fi 
+  eq condOK(T1 = 'true.Bool /\ CD)
+   = if getTerm(metaReduce((##m##), T1)) == 'false.Bool then false else true fi 
      and-then condOK(CD) .
   eq condOK(nil) = true .
 
@@ -986,17 +986,16 @@ mod META-SYMBOLIC-COND-CONNECTOR2 is
 
   op implyOKsub : VariantSet ~> Bool .
  ceq implyOKsub({T,SUB,N,P,B} # VS)
-   = T' =/= 'true.GroundBool and-then implyOKsub(VS)
+   = T' =/= 'true.Bool and-then implyOKsub(VS)
   if T' := getTerm(metaReduce((##m##),T)) .
   eq implyOKsub(emptyVariantSet) = true .
 
   op condList : EqCondition Bool ~> TermList .
-  eq condList(T = 'true.GroundBool /\ CD, B) 
+  eq condList(T = 'true.Bool /\ CD, B) 
    = if B then T else 'not_[T] fi, condList(CD, B) .
   eq condList(nil, B) 
-   = if B then 'true.GroundBool else 'false.GroundBool fi .
+   = if B then 'true.Bool else 'false.Bool fi .
 endm
-
 
 *****************************************
 ***       Extending Full Maude        ***
