@@ -672,14 +672,17 @@ fmod META-NARROWING-INTERFACE is
 --- variant narrowing prop instantiations.
 --- compute the PI-instantated states of the given state.
 
-  op conjTermListInside : Term TermList -> TermList .
-  eq conjTermListInside(ST, empty) = empty .
-  eq conjTermListInside(ST, (PT,TL)) = '_|=_[ST,PT], conjTermListInside(ST, TL) .
+  op conjProps : Term TermSet -> TermList .
+  eq conjProps(ST, emptyTermSet) = empty .
+  eq conjProps(ST, PT | TS) = '_|=_[ST, PT], conjProps(ST, TS) .
 
-  op conjTermList : Term TermList -> Term .
-  eq conjTermList(ST, PT) = '_|=_[ST, PT] .
-  eq conjTermList(ST, TL) = '_`,_[conjTermListInside(ST, TL)] .
+  op conjSetAsBoolList : Term TermSet -> Term .
+  eq conjSetAsBoolList('`{`{`{_;_;_`}`}`}[ST, BT, CS], PT) = '_|=_[ST, PT] .
+  eq conjSetAsBoolList('`{`{`{_;_;_`}`}`}[ST, BT, CS], TS) = '_`,_[conjProps(ST, TS)] .
 
+  op conjAsBoolList : Term TermList -> Term .
+  eq conjAsBoolList(ST, TL) = conjSetAsBoolList(ST, TermSet(TL)) .
+  
   --- StateSet PropSet -> StateSet
   op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
   eq propSetInstSet(empty, TL) = empty .
