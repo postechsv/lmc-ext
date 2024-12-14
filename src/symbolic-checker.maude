@@ -888,39 +888,40 @@ endm
 mod META-SYMBOLIC-COND-CONNECTOR is
   pr META-SYMBOLIC-COND-CONNECTOR-BASE .
 
-  var M : Module .
+  var M : Module .  
   vars T T' T1 T2 ST ST' PT CT : Term . 
   var TL : TermList .  
   var V : Variable .
   var TP : Type . 
   vars SUB SUB' SUB'' : Substitution .  
   var N : Nat .
-  var SR : ResultTriple .  
-  var SRS : ResultTripleSet . 
+  var SR : StepResult .  
+  var SRS : StepResultSet . 
   vars CD CD' : EqCondition . 
   var RS : RuleSet .
+  var RN : RuleName .
 
 --- meta rules
  crl [init-cond] : 
        < init(ST,CD) >
-    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := variant(ST,CD) .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := variant(ST,CD) .
 
  crl [mid-cond] : 
        < mid(ST,CD) >
-    => =[SUB']=> |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
-  if {ST',TP,SUB'} | SRS := next(ST,CD) .
+    => -[SUB']/ RN - |=> mid(getTerm(metaReduce((##m##),ST')),condNorm(CD << SUB'))
+  if {ST',SUB',RN | T} || SRS := next(ST,CD) .
 
-  ops next variant : Term EqCondition -> ResultTripleSet .
+  ops next variant : Term EqCondition -> StepResultSet .
   eq next(ST,CD)    
-   = propSetInstSet(condSetInstSet(metaNarrow2(trMod(##m##), ST),CD), ##f##) .
+   = propSetInstSet(condSetInstSet(metaNarrow2(expandRules(trMod(##m##), ##f##), ST),CD), ##f##) .
   eq variant(ST,CD) 
-   = propSetInstSet(condSetInstSet({ST,leastSort((##m##),ST),none},CD), 
+   = propSetInitInstSet(condSetInstSet({ST,none,unlabeled | ST},CD), 
                     ##f##) .
 
 --- condition should be already considered by variant narrowing
   eq mid(ST,CD) >= mid(ST',CD')
-   = mid(ST, alive) >= mid(ST', alive) .
+   = mid(ST) >= mid(ST') .
   eq mid(ST,CD) ~= mid(ST',CD')
    = mid(ST,CD) >= mid(ST',CD') and-then mid(ST',CD') >= mid(ST,CD) .
 endm
