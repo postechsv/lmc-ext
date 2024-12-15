@@ -1288,18 +1288,18 @@ mod LMC-COMMAND-PROCESSING is
      (if CD == nil then nil
       else '\n '\b 'under 'the 'condition ': '\o '\n '\s '\s
       eMetaPrettyPrint(M,CD) fi) '\n .
-
+      
   op printLMCOutput : Module Term -> QidList .
   eq printLMCOutput(M, 'result:_real:_bound:_complete:_[T1,T2,T3,T4])
    = '\b 'result: '\o '\n '\s '\s
-     (if T1 == 'true.GroundBool then 
-        if T4 == 'true.GroundBool then
+     (if T1 == 'true.Bool then 
+        if T4 == 'true.Bool then
           'true '\s '`( 'complete 'with 'depth eMetaPrettyPrint(M,T3) '`)
         else 
           'no 'counterexample 'found 'within 'bound eMetaPrettyPrint(M,T3)
         fi
       else 
-        if T2 == 'true.GroundBool then nil else 'possibly 'spurious fi
+        if T2 == 'true.Bool then nil else 'possibly 'spurious fi
         'counterexample 'found 'at 'depth eMetaPrettyPrint(M,T3) '\n '\s '\s
         printLMCCE(M, T1)
       fi) '\n .
