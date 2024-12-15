@@ -218,9 +218,6 @@ fmod META-LMC-PARAMETERS is
   var STDS : StratDeclSet .
   var STDFS : StratDefSet .
 
-  vars T1 T2 : Term .
-  var ATRS : AttrSet .
-
   --- as Full Maude internally generates StratModule, we need
   --- to remove all strat declarations for narrowing.
 
