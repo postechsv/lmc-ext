@@ -125,6 +125,11 @@ fmod SYMBOLIC-CHECKER is
   op nil : -> TransitionList [ctor] .
   op __ : TransitionList TransitionList -> TransitionList [ctor assoc id: nil format (d ni d)] .
   op prefix_loop_ : TransitionList TransitionList -> ModelCheckResult [ctor format(n n++i n ni i--)] .
+  
+  *** State set
+  sorts StateSet .
+  subsort State < StateSet .
+  op _\/_ : StateSet StateSet -> StateSet [ctor assoc comm prec 121] .
 endfm
 
 **************************************************
