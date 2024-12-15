@@ -239,8 +239,8 @@ fmod META-LMC-PARAMETERS is
   --- to remove all strat declarations for narrowing.
   op trMod : Module -> SModule [memo] . 
   eq trMod(smod H is IL sorts SS . SSDS OPDS MAS EQS RLS STDS STDFS endsm)
-      = extendMod(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm) .
-  eq trMod(M:Module) = extendMod(M:Module) [owise] .
+    = mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm .
+  eq trMod(M:Module) = M:Module [owise] .
 endfm
 
 fmod LMC-RESULT-SET is
