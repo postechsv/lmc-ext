@@ -665,20 +665,19 @@ fmod META-NARROWING-INTERFACE is
   eq metaNarrow2(M,T) = metaNarrowCollect(M, T, 0) |> T .
 
   op metaNarrowCollect : Module Term Nat -> StepResultSet .
-  ceq metaNarrowCollect(M, T, N) = if SRS == empty then empty else SRS || metaNarrowCollect(M, T, s N) fi
-    if SRS := toStepResult(T, metaNarrowingApply(M, T, empty, '@, N)) .
+  ceq metaNarrowCollect(M, T, N) 
+    = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} 
+      || metaNarrowCollect(M, T, s N)
+   if NAR := metaNarrowingApply(M, T, empty, '@, filter, N) .
+  eq metaNarrowCollect(M, T, N) = empty .
 
-  op metaGenVariant : Module Term -> VariantSet .
-  eq metaGenVariant(M, T) = metaGenVariant(M, T, highestVar(T)) .
+  op getVariantTerms : VariantPairSet Term -> StepResultSet .
+  eq getVariantTerms(empty, ST) = empty .
+  eq getVariantTerms({T,SUB} # VS, ST) = { T, SUB, unlabeled | ST } || getVariantTerms(VS, ST) .
 
-  op metaGenVariant : Module Term Nat -> VariantSet .
-  eq metaGenVariant(M, T, NextVar) = metaGenVariant2(M, T, NextVar, 0) .
-   
-  op metaGenVariant2 : Module Term Nat Nat -> VariantSet .
- ceq metaGenVariant2(M, T, NextVar, N)
-   = VR # metaGenVariant2(M,T,NextVar,s N) 
-   if VR := metaGetVariant(M,T,empty,NextVar,N) .
-  eq metaGenVariant2(M, T, NextVar, N) = emptyVariantSet [owise] .
+  op genVariants : Module StepResultSet -> StepResultSet .
+  eq genVariants(M, empty) = empty .
+  eq genVariants(M, {T,SUB,RN | ST} || SRS) = getVariantTerms(getVariantSet(M, T, '@), T) || genVariants(M, SRS) .
 
 --- variant narrowing prop instantiations.
 --- compute the PI-instantated states of the given state.
