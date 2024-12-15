@@ -80,9 +80,19 @@ fmod STATE-SYNTAX is
     eq true * B = B .
     eq false * B = B .
 
-    op {{{_;_;_}}} : BaseState Bool ConstraintSet -> ExState [ctor] .
+    var PM : PropMap .
+    vars P P' : Prop .
 
-    var BS : BaseState .
+    op <<<_|_>>> : State Bool -> InitState [ctor] .
+    op {{{_|_|_}}} : State PropMap Bool -> ExState [ctor] .   
+
+    var ST : State .
+    var CT : Bool .
+
+    eq <<< ST | CT >>> |= P = ST |= P .
+
+    eq {{{ ST | (P *> B) PM | CT }}} |= P = B .
+    eq {{{ ST | PM | CT }}} |= P = false [owise] .
 
     op initExtend : BaseState -> ExState .
     eq initExtend(BS) = {{{ BS ; true ; emptyConstraintSet }}} .
