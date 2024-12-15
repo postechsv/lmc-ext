@@ -52,12 +52,17 @@ fmod COMPLETENESS is
 endfm
 
 fmod STATE-SYNTAX is
-    pr META-MODULE .
-    pr SATISFACTION .
-    pr TERMSET .
+    pr COMPLETENESS .
 
     sorts BaseState CompState ExState .
     subsorts BaseState CompState ExState < State .
+
+    sorts PropMapping PropMap .
+    subsort PropMapping < PropMap .
+
+    op _*>_ : Prop Bool -> PropMapping [ctor] .
+    op emptyPropMap : -> PropMap [ctor] .
+    op __ : PropMap PropMap -> PropMap [assoc ctor comm id: emptyPropMap] .
 
     op comp : BaseState -> CompState .
     op _n_ : CompState CompState -> CompState [assoc comm] .
