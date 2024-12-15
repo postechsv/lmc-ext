@@ -298,19 +298,10 @@ fmod LMC-RESULT-SET is
   var SRS : StepResultSet .
   var RN : RuleName .
 
-  op toStepResult : Term NarrowingApplyResult? -> StepResult .
-  eq toStepResult(T, failure) = empty .
-  eq toStepResult(T, failureIncomplete) = empty .
-  eq toStepResult(T, NAR) = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} .
-
   op _|>_ : StepResult TermList -> StepResult .
   eq (empty).StepResult |> TL = (empty).StepResult .
   eq ({ST,S,RN | T} || SRS) |> TL = {ST,(S |> TL),RN | T} || (SRS |> TL) .
   eq (failure || SRS ) |> TL = failure || (SRS |> TL) .
-
-  op getRuleSet : TraceNarrow -> RuleSet .
-  eq getRuleSet({T,S,TP,R} Tr) = R getRuleSet(Tr) .
-  eq getRuleSet(nil) = none .
 
   sort VariantSet .
   subsort Variant < VariantSet .
