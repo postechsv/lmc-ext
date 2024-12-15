@@ -37,6 +37,20 @@ fmod TERMSET is
    = T:Term | TermSet(TL:TermList) .
 endfm
 
+fmod COMPLETENESS is 
+    pr META-LEVEL .    
+    pr SATISFACTION .
+
+    sorts Completeness CompletenessSet .
+    subsort Completeness < CompletenessSet .
+
+    op incomplete : Bool -> Completeness [ctor] . --- Denotes true/false-COMPLETENESS of its corresponding proposition
+    op complete : Bool -> Completeness [ctor] .
+    op undefined : -> CompletenessSet [ctor] .
+
+    op _,_ : CompletenessSet CompletenessSet -> CompletenessSet [assoc comm ctor id: undefined] .
+endfm
+
 fmod STATE-SYNTAX is
     pr META-MODULE .
     pr SATISFACTION .
