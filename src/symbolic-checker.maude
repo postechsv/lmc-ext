@@ -707,7 +707,7 @@ mod META-SYMBOLIC-CONNECTOR is
   pr META-NARROWING-INTERFACE .
   pr DECL-META-PRETTY-PRINT 
    * (op addOps to addOpsSE, op addEqs to addEqsSE, op addSorts to addSortsSE) .
-  pr RULE-EXPANSION .
+  pr RULE-PATTERN-EXPANSION .
 
   var M : Module .  
   vars T T' T1 T2 ST ST' BT BT' PT CT CS CS' C C' : Term . 
