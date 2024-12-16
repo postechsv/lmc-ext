@@ -373,6 +373,21 @@ fmod RULE-TERM-RENAMING is
       else V fi fi fi .
 endfm
 
+fmod COMPLETENESS-MAP is
+  pr SATISFACTION .
+  pr COMPLETENESS .
+
+  sorts CompletenessMapData CompletenessMap CompletenessKey .
+  op %prop : Qid -> CompletenessKey [ctor] .
+  op %operator : Qid -> CompletenessKey [ctor] .
+  op _=>_ : CompletenessKey CompletenessSet -> CompletenessMapData [ctor prec 45] . 
+
+  op nil : -> CompletenessMapData [ctor] .
+  op _;_ : CompletenessMapData CompletenessMapData -> CompletenessMapData [assoc comm ctor prec 50 id: nil] .
+  op empty : -> CompletenessMap [ctor] .
+  op {_} : CompletenessMapData -> CompletenessMap [ctor] .
+endm
+
 mod RULE-PATTERN-EXPANSION is
     pr FM-TERMSET .
     pr STATE-SYNTAX .
