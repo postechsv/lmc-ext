@@ -681,9 +681,9 @@ fmod META-NARROWING-INTERFACE is
 
 --- variant narrowing prop instantiations.
 --- compute the PI-instantated states of the given state.
-  op conjProps : Term TermSet -> TermList .
-  eq conjProps(ST, emptyTermSet) = empty .
-  eq conjProps(ST, PT | TS) = '_|=_[ST, PT], conjProps(ST, TS) .
+  op conjAsBoolList : Term TermList -> TermList .
+  eq conjAsBoolList(ST, (T,TL)) = '_|=_[ST, T], conjAsBoolList(ST, TL) .
+  eq conjAsBoolList(ST, empty) = 'nil.GrBoolList .
 
   op conjSetAsBoolList : Term TermSet -> Term .
   eq conjSetAsBoolList('`{`{`{_;_;_`}`}`}[ST, BT, CS], PT) = '_|=_[ST, PT] .
