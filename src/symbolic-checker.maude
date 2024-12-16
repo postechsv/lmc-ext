@@ -33,8 +33,8 @@ endfm
 fmod STATE-SYNTAX is
     pr COMPLETENESS .
 
-    sorts BaseState CompState ExState .
-    subsorts BaseState CompState ExState < State .
+    sorts InitState ExState .
+    subsorts InitState ExState < State .
 
     sorts PropMapping PropMap .
     subsort PropMapping < PropMap .
@@ -43,11 +43,11 @@ fmod STATE-SYNTAX is
     op emptyPropMap : -> PropMap [ctor] .
     op __ : PropMap PropMap -> PropMap [assoc ctor comm id: emptyPropMap] .
 
-    op comp : BaseState -> CompState .
+    op comp : InitState -> CompState .
     op _n_ : CompState CompState -> CompState [assoc comm] .
 
     sort Constraint .
-    op _\{_} : BaseState TermSet -> Constraint [ctor] .
+    op _\{_} : InitState TermSet -> Constraint [ctor] .
 
     sort ConstraintSet .
     subsort Constraint < ConstraintSet .
@@ -82,7 +82,7 @@ fmod STATE-SYNTAX is
     eq {{{ ST | (P *> B) PM | CT }}} |= P = B .
     eq {{{ ST | PM | CT }}} |= P = false [owise] .
 
-    op initExtend : BaseState -> ExState .
+    op initExtend : InitState -> ExState .
     eq initExtend(BS) = {{{ BS ; true ; emptyConstraintSet }}} .
 
     sort ExStatePair .
