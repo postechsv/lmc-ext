@@ -316,52 +316,51 @@ fmod RULE-TERM-RENAMING is
     pr INT .
     pr STRING .
     pr CONVERSION .
-    
+
+    sort VarIndices .
+    op {_,_,_} : Nat Nat Nat -> VarIndices [ctor] .
+    op fail : -> VarIndices [ctor] .
+
+    vars P C L : Nat .
+    vars S Prf : String .
+
+    op findVarIndices : String String -> VarIndices .
+    ceq findVarIndices(S, Prf) = {P,C,L} if P := rfind(S, Prf, length(S)) /\ C := rfind(S, ":", length(S)) /\ L := length(S) /\ P =/= notFound /\ C =/= notFound .
+    eq findVarIndices(S, Prf) = fail [owise] .
+
     op renameRuleTerms : TermList -> TermList .
     eq renameRuleTerms(empty) = empty .
     eq renameRuleTerms((T:Term, TL:TermList)) = renameRuleTerm(T:Term), renameRuleTerms(TL:TermList) .
-    
+
     var V : Variable .
-    
+
     op renameRuleTerm : Term -> Term .
     eq renameRuleTerm(C:Constant) = C:Constant .
     eq renameRuleTerm(F:Qid[TL:TermList]) = F:Qid[renameRuleTerms(TL:TermList)] .
-    eq renameRuleTerm(V) = 
-      if rfind(string(V), "#", length(string(V))) =/= notFound and rfind(string(V), ":", length(string(V))) =/= notFound and
-         (rat(substr(string(V),
-                    rfind(string(V), "#", length(string(V))) + 1,
-                    rfind(string(V), ":", length(string(V))) + (- 1))
-            ,10) :: Nat)
-      then qid("##" + substr(string(V),
-                            rfind(string(V), "#", length(string(V))) + 1,
-                            rfind(string(V), ":", length(string(V))) + (- 1)) + ":" 
-                   + substr(string(V),
-                            rfind(string(V), ":", length(string(V))) + 1,
-                            length(string(V)) + (- 1)))
-      else 
-      if rfind(string(V), "%", length(string(V))) =/= notFound and rfind(string(V), ":", length(string(V))) =/= notFound and
-         (rat(substr(string(V),
-                    rfind(string(V), "%", length(string(V))) + 1,
-                    rfind(string(V), ":", length(string(V))) + (- 1))
-            ,10) :: Nat)
-      then qid("%%" + substr(string(V),
-                            rfind(string(V), "%", length(string(V))) + 1,
-                            rfind(string(V), ":", length(string(V))) + (- 1)) + ":" 
-                   + substr(string(V),
-                            rfind(string(V), ":", length(string(V))) + 1,
-                            length(string(V)) + (- 1)))
+    eq renameRuleTerm(V) =
+      if findVarIndices(string(V), "#") =/= fail
+      then
+         let {P,C,L} = findVarIndices(string(V), "#") in
+         if (rat(substr(string(V), P + 1, C + (- 1)), 10) :: Nat)
+         then qid("##" + substr(string(V), P + 1, C + (- 1)) + ":" + substr(string(V), C + 1, L + (- 1)))
+         else V
+         fi
       else
-      if rfind(string(V), "@", length(string(V))) =/= notFound and rfind(string(V), ":", length(string(V))) =/= notFound and
-         (rat(substr(string(V),
-                    rfind(string(V), "@", length(string(V))) + 1,
-                    rfind(string(V), ":", length(string(V))) + (- 1))
-            ,10) :: Nat)
-      then qid("@@" + substr(string(V),
-                            rfind(string(V), "@", length(string(V))) + 1,
-                            rfind(string(V), ":", length(string(V))) + (- 1)) + ":" 
-                   + substr(string(V),
-                            rfind(string(V), ":", length(string(V))) + 1,
-                            length(string(V)) + (- 1)))
+      if findVarIndices(string(V), "%") =/= fail
+      then
+         let {P,C,L} = findVarIndices(string(V), "%") in
+         if (rat(substr(string(V), P + 1, C + (- 1)), 10) :: Nat)
+         then qid("%%" + substr(string(V), P + 1, C + (- 1)) + ":" + substr(string(V), C + 1, L + (- 1)))
+         else V
+         fi
+      else
+      if findVarIndices(string(V), "@") =/= fail
+      then
+         let {P,C,L} = findVarIndices(string(V), "@") in
+         if (rat(substr(string(V), P + 1, C + (- 1)), 10) :: Nat)
+         then qid("@@" + substr(string(V), P + 1, C + (- 1)) + ":" + substr(string(V), C + 1, L + (- 1)))
+         else V
+         fi
       else V fi fi fi .
 endfm
 
