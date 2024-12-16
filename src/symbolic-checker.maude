@@ -386,6 +386,27 @@ fmod COMPLETENESS-MAP is
   op _;_ : CompletenessMapData CompletenessMapData -> CompletenessMapData [assoc comm ctor prec 50 id: nil] .
   op empty : -> CompletenessMap [ctor] .
   op {_} : CompletenessMapData -> CompletenessMap [ctor] .
+
+  var B : Bool .
+  var C : CompletenessSet .
+  var CK : CompletenessKey .
+  vars CS CS' : CompletenessSet .
+  var CM : CompletenessMapData .
+
+  op fillCompleteness : CompletenessSet -> CompletenessSet .
+  eq fillCompleteness(complete(B)) = complete(B), incomplete(not B) .
+  eq fillCompleteness(incomplete(B)) = complete(not B), incomplete(B) .
+  eq fillCompleteness(CS) = CS [owise] .
+
+  op insert : CompletenessKey CompletenessSet CompletenessMap -> CompletenessMap .
+  eq insert(CK, CS, empty) = { CK => CS } .
+  eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
+  eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
+
+  op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
+  eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
+  eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
+  eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
 endm
 
 mod RULE-PATTERN-EXPANSION is
