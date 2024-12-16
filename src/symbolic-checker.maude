@@ -83,6 +83,15 @@ fmod STATE-SYNTAX is
     var PM : PropMap .
     vars P P' : Prop .
 
+    --- Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable)
+    op isComplete : PropMap -> Bool .
+    eq isComplete(emptyPropMap) = true .
+    eq isComplete(P *> true) = true .
+    eq isComplete(P *> false) = true .
+    eq isComplete((P *> true) (P' *> B) PM) = isComplete((P' *> B) PM) .
+    eq isComplete((P *> false) (P' *> B) PM) = isComplete((P' *> B) PM) .
+    eq isComplete(PM) = false [owise] .
+
     op <<<_|_>>> : State Bool -> InitState [ctor] .
     op {{{_|_|_}}} : State PropMap Bool -> ExState [ctor] .   
 
