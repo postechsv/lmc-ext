@@ -28,6 +28,7 @@ fmod COMPLETENESS is
     op undefined : -> CompletenessSet [ctor] .
 
     op _,_ : CompletenessSet CompletenessSet -> CompletenessSet [assoc comm ctor id: undefined] .
+    eq C:Completeness, C:Completeness = C:Completeness .
 endfm
 
 fmod STATE-SYNTAX is
