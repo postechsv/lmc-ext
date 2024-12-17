@@ -527,219 +527,99 @@ fmod VARIANT-GENERATION is
   eq getVariantSet(M, T, Q) = getVariantSet(M, T, 0, Q) .
 endfm
 
-mod RULE-PATTERN-EXPANSION is
-    pr FM-TERMSET .
-    pr STATE-SYNTAX .
+fmod RULE-EXPANSION is
     pr RULE-TERM-RENAMING .
-    pr MOVE-DOWN .
-
-    sort PropPattern .
-
-    op propPattern : Term -> PropPattern [ctor] .
-    op complementPattern : TermSet Term -> PropPattern [ctor] .
-
-    sort PropPatternSet .
-    subsort PropPattern < PropPatternSet .
-    op emptyPropPatternSet : -> PropPatternSet [ctor] .
-    op __ : PropPatternSet PropPatternSet -> PropPatternSet [assoc comm ctor id: emptyPropPatternSet] .
-
-    eq PPS:PropPatternSet PPS:PropPatternSet = PPS:PropPatternSet .
-
-    sort PropPatternEntry .
-    op _:-_ : Term PropPatternSet -> PropPatternEntry [ctor] .
-
-    sort PropPatternEntrySet .
-    subsort PropPatternEntry < PropPatternEntrySet .
-    op emptyPropPatternEntrySet : -> PropPatternEntrySet [ctor] .
-    op __ : PropPatternEntrySet PropPatternEntrySet -> PropPatternEntrySet [assoc comm ctor id: emptyPropPatternEntrySet] .
-
-    sort PropPatternSetSet .
-    subsort PropPatternSet < PropPatternSetSet .
-    op emptyPropPatternSetSet : -> PropPatternSetSet [ctor] .
-    op _|_ : PropPatternSetSet PropPatternSetSet -> PropPatternSetSet [assoc comm ctor id: emptyPropPatternSetSet] .
-
-    eq PPSS:PropPatternSetSet | PPSS:PropPatternSetSet = PPSS:PropPatternSetSet .
-
-    vars P T ST ST' EST PT BT BT' CS CS' : Term .
-    vars TS PS : TermSet .
-    var EQS : EquationSet .
-    var RLS : RuleSet .
-    var ATRS : AttrSet .
-
-    var PP : PropPattern .
-    var PPS : PropPatternSet .
-    var PPES : PropPatternEntrySet .
-    var PPSS : PropPatternSetSet .
-
-    vars TL RTL : TermList .
-
-    op extractComplementPattern : Term -> TermSet .
-    eq extractComplementPattern('comp[ST]) = ST .
-    eq extractComplementPattern('_n_[TL]) = extractComplementPatterns(TL) .
-    eq extractComplementPattern(T) = emptyTermSet [owise] .
-
-    op extractComplementPatterns : TermList -> TermSet .
-    eq extractComplementPatterns(empty) = emptyTermSet .
-    eq extractComplementPatterns((T, TL)) = extractComplementPattern(T) | extractComplementPatterns(TL) .
-
-    op extractPropPattern : Equation -> PropPattern .
-    eq extractPropPattern((eq '_|=_['comp[ST], P] = BT [ATRS] .)) = complementPattern(ST, BT) .
-    eq extractPropPattern((eq '_|=_['_n_[TL], P] = BT [ATRS] .)) = complementPattern(extractComplementPatterns(TL), BT) .
-    eq extractPropPattern((eq '_|=_[ST, P] = BT [ATRS] .)) = propPattern(P) [owise] .
-
-    op extractPropPatterns : EquationSet Term -> PropPatternSet .
-    eq extractPropPatterns((eq '_|=_[ST, P] = BT [ATRS] .) EQS, P) = extractPropPattern((eq '_|=_[ST, P] = BT [ATRS] .)) extractPropPatterns(EQS, P) .
-    eq extractPropPatterns(EQS, P) = emptyPropPatternSet [owise] .
-
-    op extractPatterns : EquationSet TermSet -> PropPatternEntrySet [memo] .
-    eq extractPatterns(EQS, emptyTermSet) = emptyPropPatternEntrySet .
-    eq extractPatterns(EQS, P | PS) = (P :- extractPropPatterns(EQS, P)) extractPatterns(EQS, PS) .
-
-    op insertPattern : PropPattern PropPatternSetSet -> PropPatternSetSet .
-    eq insertPattern(PP, emptyPropPatternSetSet) = emptyPropPatternSetSet .
-    eq insertPattern(PP, PPS | PPSS) = (PP PPS) | insertPattern(PP, PPSS) .
-
-    op insertPatterns : PropPatternSet PropPatternSetSet -> PropPatternSetSet .
-    eq insertPatterns(emptyPropPatternSet, PPSS) = PPSS .
-    eq insertPatterns(PP, PPSS) = insertPattern(PP, PPSS) .
-    eq insertPatterns(PP PPS, PPSS) = insertPattern(PP, PPSS) | insertPatterns(PPS, PPSS) .
-
-    op productPatterns : PropPatternEntrySet -> PropPatternSetSet .
-    eq productPatterns(emptyPropPatternEntrySet) = emptyPropPatternSet .
-    eq productPatterns((P :- emptyPropPatternSet) PPES) = emptyPropPatternSet .
-    eq productPatterns((P :- PPS) PPES) = insertPatterns(PPS, productPatterns(PPES)) [owise] .
-
-    op evalPropsTermList : Term PropPatternSet -> TermList .
-    eq evalPropsTermList(ST, emptyPropPatternSet) = empty .
-    eq evalPropsTermList(ST, propPattern(P) PPS) = '_|=_[ST, P], evalPropsTermList(ST, PPS) .
-    eq evalPropsTermList(ST, complementPattern(TS, BT) PPS) = BT, evalPropsTermList(ST, PPS) .
-
-    op conjBoolTerms : TermList -> Term .
-    eq conjBoolTerms(BT) = BT .
-    eq conjBoolTerms(TL) = '_*_[TL] [owise] .
-
-    op evalProps : Term PropPatternSet -> Term .
-    eq evalProps(ST, PPS) = conjBoolTerms(evalPropsTermList(ST, PPS)) .
-
-    op upTerms : TermList -> TermList .
-    eq upTerms(empty) = empty .
-    eq upTerms((T, TL)) = upTerm(T), upTerms(TL) .
-
-    op toConstraints : TermSet -> TermList .
-    eq toConstraints(emptyTermSet) = empty .
-    eq toConstraints(T | TS) = T , toConstraints(TS) .
-
-    op getConstraintPatterns : PropPatternSet -> TermList .
-    eq getConstraintPatterns(complementPattern(TS, BT) PPS) = upTerms(toConstraints(TS)), getConstraintPatterns(PPS) .
-    eq getConstraintPatterns(PPS) = empty [owise] .
-
-    sort CompressedConstraints? .
-    subsort TermList < CompressedConstraints? .
-
-    op impossible : -> CompressedConstraints? [ctor] .
-
-    var M : Module .
-
-    --- if ST and PT is not unifiable, PT is redundant
-    --- if ST is included in PT, ST \ {PT} is impossible
-    op compressConstraintsH : Module Term TermList TermList -> CompressedConstraints? .
-    eq compressConstraintsH(M, ST, empty, RTL) = RTL .
-    eq compressConstraintsH(M, ST, (PT, TL), RTL)
-        = if metaMatch(M, PT, ST, nil, 0) :: Substitution
-          then impossible
-          else if metaUnify(M, ST =? PT, '%, 0) == noUnifier 
-          then compressConstraintsH(M, ST, TL, RTL)
-          else compressConstraintsH(M, ST, TL, (RTL, PT)) fi fi .
+    pr PROP-INFO-EXTRACTION .
+    pr VARIANT-GENERATION .
     
-    op compressConstraints : Module Term TermList -> CompressedConstraints? .
-    eq compressConstraints(M, ST, TL) = compressConstraintsH(M, ST, TL, empty) .
-
-    op appendConstraint : Term TermList Term -> Term .
-    eq appendConstraint(ST', empty, CS) = CS .
-    eq appendConstraint(ST', PT, CS) = '__[CS, '_\`{_`}[ST', PT]] .
-    eq appendConstraint(ST', TL, CS) = '__[CS, '_\`{_`}[ST', '_|_[TL]]] [owise] .
-
-    var N : Nat .
-
-    op collectVariantsN : Module Term Nat -> TermSet .
-    ceq collectVariantsN(M, T, N) = if (VV:Variant? :: Variant) then (getTerm(VV:Variant?) | collectVariantsN(M, T, s N)) else emptyTermSet fi
-      if VV:Variant? := metaGetIrredundantVariant(M, T, empty, '%, N) .
-
-    op collectVariants : Module Term -> TermSet .
-    eq collectVariants(M, T) = collectVariantsN(M, T, 0) .
-
-    op filterExStatePairs : TermSet -> TermSet .
-    eq filterExStatePairs(emptyTermSet) = emptyTermSet .
-    eq filterExStatePairs(('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'true.Bool, CS]]) | TS) = ('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'true.Bool, CS]]) | filterExStatePairs(TS) .
-    eq filterExStatePairs(('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'false.Bool, CS]]) | TS) = ('pair[EST, '`{`{`{_;_;_`}`}`}[ST, 'false.Bool, CS]]) | filterExStatePairs(TS) .
-    eq filterExStatePairs(T | TS) = filterExStatePairs(TS) [owise] .
-
-    op rulesFromVariants : TermSet AttrSet -> RuleSet .
-    eq rulesFromVariants(emptyTermSet, ATRS) = none .
-    eq rulesFromVariants(('pair[ST, ST']) | TS, ATRS) = (rl renameRuleTerm(ST) => renameRuleTerm(ST') [ATRS] .) rulesFromVariants(TS, ATRS) .
-
-    op getRuleVariants : Module Rule -> RuleSet .
-    eq getRuleVariants(M, (rl ST => ST' [ATRS] .)) = rulesFromVariants(filterExStatePairs(collectVariants(M, ('pair[ST, ST']))), ATRS) .
-    
-    op conjConstraints : TermList -> Term .
-    eq conjConstraints(PT) = upTerm(PT) .
-    eq conjConstraints(TL) = '_|_[upTerms(TL)] .
-
-    op unconjConstraints : Term -> TermList .
-    eq unconjConstraints('_|_[empty]) = empty .
-    eq unconjConstraints('_|_[PT, TL]) = downTerm(PT), unconjConstraints('_|_[TL]) .
-    eq unconjConstraints(PT) = downTerm(PT) [owise] .
-
-    var CSS : CompressedConstraints? .
-
-    op filterLastConstraint : Module RuleSet -> RuleSet .
-    eq filterLastConstraint(M, none) = none .
-    ceq filterLastConstraint(M, (rl ST => '`{`{`{_;_;_`}`}`}[ST', BT, '__[CS, '_\`{_`}[ST', PT]]] [ATRS] .) RLS) = 
-      (if CSS == impossible then none
-       else if CSS == empty then (rl ST => '`{`{`{_;_;_`}`}`}[ST', BT, CS] [ATRS] .)
-       else (rl ST => '`{`{`{_;_;_`}`}`}[ST', BT, '__[CS, '_\`{_`}[ST', conjConstraints(CSS)]]] [ATRS] .) fi fi) filterLastConstraint(M, RLS) 
-      if CSS := compressConstraints(M, ST', unconjConstraints(PT)) .
-    eq filterLastConstraint(M, RL RLS) = RL filterLastConstraint(M, RLS) .
-    
-    op expandRule : Module Rule PropPatternSetSet -> RuleSet .
-    eq expandRule(M, (rl ST => ST' [ATRS] .), emptyPropPatternSetSet) = none .
-    eq expandRule(M, (rl ST => ST' [ATRS] .), emptyPropPatternSet | PPSS) = expandRule(M, (rl ST => ST' [ATRS] .), PPSS) .
-    ceq expandRule(M, (rl ST => ST' [ATRS] .), PPS | PPSS) = filterLastConstraint(M, getRuleVariants(M, 
-                                                               (rl '`{`{`{_;_;_`}`}`}[ST, '###BBBB:Bool, '###CSCS:ConstraintSet] => '`{`{`{_;_;_`}`}`}[ST', BT', CS'] [ATRS] .))) 
-                                                             expandRule(M, (rl ST => ST' [ATRS] .), PPSS)
-      if PPS =/= emptyPropPatternSet /\ BT' := evalProps(ST', PPS) /\ CS' := appendConstraint(ST', getConstraintPatterns(PPS), '###CSCS:ConstraintSet) .
-    eq expandRule(M, RL, PPS | PPSS) = expandRule(M, RL, PPSS) [owise] .
-
-    var RL : Rule .
-
-    op expandRuleSet : Module RuleSet PropPatternSetSet -> RuleSet .
-    eq expandRuleSet(M, none, PPSS) = none .
-    eq expandRuleSet(M, RL RLS, PPSS) = expandRule(M, RL, PPSS) expandRuleSet(M, RLS, PPSS) .
-
     var Q : Qid .
+    vars M M' : Module .
+    vars T T1 T2 ST ST' PT PT' CT CT' : Term .
+    vars TL PTs CTs CTs' : TermList .
+    var B : Bool .
+    var SUB : Substitution .
+
+    var TY : Type .
+    var TYL : TypeList .
+    var RL : Rule .
+    vars COND COND' : Condition .
+
     var IL : ImportList .
     var SS : SortSet .
     var SSDS : SubsortDeclSet .
     var OPDS : OpDeclSet .
     var MAS : MembAxSet .
+    var EQS : EquationSet .
+    var RLS : RuleSet .
+    var ATRS : AttrSet .
+
+    var VARS : VariantPairSet .
+    var RPC : RulePropConf .
+    var RPCS : RulePropConfSet .
+  
+    op toPropTerm : Qid -> Term .
+    eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
+
+    op craftPropMap : Term RulePropConf -> TermList .
+    eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
+    eq craftPropMap(ST, ((Q *> incomplete(B)), RPC)) = ('_*>_[toPropTerm(Q), upTerm(B)]), craftPropMap(ST, RPC) .
+    eq craftPropMap(ST, RPC) = empty [owise] .
+
+    op craftConstraints : Term RulePropConf -> TermList . 
+    eq craftConstraints(ST, ((Q *> incomplete(B)), RPC)) = ('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, RPC) .
+    eq craftConstraints(ST, RPC) = empty [owise] .
+      
+    op toTermList : Condition -> TermList .
+    eq toTermList(T1 = T2) = '_<=>_[T1, T2] .
+    eq toTermList(COND /\ COND') = toTermList(COND), toTermList(COND') .
+    eq toTermList(COND) = empty [owise] .
+
+    op wrapUU : TermList -> Term .
+    eq wrapUU(T) = T .
+    eq wrapUU(TL) = '__[TL] .
+
+    op appendAnd : Term TermList -> Term .
+    eq appendAnd(CT, empty) = CT .
+    eq appendAnd('true.Bool, T) = T .
+    eq appendAnd('true.Bool, TL) = '_and_[TL] .
+    eq appendAnd(CT, TL) = '_and_[CT, TL] .
+
+    op prin : Term -> Term .
+    eq prin(T) = T [print "[Term] " T] .
+
+    op prin : TermList -> TermList .
+    eq prin(TL) = TL [print "[TermList] " TL] .
+
+    op generateRules : Module VariantPairSet AttrSet -> RuleSet .
+    eq generateRules(M, empty, ATRS) = none .
+    ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
+                                                 generateRules(M, VARS, ATRS)
+      if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+    eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .
+
+    op expandRule : Module Rule RulePropConfSet -> RuleSet .
+    ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
+      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
+         CTs := craftConstraints(ST', RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
+         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
+         RLS := generateRules(M, VARS, narrowing ATRS) . --- [print VARS] .
+    ceq expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPC ; RPCS) = RLS expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPCS)
+      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
+         CTs := craftConstraints(ST', RPC) /\ CTs' := toTermList(COND) /\ CT' := appendAnd('##CT:Bool, (CTs, CTs')) /\
+         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
+         RLS := generateRules(M, VARS, narrowing ATRS) .
+    eq expandRule(M, RL, RPCS) = none [owise] .
+    
+    op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
+    eq expandRuleSet(M, none, RPCS) = none .
+    eq expandRuleSet(M, RL RLS, RPCS) = expandRule(M, RL, RPCS) expandRuleSet(M, RLS, RPCS) .
 
     op expandRules : Module TermList -> Module [memo] .
-    ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS expandRuleSet(M, RLS, productPatterns(extractPatterns(EQS, TermSet(TL)))) endm) 
-        if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M .
-
-    op reduceFromPatternSet : Module PropPatternSet Term Term -> Bool .
-    eq reduceFromPatternSet(M, emptyPropPatternSet, EST, P) = false .
-    ceq reduceFromPatternSet(M, propPattern(P) PPS, EST, P) = if BT == 'true.Bool then true else reduceFromPatternSet(M, PPS, EST, P) fi
-        if '`{`{`{_;_;_`}`}`}[ST, BT', CS] := EST /\ BT := getTerm(metaReduce(M, '_|=_[ST, P])) .
-    ceq reduceFromPatternSet(M, complementPattern(PT, BT) PPS, EST, P) = if BT == 'true.Bool and not metaMatch(M, ST, PT, nil, 0) :: Substitution then true else reduceFromPatternSet(M, PPS, ST, P) fi 
-        if '`{`{`{_;_;_`}`}`}[ST, BT', CS] := EST .
-
-    op reduceFromPatterns : Module PropPatternEntrySet Term Term -> Bool .
-    eq reduceFromPatterns(M, (P :- PPS) PPES, ST, P) = reduceFromPatternSet(M, PPS, ST, P) .
-
-    op reduceComplementEqs : Module TermList Term Term -> Bool .
-    eq reduceComplementEqs(M, TL, ST, P) = reduceFromPatterns(M, extractPatterns(getEqs(M), TermSet(TL)), ST, P) .
-endm
+    ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS 
+                                expandRuleSet(M, RLS, RPCS)
+                              endm) 
+      if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M /\ RPCS := crossPropInfo(getPropInfo(M, TL)) .
+endfm
 
 mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
