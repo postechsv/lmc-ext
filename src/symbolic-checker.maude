@@ -442,46 +442,59 @@ fmod PROP-INFO-EXTRACTION is
   var M : Module .
   vars T ST BT PT : Term .
   vars TL TL1 TL2 TL3 : TermList .
+  
   var PROP : Constant .
+
   var TYL : TypeList .
   var EQS : EquationSet .
   var OPDS : OpDeclSet .
   var ATRS : AttrSet .
+
   var PE : PropEval .
   var PES : PropEvalSet .
   var PEM : PropEvalMapping .
   var PEMm : PropEvalMap .
+
   var RPC : RulePropConf .
   var RPCS : RulePropConfSet .
+
   vars B B' : Bool .
 
-  op getPropInfoPrototype : Module TermList -> RulePropConfSet .
-  eq getPropInfoPrototype(M, TL) = getPropInfoInternal(M, dedupInternal(TL), getEqs(M)) .
+  op toPropTerm : Qid -> Term .
+  eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
 
-  op dedupInternal : TermList -> TermList .
-  eq dedupInternal((TL1, T, TL2, T, TL3)) = dedupInternal((TL1, T, TL2, TL3)) .
-  eq dedupInternal(TL) = TL [owise] .
+  op dedup : TermList -> TermList .
+  eq dedup((TL1, T, TL2, T, TL3)) = dedup((TL1, T, TL2, TL3)) .
+  eq dedup(TL) = TL [owise] .
 
-  op getIncompletenessInternal : Module Qid Bool -> PropEvalSet .
-  ceq getIncompletenessInternal(M, Q, B) =
-      if not isPropCompleteFor(M, Q, B) then incomplete(B) else emptyPropEvalSet fi .
-  eq getIncompletenessInternal(M, Q, B) = emptyPropEvalSet [owise] .
+  op getIncompleteness : Module Qid Bool -> PropEvalSet .
+  ceq getIncompleteness(M, Q, B) = incomplete(B) if B' := isPropCompleteFor(M, Q, B) /\ not B' .
+  eq getIncompleteness(M, Q, B) = emptyPropEvalSet [owise] .
 
-  op getVariantEvalInternal : Qid EquationSet -> PropEvalSet .
-  ceq getVariantEvalInternal(Q, (eq '_|=_[ST, PROP] = BT [variant ATRS] .) EQS) =
-      if getName(PROP) == Q then genVariants else getVariantEvalInternal(Q, EQS) fi .
-  eq getVariantEvalInternal(Q, none) = emptyPropEvalSet .
-  eq getVariantEvalInternal(Q, EQS) = emptyPropEvalSet [owise] .
+  op getPropIncompletes : Module Qid -> PropEvalSet .
+  eq getPropIncompletes(M, Q) = getIncompleteness(M, Q, true) getIncompleteness(M, Q, false) .
 
-  op combinePropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
-  eq combinePropInfo(Q *> emptyPropEvalSet, RPCS) = RPCS .
-  eq combinePropInfo(Q *> PE PES, RPCS) = (Q *> PE) ; combinePropInfo(Q *> PES, RPCS) .
-  eq combinePropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
-  eq combinePropInfo(Q *> PE, RPCS) = insertSinglePropInfo(Q *> PE, RPCS) .
+  op getVariantEval : Qid EquationSet -> PropEvalSet .
+  ceq getVariantEval(Q, (eq '_|=_[ST, PROP] = BT [variant ATRS] .) EQS) = genVariants if getName(PROP) = Q .
+  eq getVariantEval(Q, EQS) = emptyPropEvalSet [owise] .
 
-  op insertSinglePropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
-  eq insertSinglePropInfo(PEM, emptyRulePropConfSet) = PEM ; emptyRulePropConfSet .
-  eq insertSinglePropInfo(PEM, (Q' *> PE') ; RPCS) = PEM ; ((Q' *> PE') ; RPCS) . --- Simplified, might need adjustment based on desired output
+  op getPropInfo : Module TermList EquationSet -> PropEvalMap .
+  ceq getPropInfo(M, (T, TL), EQS) = (Q *> getPropIncompletes(M, Q) getVariantEval(Q, EQS)) getPropInfo(M, TL, EQS) if Q := getName(T) .
+  eq getPropInfo(M, TL, EQS) = emptyPropEvalMap [owise] .
+
+  op getPropInfo : Module TermList -> PropEvalMap .
+  eq getPropInfo(M, TL) = getPropInfo(M, dedup(TL), getEqs(M)) .
+
+  op insertPropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
+  eq insertPropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
+  eq insertPropInfo(PEM, RPC ; RPCS) = (PEM, RPC) ; insertPropInfo(PEM, RPCS) .
+
+  --- Get the cross product of PropEvalMappings
+  op crossPropInfo : PropEvalMap -> RulePropConfSet .
+  eq crossPropInfo(emptyPropEvalMap) = emptyRulePropConfSet .
+  eq crossPropInfo((Q *> emptyPropEvalSet) PEMm) = emptyRulePropConfSet .
+  eq crossPropInfo((Q *> PE PES)) = (Q *> PE) ; crossPropInfo((Q *> PES)) .
+  eq crossPropInfo((Q *> PE PES) PEMm) = crossPropInfo((Q *> PES) PEMm) ; insertPropInfo((Q *> PE), crossPropInfo(PEMm)) .
 endfm
 
 fmod VARIANT-GENERATION is
