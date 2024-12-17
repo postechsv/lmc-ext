@@ -433,6 +433,57 @@ fmod RULE-PROP-CONF is
   op _;_ : RulePropConfSet RulePropConfSet -> RulePropConfSet [assoc ctor comm id: emptyRulePropConfSet] .
 endfm
 
+fmod PROP-INFO-EXTRACTION is
+  pr RULE-PROP-CONF .
+  pr COMPLETENESS-DECLARATION .
+  pr META-LEVEL .
+
+  var Q : Qid .
+  var M : Module .
+  vars T ST BT PT : Term .
+  vars TL TL1 TL2 TL3 : TermList .
+  var PROP : Constant .
+  var TYL : TypeList .
+  var EQS : EquationSet .
+  var OPDS : OpDeclSet .
+  var ATRS : AttrSet .
+  var PE : PropEval .
+  var PES : PropEvalSet .
+  var PEM : PropEvalMapping .
+  var PEMm : PropEvalMap .
+  var RPC : RulePropConf .
+  var RPCS : RulePropConfSet .
+  vars B B' : Bool .
+
+  op getPropInfoPrototype : Module TermList -> RulePropConfSet .
+  eq getPropInfoPrototype(M, TL) = getPropInfoInternal(M, dedupInternal(TL), getEqs(M)) .
+
+  op dedupInternal : TermList -> TermList .
+  eq dedupInternal((TL1, T, TL2, T, TL3)) = dedupInternal((TL1, T, TL2, TL3)) .
+  eq dedupInternal(TL) = TL [owise] .
+
+  op getIncompletenessInternal : Module Qid Bool -> PropEvalSet .
+  ceq getIncompletenessInternal(M, Q, B) =
+      if not isPropCompleteFor(M, Q, B) then incomplete(B) else emptyPropEvalSet fi .
+  eq getIncompletenessInternal(M, Q, B) = emptyPropEvalSet [owise] .
+
+  op getVariantEvalInternal : Qid EquationSet -> PropEvalSet .
+  ceq getVariantEvalInternal(Q, (eq '_|=_[ST, PROP] = BT [variant ATRS] .) EQS) =
+      if getName(PROP) == Q then genVariants else getVariantEvalInternal(Q, EQS) fi .
+  eq getVariantEvalInternal(Q, none) = emptyPropEvalSet .
+  eq getVariantEvalInternal(Q, EQS) = emptyPropEvalSet [owise] .
+
+  op combinePropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
+  eq combinePropInfo(Q *> emptyPropEvalSet, RPCS) = RPCS .
+  eq combinePropInfo(Q *> PE PES, RPCS) = (Q *> PE) ; combinePropInfo(Q *> PES, RPCS) .
+  eq combinePropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
+  eq combinePropInfo(Q *> PE, RPCS) = insertSinglePropInfo(Q *> PE, RPCS) .
+
+  op insertSinglePropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
+  eq insertSinglePropInfo(PEM, emptyRulePropConfSet) = PEM ; emptyRulePropConfSet .
+  eq insertSinglePropInfo(PEM, (Q' *> PE') ; RPCS) = PEM ; ((Q' *> PE') ; RPCS) . --- Simplified, might need adjustment based on desired output
+endfm
+
 mod RULE-PATTERN-EXPANSION is
     pr FM-TERMSET .
     pr STATE-SYNTAX .
