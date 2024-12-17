@@ -54,11 +54,6 @@ fmod STATE-SYNTAX is
     op emptyConstraintSet : -> ConstraintSet [ctor] .
     op __ : ConstraintSet ConstraintSet -> ConstraintSet [assoc comm ctor id: emptyConstraintSet] .
 
-    var B : Bool .
-    op _*_ : Bool Bool -> Bool [assoc comm] .
-    eq true * B = B .
-    eq false * B = B .
-
     var PM : PropMap .
     vars P P' : Prop .
 
