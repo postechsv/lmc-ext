@@ -376,6 +376,15 @@ fmod COMPLETENESS-MAP is
   eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
   eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
 
+  op prin : CompletenessMap -> CompletenessMap .
+  eq prin(CM:CompletenessMap) = CM:CompletenessMap [print "[CompletenessMap] " CM:CompletenessMap] .
+
+  op prin : MaybeBool -> MaybeBool .
+  eq prin(MB:MaybeBool) = MB:MaybeBool [print "[MaybeBool] " MB:MaybeBool] .
+
+  op prin : Bool -> Bool .
+  eq prin(B:Bool) = B:Bool [print "[Bool] " B:Bool] .
+
   op isPropCompleteFor : Module Qid Bool -> MaybeBool .
   eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
 
@@ -385,6 +394,9 @@ endfm
 
 fmod COMPLETENESS-DECLARATION is
   pr COMPLETENESS-MAP .
+
+  op prin : Substitution? -> Substitution? .
+  eq prin(SUB?::Substitution?) = SUB?::Substitution? [print SUB?::Substitution?] .
 
   op errorTerm : -> [Term] .
   op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
