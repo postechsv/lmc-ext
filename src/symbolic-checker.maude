@@ -484,6 +484,36 @@ fmod PROP-INFO-EXTRACTION is
   eq insertSinglePropInfo(PEM, (Q' *> PE') ; RPCS) = PEM ; ((Q' *> PE') ; RPCS) . --- Simplified, might need adjustment based on desired output
 endfm
 
+fmod VARIANT-GENERATION is
+  pr META-LEVEL .
+
+  sorts VariantPair VariantPairSet .
+  subsort VariantPair < VariantPairSet .
+
+  op empty : -> VariantPairSet [ctor] .
+  op {_,_} : Term Substitution -> VariantPair [ctor] .
+  op _#_ : VariantPairSet VariantPairSet -> VariantPairSet [assoc comm ctor id: empty] .
+
+  vars Q Q' : Qid .
+  var M : Module .
+  vars T T' : Term .
+  var N : Nat .
+  var SUB : Substitution .
+  var B : Bool .
+
+  var VARS : VariantPairSet .
+
+  op getVariantSet : Module Term Nat Qid Variant? -> VariantPairSet .
+  eq getVariantSet(M, T, N, Q, {T',SUB,Q',P:Parent,B}) = {T',SUB} # getVariantSet(M, T, s N, Q) .
+  eq getVariantSet(M, T, N, Q, VV:Variant?) = empty [owise] .
+
+  op getVariantSet : Module Term Nat Qid -> VariantPairSet .
+  eq getVariantSet(M, T, N, Q) = getVariantSet(M, T, N, Q, metaGetIrredundantVariant(M, T, empty, Q, N)) .
+
+  op getVariantSet : Module Term Qid -> VariantPairSet .
+  eq getVariantSet(M, T, Q) = getVariantSet(M, T, 0, Q) .
+endfm
+
 mod RULE-PATTERN-EXPANSION is
     pr FM-TERMSET .
     pr STATE-SYNTAX .
