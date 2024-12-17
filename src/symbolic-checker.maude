@@ -411,6 +411,38 @@ fmod COMPLETENESS-DECLARATION is
   eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
 endfm
 
+fmod RULE-PROP-CONF is
+  pr QID .
+  pr COMPLETENESS .
+
+  sort PropEval .
+
+  op genVariants : -> PropEval [ctor] . --- Signifies that variant generation is needed for its corresponding proposition
+  subsort Completeness < PropEval .
+
+  sort PropEvalSet .
+  subsort PropEval < PropEvalSet .
+  op emptyPropEvalSet : -> PropEvalSet [ctor] .
+  op __ : PropEvalSet PropEvalSet -> PropEvalSet [assoc ctor comm id: emptyPropEvalSet] .
+  eq PE:PropEval PE:PropEval = PE:PropEval .
+
+  sorts PropEvalMap PropEvalMapping .
+  subsort PropEvalMapping < PropEvalMap .
+
+  op emptyPropEvalMap : -> PropEvalMap [ctor] .
+  op _*>_ : Qid PropEvalSet -> PropEvalMapping .
+  op __ : PropEvalMap PropEvalMap -> PropEvalMap [assoc ctor comm id: emptyPropEvalMap] .
+
+  sorts RulePropConf RulePropConfSet .
+  subsort PropEvalMapping < RulePropConf .
+  op emptyRulePropConf : -> RulePropConf [ctor] .
+  op _,_ : RulePropConf RulePropConf -> RulePropConf [assoc ctor comm id: emptyRulePropConf] .
+
+  subsort RulePropConf < RulePropConfSet .
+  op emptyRulePropConfSet : -> RulePropConfSet [ctor] .
+  op _;_ : RulePropConfSet RulePropConfSet -> RulePropConfSet [assoc ctor comm id: emptyRulePropConfSet] .
+endfm
+
 mod RULE-PATTERN-EXPANSION is
     pr FM-TERMSET .
     pr STATE-SYNTAX .
