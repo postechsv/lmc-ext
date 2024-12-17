@@ -377,10 +377,20 @@ fmod COMPLETENESS-MAP is
   eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
   eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
 
+  sort MaybeBool .
+  subsort Bool < MaybeBool .
+  op unknown : -> MaybeBool .
+
   op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
   eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
   eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
   eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
+
+  op isPropCompleteFor : Module Qid Bool -> MaybeBool .
+  eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
+
+  op isOpCompleteFor : Module Qid Bool -> MaybeBool .
+  eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
 endfm
 
 fmod COMPLETENESS-DECLARATION is
