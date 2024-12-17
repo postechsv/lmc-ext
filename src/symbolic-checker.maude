@@ -383,6 +383,24 @@ fmod COMPLETENESS-MAP is
   eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
 endfm
 
+fmod COMPLETENESS-DECLARATION is
+  pr COMPLETENESS-MAP .
+
+  op errorTerm : -> [Term] .
+  op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
+  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) .
+  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) .
+  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) .
+  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
+  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
+  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
+  
+  eq declaredCompleteness(M, OPDS, EQS) = empty [owise] .
+
+  op declaredCompleteness : Module -> CompletenessMap [memo] .
+  eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
+endfm
+
 mod RULE-PATTERN-EXPANSION is
     pr FM-TERMSET .
     pr STATE-SYNTAX .
