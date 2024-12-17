@@ -381,7 +381,7 @@ fmod COMPLETENESS-MAP is
   eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
   eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
   eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
-endm
+endfm
 
 mod RULE-PATTERN-EXPANSION is
     pr FM-TERMSET .
