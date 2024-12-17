@@ -44,17 +44,6 @@ fmod STATE-SYNTAX is
     op emptyPropMap : -> PropMap [ctor] .
     op __ : PropMap PropMap -> PropMap [assoc ctor comm id: emptyPropMap] .
 
-    op comp : InitState -> CompState .
-    op _n_ : CompState CompState -> CompState [assoc comm] .
-
-    sort Constraint .
-    op _\{_} : InitState TermSet -> Constraint [ctor] .
-
-    sort ConstraintSet .
-    subsort Constraint < ConstraintSet .
-    op emptyConstraintSet : -> ConstraintSet [ctor] .
-    op __ : ConstraintSet ConstraintSet -> ConstraintSet [assoc comm ctor id: emptyConstraintSet] .
-
     var PM : PropMap .
     vars P P' : Prop .
 
