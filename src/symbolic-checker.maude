@@ -540,97 +540,97 @@ fmod VARIANT-GENERATION is
 endfm
 
 fmod RULE-EXPANSION is
-    pr RULE-TERM-RENAMING .
-    pr PROP-INFO-EXTRACTION .
-    pr VARIANT-GENERATION .
-    
-    var Q : Qid .
-    vars M M' : Module .
-    vars T T1 T2 ST ST' PT PT' CT CT' : Term .
-    vars TL PTs CTs CTs' : TermList .
-    var B : Bool .
-    var SUB : Substitution .
-
-    var TY : Type .
-    var TYL : TypeList .
-    var RL : Rule .
-    vars COND COND' : Condition .
-
-    var IL : ImportList .
-    var SS : SortSet .
-    var SSDS : SubsortDeclSet .
-    var OPDS : OpDeclSet .
-    var MAS : MembAxSet .
-    var EQS : EquationSet .
-    var RLS : RuleSet .
-    var ATRS : AttrSet .
-
-    var VARS : VariantPairSet .
-    var RPC : RulePropConf .
-    var RPCS : RulePropConfSet .
+  pr RULE-TERM-RENAMING .
+  pr PROP-INFO-EXTRACTION .
+  pr VARIANT-GENERATION .
   
-    op toPropTerm : Qid -> Term .
-    eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
+  var Q : Qid .
+  vars M M' : Module .
+  vars T T1 T2 ST ST' PT PT' CT CT' : Term .
+  vars TL PTs CTs CTs' : TermList .
+  var B : Bool .
+  var SUB : Substitution .
 
-    op craftPropMap : Term RulePropConf -> TermList .
-    eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
-    eq craftPropMap(ST, ((Q *> incomplete(B)), RPC)) = ('_*>_[toPropTerm(Q), upTerm(B)]), craftPropMap(ST, RPC) .
-    eq craftPropMap(ST, RPC) = empty [owise] .
+  var TY : Type .
+  var TYL : TypeList .
+  var RL : Rule .
+  vars COND COND' : Condition .
 
-    op craftConstraints : Term RulePropConf -> TermList . 
-    eq craftConstraints(ST, ((Q *> incomplete(B)), RPC)) = ('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, RPC) .
-    eq craftConstraints(ST, RPC) = empty [owise] .
-      
-    op toTermList : Condition -> TermList .
-    eq toTermList(T1 = T2) = '_<=>_[T1, T2] .
-    eq toTermList(COND /\ COND') = toTermList(COND), toTermList(COND') .
-    eq toTermList(COND) = empty [owise] .
+  var IL : ImportList .
+  var SS : SortSet .
+  var SSDS : SubsortDeclSet .
+  var OPDS : OpDeclSet .
+  var MAS : MembAxSet .
+  var EQS : EquationSet .
+  var RLS : RuleSet .
+  var ATRS : AttrSet .
 
-    op wrapUU : TermList -> Term .
-    eq wrapUU(T) = T .
-    eq wrapUU(TL) = '__[TL] .
+  var VARS : VariantPairSet .
+  var RPC : RulePropConf .
+  var RPCS : RulePropConfSet .
 
-    op appendAnd : Term TermList -> Term .
-    eq appendAnd(CT, empty) = CT .
-    eq appendAnd('true.Bool, T) = T .
-    eq appendAnd('true.Bool, TL) = '_and_[TL] .
-    eq appendAnd(CT, TL) = '_and_[CT, TL] .
+  op toPropTerm : Qid -> Term .
+  eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
 
-    op prin : Term -> Term .
-    eq prin(T) = T [print "[Term] " T] .
+  op craftPropMap : Term RulePropConf -> TermList .
+  eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
+  eq craftPropMap(ST, ((Q *> incomplete(B)), RPC)) = ('_*>_[toPropTerm(Q), upTerm(B)]), craftPropMap(ST, RPC) .
+  eq craftPropMap(ST, RPC) = empty [owise] .
 
-    op prin : TermList -> TermList .
-    eq prin(TL) = TL [print "[TermList] " TL] .
-
-    op generateRules : Module VariantPairSet AttrSet -> RuleSet .
-    eq generateRules(M, empty, ATRS) = none .
-    ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
-                                                 generateRules(M, VARS, ATRS)
-      if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
-    eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .
-
-    op expandRule : Module Rule RulePropConfSet -> RuleSet .
-    ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
-      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
-         CTs := craftConstraints(ST', RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
-         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
-         RLS := generateRules(M, VARS, narrowing ATRS) . --- [print VARS] .
-    ceq expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPC ; RPCS) = RLS expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPCS)
-      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
-         CTs := craftConstraints(ST', RPC) /\ CTs' := toTermList(COND) /\ CT' := appendAnd('##CT:Bool, (CTs, CTs')) /\
-         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
-         RLS := generateRules(M, VARS, narrowing ATRS) .
-    eq expandRule(M, RL, RPCS) = none [owise] .
+  op craftConstraints : Term RulePropConf -> TermList . 
+  eq craftConstraints(ST, ((Q *> incomplete(B)), RPC)) = ('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, RPC) .
+  eq craftConstraints(ST, RPC) = empty [owise] .
     
-    op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
-    eq expandRuleSet(M, none, RPCS) = none .
-    eq expandRuleSet(M, RL RLS, RPCS) = expandRule(M, RL, RPCS) expandRuleSet(M, RLS, RPCS) .
+  op toTermList : Condition -> TermList .
+  eq toTermList(T1 = T2) = '_<=>_[T1, T2] .
+  eq toTermList(COND /\ COND') = toTermList(COND), toTermList(COND') .
+  eq toTermList(COND) = empty [owise] .
 
-    op expandRules : Module TermList -> Module [memo] .
-    ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS 
-                                expandRuleSet(M, RLS, RPCS)
-                              endm) 
-      if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M /\ RPCS := crossPropInfo(getPropInfo(M, TL)) .
+  op wrapUU : TermList -> Term .
+  eq wrapUU(T) = T .
+  eq wrapUU(TL) = '__[TL] .
+
+  op appendAnd : Term TermList -> Term .
+  eq appendAnd(CT, empty) = CT .
+  eq appendAnd('true.Bool, T) = T .
+  eq appendAnd('true.Bool, TL) = '_and_[TL] .
+  eq appendAnd(CT, TL) = '_and_[CT, TL] .
+
+  op prin : Term -> Term .
+  eq prin(T) = T [print "[Term] " T] .
+
+  op prin : TermList -> TermList .
+  eq prin(TL) = TL [print "[TermList] " TL] .
+
+  op generateRules : Module VariantPairSet AttrSet -> RuleSet .
+  eq generateRules(M, empty, ATRS) = none .
+  ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
+                                                generateRules(M, VARS, ATRS)
+    if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+  eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .
+
+  op expandRule : Module Rule RulePropConfSet -> RuleSet .
+  ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
+    if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
+        CTs := craftConstraints(ST', RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
+        VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
+        RLS := generateRules(M, VARS, narrowing ATRS) . --- [print VARS] .
+  ceq expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPC ; RPCS) = RLS expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPCS)
+    if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
+        CTs := craftConstraints(ST', RPC) /\ CTs' := toTermList(COND) /\ CT' := appendAnd('##CT:Bool, (CTs, CTs')) /\
+        VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
+        RLS := generateRules(M, VARS, narrowing ATRS) .
+  eq expandRule(M, RL, RPCS) = none [owise] .
+  
+  op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
+  eq expandRuleSet(M, none, RPCS) = none .
+  eq expandRuleSet(M, RL RLS, RPCS) = expandRule(M, RL, RPCS) expandRuleSet(M, RLS, RPCS) .
+
+  op expandRules : Module TermList -> Module [memo] .
+  ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS 
+                              expandRuleSet(M, RLS, RPCS)
+                            endm) 
+    if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M /\ RPCS := crossPropInfo(getPropInfo(M, TL)) .
 endfm
 
 mod META-LMC-THEORY is
