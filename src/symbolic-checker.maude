@@ -784,10 +784,11 @@ endfm
 mod META-SYMBOLIC-CONNECTOR is
   pr META-LMC-THEORY .
   pr BOUNDED-FOLDING-MODEL-CHECKER .
+  pr COMPLETENESS-DECLARATION .
   pr META-NARROWING-INTERFACE .
   pr DECL-META-PRETTY-PRINT 
    * (op addOps to addOpsSE, op addEqs to addEqsSE, op addSorts to addSortsSE) .
-  pr RULE-PATTERN-EXPANSION .
+  pr RULE-EXPANSION .
 
   var M : Module .  
   vars T T' T1 T2 ST ST' BT BT' PT CT CS CS' C C' : Term . 
@@ -804,27 +805,16 @@ mod META-SYMBOLIC-CONNECTOR is
   var RT : ResultTriple .  
   var RTS : ResultTripleSet . 
 
---- backup : getTerm(metaReduce((##m##), '_|=_[ST, PT]))
---- meta prop and state
-  ceq mid(ST) |= prop(PT) = B if B := reduceComplementEqs(##m##, ##f##, ST, PT) .
-
-  --- A constraint>= B if B has comparably stronger constraints than A
-  op _constraint>=_ : TermSet TermSet -> Bool .
-  eq CSS constraint>= (CSS | CSS') = true .
-  eq CSS constraint>= CSS' = false [owise] .
-
-  op constraintSet : Term -> TermSet .
-  eq constraintSet('__[TL]) = TermSet(TL) .
-  eq constraintSet('emptyConstraintSet.ConstraintSet) = emptyTermSet .
-  eq constraintSet(T) = T [owise] .
+  --- meta prop and state
+  ceq mid(ST) |= prop(PT) 
+   = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.Bool if TT:Term := getTerm(metaReduce((##m##), '_|=_[ST, PT])) .
 
 --- state folding
   eq init(ST) >= init(ST) = true .
-  eq mid('`{`{`{_;_;_`}`}`}[ST, BT, CS]) >= mid('`{`{`{_;_;_`}`}`}[ST', BT', CS'])
-   = (metaMatch((##m##), ST, ST', nil, 0) :: Substitution) and (constraintSet(CS) constraint>= constraintSet(CS')) .
+  eq mid(ST) >= mid(ST') = ST >= ST' [##m##] .
   eq S1:State >= S2:State = false [owise] .
 
---- renameing folding
+--- renaming folding
   eq init(ST) ~= init(ST) = true .
   eq mid(ST) ~= mid(ST')
    = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
