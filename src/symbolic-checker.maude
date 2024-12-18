@@ -728,6 +728,12 @@ fmod META-NARROWING-INTERFACE is
   eq genVariants(M, empty) = empty .
   eq genVariants(M, {T,SUB,RN | ST} || SRS) = getVariantTerms(getVariantSet(M, T, '@), T) || genVariants(M, SRS) .
 
+  op filterStates : Module StepResultSet -> StepResultSet .
+  eq filterStates(M, empty) = empty .
+  ceq filterStates(M, {'`{`{`{_|_|_`}`}`}[ST, PT, BT],SUB,RN | T} || SRS) = filterStates(M, SRS) if BT == 'false.Bool or (BT =/= 'true.Bool and not checkIncomplete(M, BT)) .
+  ceq filterStates(M, {'<<<_|_>>>[ST,BT],SUB,RN | T} || SRS) = filterStates(M, SRS) if BT == 'false.Bool or (BT =/= 'true.Bool and not checkIncomplete(M, BT)) .
+  eq filterStates(M, {ST,SUB,RN | T} || SRS) = {ST,SUB,RN | T} || filterStates(M, SRS) [owise] .
+
 --- variant narrowing prop instantiations.
 --- compute the PI-instantated states of the given state.
   op conjAsBoolList : Term TermList -> TermList .
