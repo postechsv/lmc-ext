@@ -609,6 +609,13 @@ fmod RULE-EXPANSION is
     if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
   eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .
 
+  op generateInitRules : Module VariantPairSet AttrSet -> RuleSet .
+  eq generateInitRules(M, empty, ATRS) = none .
+  ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_>>>[ST,CT] => '`{`{`{_|_|_`}`}`}[ST, PT, CT'] [ATRS] .)
+                                                    generateInitRules(M, VARS, ATRS)
+    if 'exInitRule[ST,CT,PT,CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+  eq generateInitRules(M, {T,SUB} # VARS, ATRS) = generateInitRules(M, VARS, ATRS) [owise] .
+
   op expandRule : Module Rule RulePropConfSet -> RuleSet .
   ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
     if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
@@ -621,6 +628,14 @@ fmod RULE-EXPANSION is
         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
         RLS := generateRules(M, VARS, narrowing ATRS) .
   eq expandRule(M, RL, RPCS) = none [owise] .
+
+  op expandInitRule : Module RulePropConfSet -> RuleSet .
+  eq expandInitRule(M, emptyRulePropConfSet) = none .
+  ceq expandInitRule(M, RPC ; RPCS) = RLS expandInitRule(M, RPCS) 
+    if PTs := craftPropMap('##ST:State, RPC) /\ PT' := wrapUU(PTs) /\
+        CTs := craftConstraints('##ST:State, RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
+        VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,PT',CT'], '@) /\
+        RLS := generateInitRules(M, VARS, narrowing) .
   
   op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
   eq expandRuleSet(M, none, RPCS) = none .
@@ -763,8 +778,7 @@ fmod META-NARROWING-INTERFACE is
   op isGround : Sort -> Bool .
   eq isGround('GroundBoolList) = true .
   eq isGround('GroundBool) = true .
-  eq isGround(S:Sort) = false [owise] .
-  
+  eq isGround(S:Sort) = false [owise] .  
 endfm
 
 mod META-SYMBOLIC-CONNECTOR is
