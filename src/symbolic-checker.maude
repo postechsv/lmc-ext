@@ -1121,10 +1121,10 @@ mod LMC-COMMAND-PROCESSING is
    if U := addEqs( 
 	    (eq '##m##.Module = up(M) [none] .
 	     eq '##f##.TermList = upTerm(props(M,T2)) [none] .),
-	    upModule('META-SYMBOLIC-COND-CONNECTOR2, false)) /\
+	    upModule('META-SYMBOLIC-CONNECTOR, false)) /\
      T3  := up(getTerm(metaReduce(M,T1))) /\
      T4 := up(getTerm(metaReduce(M,T2))) /\
-     RP? := metaReduce(U, 'lmc-check[T3,T4,upTerm(CD),upTerm(B),upTerm(D)]) .
+     RP? := metaReduce(U, 'lmc-check[T3,T4,upTerm(B),upTerm(D)]) .
 
   op printLMCInfo : Module Bool Term Term Condition -> QidList .
   eq printLMCInfo(M, B, T1, T2, CD)
