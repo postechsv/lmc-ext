@@ -949,10 +949,6 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   eq transTR({mid(ST), deadlock})  
    = '`{_`,_`,_`}[ST, 'none.CESubstitution, upRuleName(deadlock)] .
   eq transTR({init(ST), -[SUB]/ RN -}) = empty  .
-  eq transTR({init(ST), deadlock}) = empty  .
-
-  eq transTR({mid(ST,CD),ME})  = transTR({mid(ST),ME}) .
-  eq transTR({init(ST,CD),ME}) = empty  .
 
 --- substitution
   op transSUB : Substitution -> TermList .
