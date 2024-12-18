@@ -735,32 +735,7 @@ fmod META-NARROWING-INTERFACE is
 --- compute the PI-instantated states of the given state.
   op conjAsBoolList : Term TermList -> TermList .
   eq conjAsBoolList(ST, (T,TL)) = '_|=_[ST, T], conjAsBoolList(ST, TL) .
-  eq conjAsBoolList(ST, empty) = 'nil.GrBoolList .
-  
-  --- StateSet PropSet -> StateSet
-  op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
-  eq propSetInstSet(empty, TL) = empty .
-  eq propSetInstSet(SR || SRS, TL) = cleanRedundant(SR) || propSetInstSet(SRS, TL) .
-
-  op propSetInitInstSet : StepResultSet TermList ~> StepResultSet . 
-  eq propSetInitInstSet(empty, TL) = empty .
-  eq propSetInitInstSet({ST,SUB,RN | T} || SRS, TL)
-   = filterPropVars({ST,SUB,RN | T}, metaGenVariant(addBoolList(trMod(##m##)), conjAsBoolList(ST, TL)))
-     || propSetInitInstSet(SRS, TL) .
-
-  op filterPropVars : StepResult VariantSet ~> StepResultSet .
-  eq filterPropVars({ST,SUB,RN | T}, emptyVariantSet) = empty .
-  eq filterPropVars({ST,SUB,RN | T}, {PT,SUB1,N,P,B} # VS) 
-   = (if inst?(PT) then cleanRedundant({ST << SUB1,summarize(T, SUB .. SUB1),RN | T}) |> T else empty fi) || filterPropVars({ST,SUB,RN | T}, VS) .
-
-  op inst? : Term -> Bool .
-  ceq inst?(T) = true if isGround(leastSort(upModule('GROUND-BOOL-LIST, false), T)) .
-  eq inst?(T) = false [owise] .
-  
-  op isGround : Sort -> Bool .
-  eq isGround('GroundBoolList) = true .
-  eq isGround('GroundBool) = true .
-  eq isGround(S:Sort) = false [owise] .  
+  eq conjAsBoolList(ST, empty) = 'nil.GrBoolList .  
 endfm
 
 mod PARTIAL-COMPLETENESS-FOLDING is
