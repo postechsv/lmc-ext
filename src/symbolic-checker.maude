@@ -337,7 +337,7 @@ fmod RULE-TERM-RENAMING is
       else V fi fi fi .
 endfm
 
-fmod COMPLETENESS-MAP is
+fmod COMPLETENESS-DECLARATION is
   pr SATISFACTION .
   pr COMPLETENESS .
 
@@ -351,11 +351,20 @@ fmod COMPLETENESS-MAP is
   op empty : -> CompletenessMap [ctor] .
   op {_} : CompletenessMapData -> CompletenessMap [ctor] .
 
-  var B : Bool .
-  var C : CompletenessSet .
+  sort MaybeBool .
+  subsort Bool < MaybeBool .
+  op unknown : -> MaybeBool .
+
+  var M : Module .
+  vars T T' ST BT PT IT : Term .
+  var TL : TermList .
   var CK : CompletenessKey .
   vars CS CS' : CompletenessSet .
   var CM : CompletenessMapData .
+  vars B B' : Bool .
+  var OPDS : OpDeclSet .
+  var EQS : EquationSet .
+  var ATRS : AttrSet .
 
   op fillCompleteness : CompletenessSet -> CompletenessSet .
   eq fillCompleteness(complete(B)) = complete(B), incomplete(not B) .
@@ -367,24 +376,13 @@ fmod COMPLETENESS-MAP is
   eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
   eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
 
-  sort MaybeBool .
-  subsort Bool < MaybeBool .
-  op unknown : -> MaybeBool .
-
   op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
   eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
   eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
   eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
 
-  op isPropCompleteFor : Module Qid Bool -> MaybeBool .
-  eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
-
-  op isOpCompleteFor : Module Qid Bool -> MaybeBool .
-  eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
-endfm
-
-fmod COMPLETENESS-DECLARATION is
-  pr COMPLETENESS-MAP .
+  op prin : Substitution? -> Substitution? .
+  eq prin(SUB?::Substitution?) = SUB?::Substitution? [print SUB?::Substitution?] .
 
   op errorTerm : -> [Term] .
   op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
@@ -399,6 +397,46 @@ fmod COMPLETENESS-DECLARATION is
 
   op declaredCompleteness : Module -> CompletenessMap [memo] .
   eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
+
+  op prin : CompletenessMap -> CompletenessMap .
+  eq prin(CM:CompletenessMap) = CM:CompletenessMap [print "[CompletenessMap] " CM:CompletenessMap] .
+
+  op prin : MaybeBool -> MaybeBool .
+  eq prin(MB:MaybeBool) = MB:MaybeBool [print "[MaybeBool] " MB:MaybeBool] .
+
+  op isPropCompleteFor : Module Qid Bool -> MaybeBool .
+  eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
+
+  op isOpCompleteFor : Module Qid Bool -> MaybeBool .
+  eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
+    
+  op prin : Bool -> Bool .
+  eq prin(B:Bool) = B:Bool [print "[Bool] " B:Bool] .
+
+  op prin : MaybeBool -> MaybeBool .
+  eq prin(B:MaybeBool) = B:MaybeBool [print "[MaybeBool] " B:MaybeBool] .
+
+  op errorBool : -> Bool .
+  op matchIncomplete : Module TermList Bool -> Bool .
+  eq matchIncomplete(M, empty, B) = false .
+  ceq matchIncomplete(M, (T, TL), B) = matchIncomplete(M, T, B) or matchIncomplete(M, TL, B) if TL =/= empty .
+
+  op matchIncomplete : Module Term Bool -> Bool . 
+  eq matchIncomplete(M, '_|=_[ST, P:Qid [TL]], B) = isPropCompleteFor(M, P:Qid, B) == false .
+  eq matchIncomplete(M, '_|=_[ST, P:Constant], B) = isPropCompleteFor(M, getName(P:Constant), B) == false .
+  eq matchIncomplete(M, '_or_[TL], B) = matchIncomplete(M, TL, B) .
+  eq matchIncomplete(M, '_and_[TL], B) = matchIncomplete(M, TL, B) .
+  ceq matchIncomplete(M, O:Qid [TL], B) = isOpCompleteFor(M, O:Qid, B) == false if O:Qid =/= '_or_ /\ O:Qid =/= '_and_ /\ O:Qid =/= '_|=_ .
+  eq matchIncomplete(M, C:Constant, B) = isOpCompleteFor(M, C:Constant, B) == false .
+
+  op checkIncomplete : Module TermList -> Bool .
+  eq checkIncomplete(M, empty) = false .
+  ceq checkIncomplete(M, (T, TL)) = checkIncomplete(M, T) or checkIncomplete(M, TL) if TL =/= empty .
+
+  op checkIncomplete : Module Term -> Bool .
+  eq checkIncomplete(M, '_<=>_[PT, BT]) = matchIncomplete(M, PT, downTerm(BT, errorBool)) .
+  eq checkIncomplete(M, '_and_[TL]) = checkIncomplete(M, TL) .
+  eq checkIncomplete(M, T) = matchIncomplete(M, T, true) [owise] .  
 endfm
 
 fmod RULE-PROP-CONF is
