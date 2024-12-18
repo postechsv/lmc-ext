@@ -763,6 +763,58 @@ fmod META-NARROWING-INTERFACE is
   eq isGround(S:Sort) = false [owise] .  
 endfm
 
+mod PARTIAL-COMPLETENESS-FOLDING is
+  pr STATE-SYNTAX .
+  pr VARIANT-GENERATION .
+  pr COMPLETENESS-DECLARATION .
+  pr RULE-TERM-RENAMING .
+
+  var M : Module .
+  vars T T1 T2 : Term .
+  vars ST1 PT1 CT1 ST2 PT2 CT2 : Term .
+  var P : Term .
+  vars VAR1 VAR2 : VariantPair .
+  vars VARS1 VARS2 : VariantPairSet .
+  vars BT1 BT2 : Term .
+  var ET : Term .
+  vars TL TL1 TL2 : TermList .
+  var B : Bool .
+  var IB : Bool .
+  vars SUB1 SUB2 SUB' : Substitution .
+  vars V1 V2 : Variable .
+
+  op negate : Term -> Term .
+  eq negate('true.Bool) = 'false.Bool .
+  eq negate('false.Bool) = 'true.Bool .
+  eq negate('_<=>_[ET, BT1]) = '_<=>_[ET, negate(BT1)] .
+  eq negate('_and_[TL1]) = '_or_[negate(TL1)] .
+  eq negate('_or_[TL1]) = '_and_[negate(TL1)] .
+
+  op negate : TermList -> TermList .
+  eq negate(empty) = empty .
+  eq negate((T1, TL1)) = (negate(T1), negate(TL1)) .
+
+  op filterTrue : VariantPairSet -> VariantPairSet .
+  eq filterTrue({'true.Bool, SUB1} # VARS1) = {'true.Bool, SUB1} # filterTrue(VARS1) .
+  eq filterTrue(VARS1) = empty [owise] .
+
+  op getConstraintVariants : Module Term -> VariantPairSet .
+  eq getConstraintVariants(M, T) = filterTrue(getVariantSet(M, renameRuleTerm(T), '%)) .
+
+  op _>>_ : Substitution Substitution -> Substitution .
+  eq none >> SUB2 = SUB2 .
+  eq (V1 <- T1 ; SUB1) >> SUB2 = V1 <- $applySubstitution(T1, SUB2) ; (SUB1 >> SUB2) .
+
+  op constraintIncludes : Module Term Term Substitution -> Bool .
+  eq constraintIncludes(M, T1, T2, SUB) = true .
+
+  op _>=_[_] : Term Term Module -> Bool .
+  ceq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = (PT1 == PT2) and constraintIncludes(M, CT1, CT2, SUB')
+    if SUB' := metaMatch(M, ST1, ST2, nil, 0) .
+  eq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = false .
+  eq T1 >= T2 [ M ] = metaMatch(M, T1, T2, nil, 0) :: Substitution .
+endm
+
 mod META-SYMBOLIC-CONNECTOR is
   pr META-LMC-THEORY .
   pr BOUNDED-FOLDING-MODEL-CHECKER .
