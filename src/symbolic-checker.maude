@@ -733,13 +733,6 @@ fmod META-NARROWING-INTERFACE is
   op conjAsBoolList : Term TermList -> TermList .
   eq conjAsBoolList(ST, (T,TL)) = '_|=_[ST, T], conjAsBoolList(ST, TL) .
   eq conjAsBoolList(ST, empty) = 'nil.GrBoolList .
-
-  op conjSetAsBoolList : Term TermSet -> Term .
-  eq conjSetAsBoolList('`{`{`{_;_;_`}`}`}[ST, BT, CS], PT) = '_|=_[ST, PT] .
-  eq conjSetAsBoolList('`{`{`{_;_;_`}`}`}[ST, BT, CS], TS) = '_`,_[conjProps(ST, TS)] .
-
-  op conjAsBoolList : Term TermList -> Term .
-  eq conjAsBoolList(ST, TL) = conjSetAsBoolList(ST, TermSet(TL)) .
   
   --- StateSet PropSet -> StateSet
   op propSetInstSet : StepResultSet TermList ~> StepResultSet . 
