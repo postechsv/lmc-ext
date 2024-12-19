@@ -915,9 +915,9 @@ mod META-SYMBOLIC-CONNECTOR is
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
   eq next(ST)    
-   = propSetInstSet(metaNarrow2(expandRules(trMod(##m##), ##f##), ST), ##f##) .
+   = filterStates(trMod(##m##), nextCandidates(ST)) .
   eq variant(ST) 
-   = propSetInitInstSet({ST,none,unlabeled | ST}, ##f##) .
+   = filterStates(trMod(##m##), nextCandidates(ST)) .
 
   op wrapInitState : Term -> Term .
   eq wrapInitState('<<<_|_>>>[TL]) = '<<<_|_>>>[TL] .
