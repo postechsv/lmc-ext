@@ -909,6 +909,10 @@ mod META-SYMBOLIC-CONNECTOR is
   eq variant(ST) 
    = propSetInitInstSet({ST,none,unlabeled | ST}, ##f##) .
 
+  op wrapInitState : Term -> Term .
+  eq wrapInitState('<<<_|_>>>[TL]) = '<<<_|_>>>[TL] .
+  eq wrapInitState(T) = '<<<_|_>>>[T, 'true.Bool] [owise] .
+
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, B, D) 
