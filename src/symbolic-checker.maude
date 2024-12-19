@@ -913,6 +913,11 @@ mod META-SYMBOLIC-CONNECTOR is
   eq wrapInitState('<<<_|_>>>[TL]) = '<<<_|_>>>[TL] .
   eq wrapInitState(T) = '<<<_|_>>>[T, 'true.Bool] [owise] .
 
+  op trStateSet : Term -> StepResultSet .
+  eq trStateSet('_\/_[empty]) = empty .
+  eq trStateSet('_\/_[T,TL]) = {wrapInitState(T),none,unlabeled | wrapInitState(T)} || trStateSet('_\/_[TL]) .
+  eq trStateSet(ST) = {wrapInitState(ST),none,unlabeled | wrapInitState(ST)} [owise] .
+
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, B, D) 
