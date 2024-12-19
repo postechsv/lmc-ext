@@ -916,8 +916,8 @@ mod META-SYMBOLIC-CONNECTOR is
 --- TODO: keep both a state and a substitution for a counter example..
   eq next(ST)    
    = filterStates(trMod(##m##), nextCandidates(ST)) .
-  eq variant(ST) 
-   = filterStates(trMod(##m##), nextCandidates(ST)) .
+  eq initVariant(ST) 
+   = initStep(filterStates(trMod(##m##), initCandidates(ST))) .
 
   op wrapInitState : Term -> Term .
   eq wrapInitState('<<<_|_>>>[TL]) = '<<<_|_>>>[TL] .
