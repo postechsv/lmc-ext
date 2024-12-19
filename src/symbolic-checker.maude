@@ -1168,33 +1168,6 @@ mod LMC-COMMAND-PROCESSING is
       else << DB ; getMsg(T?:[Term]) >> fi
   if T?:[Term] := solveBubbles('bubble['__[TL]], M, B, VDS, DB) .
 
-  --- parse lmc command args: procLMCComd(BUBBLES,MOD,HasMetaLv?,HasCond?,...)
-  op parseLMCCondArg1 : Qid Term Type Bound Module VariableSet Database TermList 
-                    -> Tuple{Database,QidList} .
-  op parseLMCCondArg2 : Qid Term Bound Module VariableSet Database TermList 
-                    -> Tuple{Database,QidList} .
-
- --- the last argument (with condition)
- ceq parseLMCCondArg1(F, 'bubble['__[TL]], TY, D, M, VDS, DB, TL1)
-   = if RP? :: ResultPair
-     then parseLMCCondArg2(F, getTerm(RP?), D, M, VDS, DB, TL1)
-     else << DB ; ('\r 'Error: '\o 'no 'parse 'for 
-                    downQidList('__[TL,''..Qid]) '\n) >> fi
-  if M1 := addOps(
-       op '_s.t._. : TY '@Condition@ -> 'PatternCondition [prec(122)] .
-       op '_such`that_. : TY '@Condition@ -> 'PatternCondition [prec(122)] .,
-       addSorts('PatternCondition, addInfoConds(M))) 
-  /\ RP? := metaParse(M1, downQidList('__[TL,''..Qid]), 'PatternCondition) .
-
-  --- parse conditions
-  eq parseLMCCondArg2(F, QI[T1,T2], D, M, VDS, DB, TL1)
-    = if QI == '_s.t._. or QI == '_such`that_. 
-      then procLMC(F, (TL1,T1), parseCond(T2), D, M, VDS, DB)
-      else procLMC(F, (TL1,QI[T1,T2]), nil, D, M, VDS, DB)
-      fi .
-  eq parseLMCCondArg2(F, T, D, M, VDS, DB, TL1)
-   = procLMC(F, (TL1,T), nil, D, M, VDS, DB) [owise] .
-
 -------------------------------------
 --- execute commands
 ---
