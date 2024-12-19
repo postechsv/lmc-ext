@@ -902,6 +902,16 @@ mod META-SYMBOLIC-CONNECTOR is
    = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
   eq S1:State ~= S2:State = false [owise] .
 
+  op nextCandidates : Term -> StepResultSet .
+  eq nextCandidates(ST) = metaNarrowCollect(expandRules(trMod(##m##), ##f##), ST, 0) |> ST .
+
+  op initCandidates : Term -> StepResultSet .
+  eq initCandidates(ST) = genVariants(trMod(##m##), trStateSet(ST)) .
+
+  op initStep : StepResultSet -> StepResultSet .
+  eq initStep(empty) = empty .
+  eq initStep({T,SUB,RN | ST} || SRS:StepResultSet) = next(T) || initStep(SRS:StepResultSet) .
+
 --- compute the next states
 --- TODO: keep both a state and a substitution for a counter example..
   eq next(ST)    
