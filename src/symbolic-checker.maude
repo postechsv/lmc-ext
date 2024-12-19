@@ -773,6 +773,10 @@ fmod META-NARROWING-INTERFACE is
   eq genVariants(M, empty) = empty .
   eq genVariants(M, {T,SUB,RN | ST} || SRS) = getVariantTerms(getVariantSet(M, T, '@), T) || genVariants(M, SRS) .
 
+  op simplifySubstitutions : StepResultSet -> StepResultSet .
+  eq simplifySubstitutions(empty) = empty .
+  eq simplifySubstitutions({ST,SUB,RN | T} || SRS) = cleanRedundant({ST,summarize(T, SUB),RN | T}) || simplifySubstitutions(SRS) .
+
   op filterStates : Module StepResultSet -> StepResultSet .
   eq filterStates(M, empty) = empty .
   ceq filterStates(M, {'`{`{`{_|_|_`}`}`}[ST, PT, BT],SUB,RN | T} || SRS) = filterStates(M, SRS) if BT == 'false.Bool or (BT =/= 'true.Bool and not checkIncomplete(M, BT)) .
