@@ -1162,14 +1162,10 @@ mod LMC-COMMAND-PROCESSING is
   if T?:[Term] := solveBubbles('bubble[QI],M,B,VDS,DB) .
 
  --- the last argument (may have condition)
- ceq procLMCComd(F, 'bubble['__[TL]], M, B, D, VDS, DB, TL1)
-   = if T?:[Term] :: Term
-     then procLMC(F, (TL1,T?:[Term]), nil, D, M, VDS,DB)
-     else 
-       if lmcCmdCond(F) :: Type
-       then parseLMCCondArg1(F,'bubble['__[TL]],lmcCmdCond(F),D,M,VDS,DB,TL1)
-       else << DB ; getMsg(T?:[Term]) >> fi
-     fi
+  ceq procLMCComd(F, 'bubble['__[TL]], M, B, D, VDS, DB, TL1)
+  = if T?:[Term] :: Term
+      then procLMC(F, (TL1,T?:[Term]), nil, D, M, VDS,DB)
+      else << DB ; getMsg(T?:[Term]) >> fi
   if T?:[Term] := solveBubbles('bubble['__[TL]], M, B, VDS, DB) .
 
   --- parse lmc command args: procLMCComd(BUBBLES,MOD,HasMetaLv?,HasCond?,...)
