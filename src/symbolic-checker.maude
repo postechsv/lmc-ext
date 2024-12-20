@@ -632,6 +632,12 @@ fmod RULE-EXPANSION is
   eq appendAnd('true.Bool, TL) = '_and_[TL] .
   eq appendAnd(CT, TL) = '_and_[CT, TL] .
 
+  op prin : Term -> Term .
+  eq prin(T) = T [print "[Term] " T] .
+
+  op prin : TermList -> TermList .
+  eq prin(TL) = TL [print "[TermList] " TL] .
+
   op generateRules : Module VariantPairSet AttrSet -> RuleSet .
   eq generateRules(M, empty, ATRS) = none .
   ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
@@ -666,6 +672,12 @@ fmod RULE-EXPANSION is
         CTs := craftConstraints('##ST:State, RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
         VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,PT',CT'], '@) /\
         RLS := generateInitRules(M, VARS, narrowing) .
+
+  op prin : RuleSet -> RuleSet .
+  eq prin(RLS) = RLS [print RLS] .
+
+  op prin : PropEvalMap -> PropEvalMap .
+  eq prin(PEM:PropEvalMap) = PEM:PropEvalMap [print "[PropEvalMap] " PEM:PropEvalMap] .
   
   op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
   eq expandRuleSet(M, none, RPCS) = none .
