@@ -719,22 +719,6 @@ mod META-LMC-THEORY is
   if {ST',SUB',RN | T} || SRS := next(ST) .
 endm
 
-fmod GROUND-BOOL-LIST is
-  sorts GroundBool GroundBoolList BoolList .
-  subsort GroundBool < Bool < BoolList .
-  subsort GroundBool < GroundBoolList < BoolList .
-
-  op true : -> GroundBool [ctor special (id-hook SystemTrue)] .
-  op false : -> GroundBool [ctor special (id-hook SystemFalse)] .
-
-  op empty : -> GroundBoolList [ctor] .
-  op _,_ : GroundBoolList GroundBoolList ->  GroundBoolList [assoc ctor id: empty] .
-  op _,_ : BoolList BoolList -> BoolList [assoc ctor id: empty] .
-endfm
-
-fmod SUBSTITUTION-SIMPLIFACTION is
-endfm
-
 fmod META-NARROWING-INTERFACE is
   pr META-LMC-PARAMETERS .
   pr LMC-RESULT-SET .
