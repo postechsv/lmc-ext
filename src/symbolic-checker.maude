@@ -214,9 +214,9 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
 endfm
 
 
-****************************************
-***  Full Maude Narrowing Connector  ***
-****************************************
+**********************************
+***  Meta Narrowing Connector  ***
+**********************************
 
 load full-maude321
 
