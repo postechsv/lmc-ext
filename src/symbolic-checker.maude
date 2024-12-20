@@ -1150,6 +1150,12 @@ mod LMC-COMMAND-PROCESSING is
 -------------------------------------
 --- parse arguments
 ---
+  --- command condition type
+  op lmcCmdCond : Qid -> Type? .
+  eq lmcCmdCond('lmc_|=_.)  = 'Formula .
+  eq lmcCmdCond('lfmc_|=_.) = 'Formula .
+  eq lmcCmdCond(QI) = anyType [owise] . --- no condition
+
   op procLMCComd : Qid TermList Module Bool Bound VariableSet Database TermList 
                 -> Tuple{Database,QidList} .
 
