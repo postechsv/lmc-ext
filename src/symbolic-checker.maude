@@ -51,11 +51,12 @@ fmod STATE-SYNTAX is
     eq false <=> false = true .
     eq true <=> false = false .
     eq false <=> true = false .
-
+    
     op _~_ : Universal Universal -> Bool [prec 51 poly (1 2)] .
 
     var PM : PropMap .
     vars P P' : Prop .
+    var B : Bool .
 
     --- Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable)
     op isComplete : PropMap -> Bool .
@@ -77,11 +78,9 @@ fmod STATE-SYNTAX is
     eq {{{ ST | (P *> B) PM | CT }}} |= P = B .
     eq {{{ ST | PM | CT }}} |= P = false [owise] .
 
-    op initExtend : InitState -> ExState .
-    eq initExtend(BS) = {{{ BS ; true ; emptyConstraintSet }}} .
-
-    sort ExStatePair .
-    op pair : ExState ExState -> ExStatePair [ctor] .
+    sorts ExRuleElements ExInitRuleElements .
+    op exRule : State PropMap Bool State PropMap Bool -> ExRuleElements [ctor] .
+    op exInitRule : State Bool PropMap Bool -> ExInitRuleElements [ctor] .
 endfm
 
 fmod SYMBOLIC-CHECKER is
