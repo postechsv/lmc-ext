@@ -295,56 +295,62 @@ fmod LMC-RESULT-SET is
 endfm
 
 fmod RULE-TERM-RENAMING is
-    pr META-LEVEL .
-    pr INT .
-    pr STRING .
-    pr CONVERSION .
+  pr META-LEVEL .
+  pr INT .
+  pr STRING .
+  pr CONVERSION .
 
-    sort VarIndices .
-    op {_,_,_} : Nat Nat Nat -> VarIndices [ctor] .
-    op fail : -> VarIndices [ctor] .
+  sort VarIndices .
+  op {_,_,_,_} : String Nat Nat Nat -> VarIndices [ctor] .
+  op fail : -> VarIndices [ctor] .
+  op __ : VarIndices VarIndices -> VarIndices [assoc comm ctor id: fail] .
 
-    vars P C L : Nat .
-    vars S Prf : String .
+  vars P C L : Nat .
+  vars S Prf : String .
 
-    op findVarIndices : String String -> VarIndices .
-    ceq findVarIndices(S, Prf) = {P,C,L} if P := rfind(S, Prf, length(S)) /\ C := rfind(S, ":", length(S)) /\ L := length(S) /\ P =/= notFound /\ C =/= notFound .
-    eq findVarIndices(S, Prf) = fail [owise] .
+  op findVarIndices : String String -> VarIndices .
+  ceq findVarIndices(S, Prf) = {Prf,P,C,L} if P := rfind(S, Prf, length(S)) /\ C := rfind(S, ":", length(S)) /\ L := length(S) /\ P + 1 < C /\ C + 1 < L .
+  eq findVarIndices(S, Prf) = fail [owise] .
 
-    op renameRuleTerms : TermList -> TermList .
-    eq renameRuleTerms(empty) = empty .
-    eq renameRuleTerms((T:Term, TL:TermList)) = renameRuleTerm(T:Term), renameRuleTerms(TL:TermList) .
+  var V : Variable .
+  var NS : String .
+  var N : Nat .
+  var VIS : VarIndices .
 
-    var V : Variable .
+  op renameVarString : String VarIndices -> String .
+  ceq renameVarString(S, {Prf,P,C,L} VIS) = Prf + Prf + NS + ":" + substr(S, C + 1, L + (- 1))
+    if NS := substr(S, P + 1, C + (- 1)) /\ N := rat(NS, 10) .
+  eq renameVarString(S, VIS) = S [owise] .
 
-    op renameRuleTerm : Term -> Term .
-    eq renameRuleTerm(C:Constant) = C:Constant .
-    eq renameRuleTerm(F:Qid[TL:TermList]) = F:Qid[renameRuleTerms(TL:TermList)] .
-    eq renameRuleTerm(V) =
-      if findVarIndices(string(V), "#") =/= fail
-      then
-         let {P,C,L} = findVarIndices(string(V), "#") in
-         if (rat(substr(string(V), P + 1, C + (- 1)), 10) :: Nat)
-         then qid("##" + substr(string(V), P + 1, C + (- 1)) + ":" + substr(string(V), C + 1, L + (- 1)))
-         else V
-         fi
-      else
-      if findVarIndices(string(V), "%") =/= fail
-      then
-         let {P,C,L} = findVarIndices(string(V), "%") in
-         if (rat(substr(string(V), P + 1, C + (- 1)), 10) :: Nat)
-         then qid("%%" + substr(string(V), P + 1, C + (- 1)) + ":" + substr(string(V), C + 1, L + (- 1)))
-         else V
-         fi
-      else
-      if findVarIndices(string(V), "@") =/= fail
-      then
-         let {P,C,L} = findVarIndices(string(V), "@") in
-         if (rat(substr(string(V), P + 1, C + (- 1)), 10) :: Nat)
-         then qid("@@" + substr(string(V), P + 1, C + (- 1)) + ":" + substr(string(V), C + 1, L + (- 1)))
-         else V
-         fi
-      else V fi fi fi .
+  op collectVarIndices : TermList -> VarIndices .
+  eq collectVarIndices(empty) = fail .
+  ceq collectVarIndices((T:Term, TL:TermList)) = collectVarIndices(T:Term) collectVarIndices(TL:TermList) if TL:TermList =/= empty .
+
+  op collectVarIndices : Term -> VarIndices .
+  eq collectVarIndices(C:Constant) = fail .
+  eq collectVarIndices(F:Qid[TL:TermList]) = collectVarIndices(TL:TermList) .
+  eq collectVarIndices(V) = findVarIndices(string(V), "#") findVarIndices(string(V), "%") findVarIndices(string(V), "@") .
+  
+  op renameRuleTerms : TermList -> TermList .
+  eq renameRuleTerms(empty) = empty .
+  eq renameRuleTerms((T:Term, TL:TermList)) = renameRuleTerm(T:Term), renameRuleTerms(TL:TermList) .
+
+  --- Rename auto-generated variable names so that they can be used inside rule definitions
+  op renameRuleTerm : Term -> Term .
+  eq renameRuleTerm(C:Constant) = C:Constant .
+  eq renameRuleTerm(F:Qid[TL:TermList]) = F:Qid[renameRuleTerms(TL:TermList)] .
+  eq renameRuleTerm(V) = qid(renameVarString(string(V), findVarIndices(string(V), "#") findVarIndices(string(V), "%") findVarIndices(string(V), "@"))) .
+
+  sort Qid? .
+  subsort Qid < Qid? .
+  op noInternalPrefix : -> Qid? [ctor] .
+
+  op findInternalPrefix : VarIndices -> Qid? .
+  eq findInternalPrefix({Prf,P,C,L} VIS) = qid(Prf) .
+  eq findInternalPrefix(VIS) = noInternalPrefix [owise] .
+
+  op findInternalPrefix : Term -> Qid? .
+  eq findInternalPrefix(T:Term) = findInternalPrefix(collectVarIndices(T:Term)) .
 endfm
 
 fmod COMPLETENESS-DECLARATION is
