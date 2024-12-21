@@ -618,6 +618,11 @@ fmod RULE-EXPANSION is
     op craftConstraints : Term RulePropConf -> TermList . 
     eq craftConstraints(ST, ((Q *> incomplete(B)), RPC)) = ('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, RPC) .
     eq craftConstraints(ST, RPC) = empty [owise] .
+
+    op craftCompleteness : Term RulePropConf CompletenessSet -> Term .
+    eq craftCompleteness(CPT, ((Q *> incomplete(B, complete(B'))), RPC), CS) = 'update[craftCompleteness(CPT, RPC, CS), 'incomplete['true.Bool]] .
+    eq craftCompleteness(CPT, ((Q *> incomplete(B, incomplete(B'))), RPC), CS) = 'update[craftCompleteness(CPT, RPC, CS), '_`,_['incomplete['true.Bool], 'incomplete['false.Bool]]] .
+    eq craftCompleteness(CPT, RPC, CS) = 'update[CPT, upTerm(CS)] [owise] .
       
     op toTermList : Condition -> TermList .
     eq toTermList(T1 = T2) = '_<=>_[T1, T2] .
