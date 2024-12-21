@@ -17,18 +17,23 @@ fmod RULE-NAME is
 endfm
 
 fmod COMPLETENESS is 
-    pr META-LEVEL .    
-    pr SATISFACTION .
+  pr META-LEVEL .    
+  pr SATISFACTION .
 
-    sorts Completeness CompletenessSet .
-    subsort Completeness < CompletenessSet .
+  sorts Completeness CompletenessSet .
+  subsort Completeness < CompletenessSet .
 
-    op incomplete : Bool -> Completeness [ctor] . --- Denotes true/false-COMPLETENESS of its corresponding proposition
-    op complete : Bool -> Completeness [ctor] .
-    op undefined : -> CompletenessSet [ctor] .
+  op incomplete : Bool -> Completeness [ctor] . --- Denotes true/false-COMPLETENESS of its corresponding proposition
+  op complete : Bool -> Completeness [ctor] .
+  op undefined : -> CompletenessSet [ctor] .
 
-    op _,_ : CompletenessSet CompletenessSet -> CompletenessSet [assoc comm ctor id: undefined] .
-    eq C:Completeness, C:Completeness = C:Completeness .
+  op _,_ : CompletenessSet CompletenessSet -> CompletenessSet [assoc comm ctor id: undefined] .
+  eq C:Completeness, C:Completeness = C:Completeness .
+
+  op find : CompletenessSet Bool -> CompletenessSet .
+  eq find((complete(B:Bool), CS:CompletenessSet), B:Bool) = complete(B:Bool) .
+  eq find((incomplete(B:Bool), CS:CompletenessSet), B:Bool) = incomplete(B:Bool) .
+  eq find(CS:CompletenessSet, B:Bool) = undefined [owise] .
 endfm
 
 fmod STATE-SYNTAX is
