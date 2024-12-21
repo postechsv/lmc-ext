@@ -34,6 +34,12 @@ fmod COMPLETENESS is
   eq find((complete(B:Bool), CS:CompletenessSet), B:Bool) = complete(B:Bool) .
   eq find((incomplete(B:Bool), CS:CompletenessSet), B:Bool) = incomplete(B:Bool) .
   eq find(CS:CompletenessSet, B:Bool) = undefined [owise] .
+
+  op update : CompletenessSet CompletenessSet -> CompletenessSet [assoc] .
+  eq update(CS:CompletenessSet, undefined) = CS:CompletenessSet .
+  eq update(undefined, CS:CompletenessSet) = CS:CompletenessSet .
+  eq update((complete(B:Bool), CS:CompletenessSet), (incomplete(B:Bool), CS':CompletenessSet)) = (incomplete(B:Bool), update(CS:CompletenessSet, CS':CompletenessSet)) .
+  eq update((C:Completeness, CS:CompletenessSet), CS':CompletenessSet) = update(CS:CompletenessSet, CS':CompletenessSet) [owise] .
 endfm
 
 fmod STATE-SYNTAX is
