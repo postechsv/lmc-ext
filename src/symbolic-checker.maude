@@ -436,28 +436,6 @@ fmod COMPLETENESS-DECLARATION is
 
     op prin : MaybeBool -> MaybeBool .
     eq prin(B:MaybeBool) = B:MaybeBool [print "[MaybeBool] " B:MaybeBool] .
-
-    op errorBool : -> Bool .
-    op matchIncomplete : Module TermList Bool -> Bool .
-    eq matchIncomplete(M, empty, B) = false .
-    ceq matchIncomplete(M, (T, TL), B) = matchIncomplete(M, T, B) or matchIncomplete(M, TL, B) if TL =/= empty .
-
-    op matchIncomplete : Module Term Bool -> Bool . 
-    eq matchIncomplete(M, '_|=_[ST, P:Qid [TL]], B) = isPropCompleteFor(M, P:Qid, B) == false .
-    eq matchIncomplete(M, '_|=_[ST, P:Constant], B) = isPropCompleteFor(M, getName(P:Constant), B) == false .
-    eq matchIncomplete(M, '_or_[TL], B) = matchIncomplete(M, TL, B) .
-    eq matchIncomplete(M, '_and_[TL], B) = matchIncomplete(M, TL, B) .
-    ceq matchIncomplete(M, O:Qid [TL], B) = isOpCompleteFor(M, O:Qid, B) == false if O:Qid =/= '_or_ /\ O:Qid =/= '_and_ /\ O:Qid =/= '_|=_ .
-    eq matchIncomplete(M, C:Constant, B) = isOpCompleteFor(M, C:Constant, B) == false .
-
-    op checkIncomplete : Module TermList -> Bool .
-    eq checkIncomplete(M, empty) = false .
-    ceq checkIncomplete(M, (T, TL)) = checkIncomplete(M, T) or checkIncomplete(M, TL) if TL =/= empty .
-
-    op checkIncomplete : Module Term -> Bool .
-    eq checkIncomplete(M, '_<=>_[PT, BT]) = matchIncomplete(M, PT, downTerm(BT, errorBool)) .
-    eq checkIncomplete(M, '_and_[TL]) = checkIncomplete(M, TL) .
-    eq checkIncomplete(M, T) = matchIncomplete(M, T, true) [owise] .  
 endfm
 
 fmod RULE-PROP-CONF is
