@@ -280,10 +280,10 @@ fmod LMC-RESULT-SET is
   var SRS : StepResultSet .
   var RN : RuleName .
 
-  op _|>_ : StepResult TermList -> StepResult .
-  eq (empty).StepResult |> TL = (empty).StepResult .
-  eq ({ST,S,RN | T} || SRS) |> TL = {ST,(S |> TL),RN | T} || (SRS |> TL) .
-  eq (failure || SRS ) |> TL = failure || (SRS |> TL) .
+  op _|>_ : StepResult Term -> StepResult .
+  eq empty |> T = (empty).StepResult .
+  eq ({ST,S,RN | T} || SRS) |> T = {ST,(S |> T),RN | T} || (SRS |> T) .
+  eq (failure || SRS) |> T = failure || (SRS |> T) .
 
   sort VariantSet .
   subsort Variant < VariantSet .
