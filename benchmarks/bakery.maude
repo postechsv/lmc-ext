@@ -1,2 +1,7 @@
 --- Lamport's Bakery protocol in Maude.
 --- From: All About Maude - A High-Performance Logical Framework. 
+
+fmod BAKERY-SYNTAX is 
+  pr NAT .
+
+endfm
