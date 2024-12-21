@@ -10,6 +10,6 @@ fmod BAKERY-SYNTAX is
 
   subsorts ProcIdle < ProcIdleSet . 
   subsorts ProcWait < ProcWaitSet . 
-  subsorts ProcIdle  < Proc ProcWait < ProcSet . 
+  subsorts ProcIdle ProcWait < Proc < ProcSet . 
   subsorts ProcIdleSet < ProcWaitSet < ProcSet . 
 endfm
