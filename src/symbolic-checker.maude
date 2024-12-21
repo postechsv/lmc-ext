@@ -107,12 +107,13 @@ fmod SYMBOLIC-CHECKER is
   op nil : -> TransitionList [ctor] .
   op __ : TransitionList TransitionList -> TransitionList [ctor assoc id: nil format (d ni d)] .
   op prefix_loop_ : TransitionList TransitionList -> ModelCheckResult [ctor format(n n++i n ni i--)] .
-  
-  *** State set
+
+*** State set
   sorts StateSet .
   subsort State < StateSet .
   op _\/_ : StateSet StateSet -> StateSet [ctor assoc comm prec 121] .
 endfm
+
 
 **************************************************
 ***    Logical Model Checker on META-LEVEL     ***
@@ -243,12 +244,13 @@ fmod META-LMC-PARAMETERS is
 
   --- as Full Maude internally generates StratModule, we need
   --- to remove all strat declarations for narrowing.
-      
+
   op trMod : Module -> SModule [memo] . 
   eq trMod(smod H is IL sorts SS . SSDS OPDS MAS EQS RLS STDS STDFS endsm)
    = mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm .
   eq trMod(M:Module) = M:Module [owise] .
 endfm
+
 
 fmod LMC-RESULT-SET is
   pr FM-RESULT-CONTEXT-SET .
@@ -267,16 +269,11 @@ fmod LMC-RESULT-SET is
   eq X:StepResult || X:StepResult = X:StepResult .
 
   var M : Module . 
-  vars NextVar : Nat . 
-  vars S S' : Substitution .
-  vars T TS CtTS ST : Term . 
-  var TL : TermList . 
+  var S : Substitution .
+  vars T ST : Term . 
   var TP : Type . 
   var R : Rule .
   var Tr : TraceNarrow . 
-  var B : Flags . 
-  vars Ct CtS : Context .  
-  var NAR : NarrowingApplyResult . 
   var SRS : StepResultSet .
   var RN : RuleName .
 
@@ -294,406 +291,407 @@ fmod LMC-RESULT-SET is
 endfm
 
 fmod RULE-TERM-RENAMING is
-  pr META-LEVEL .
-  pr INT .
-  pr STRING .
-  pr CONVERSION .
+    pr META-LEVEL .
+    pr INT .
+    pr STRING .
+    pr CONVERSION .
 
-  sort VarIndices .
-  op {_,_,_,_} : String Nat Nat Nat -> VarIndices [ctor] .
-  op fail : -> VarIndices [ctor] .
-  op __ : VarIndices VarIndices -> VarIndices [assoc comm ctor id: fail] .
+    sort VarIndices .
+    op {_,_,_,_} : String Nat Nat Nat -> VarIndices [ctor] .
+    op fail : -> VarIndices [ctor] .
+    op __ : VarIndices VarIndices -> VarIndices [assoc comm ctor id: fail] .
 
-  vars P C L : Nat .
-  vars S Prf : String .
+    vars P C L : Nat .
+    vars S Prf : String .
 
-  op findVarIndices : String String -> VarIndices .
-  ceq findVarIndices(S, Prf) = {Prf,P,C,L} if P := rfind(S, Prf, length(S)) /\ C := rfind(S, ":", length(S)) /\ L := length(S) /\ P + 1 < C /\ C + 1 < L .
-  eq findVarIndices(S, Prf) = fail [owise] .
+    op findVarIndices : String String -> VarIndices .
+    ceq findVarIndices(S, Prf) = {Prf,P,C,L} if P := rfind(S, Prf, length(S)) /\ C := rfind(S, ":", length(S)) /\ L := length(S) /\ P + 1 < C /\ C + 1 < L .
+    eq findVarIndices(S, Prf) = fail [owise] .
 
-  var V : Variable .
-  var NS : String .
-  var N : Nat .
-  var VIS : VarIndices .
+    var V : Variable .
+    var NS : String .
+    var N : Nat .
+    var VIS : VarIndices .
 
-  op renameVarString : String VarIndices -> String .
-  ceq renameVarString(S, {Prf,P,C,L} VIS) = Prf + Prf + NS + ":" + substr(S, C + 1, L + (- 1))
-    if NS := substr(S, P + 1, C + (- 1)) /\ N := rat(NS, 10) .
-  eq renameVarString(S, VIS) = S [owise] .
+    op renameVarString : String VarIndices -> String .
+    ceq renameVarString(S, {Prf,P,C,L} VIS) = Prf + Prf + NS + ":" + substr(S, C + 1, L + (- 1))
+      if NS := substr(S, P + 1, C + (- 1)) /\ N := rat(NS, 10) .
+    eq renameVarString(S, VIS) = S [owise] .
 
-  op collectVarIndices : TermList -> VarIndices .
-  eq collectVarIndices(empty) = fail .
-  ceq collectVarIndices((T:Term, TL:TermList)) = collectVarIndices(T:Term) collectVarIndices(TL:TermList) if TL:TermList =/= empty .
+    op collectVarIndices : TermList -> VarIndices .
+    eq collectVarIndices(empty) = fail .
+    ceq collectVarIndices((T:Term, TL:TermList)) = collectVarIndices(T:Term) collectVarIndices(TL:TermList) if TL:TermList =/= empty .
 
-  op collectVarIndices : Term -> VarIndices .
-  eq collectVarIndices(C:Constant) = fail .
-  eq collectVarIndices(F:Qid[TL:TermList]) = collectVarIndices(TL:TermList) .
-  eq collectVarIndices(V) = findVarIndices(string(V), "#") findVarIndices(string(V), "%") findVarIndices(string(V), "@") .
-  
-  op renameRuleTerms : TermList -> TermList .
-  eq renameRuleTerms(empty) = empty .
-  eq renameRuleTerms((T:Term, TL:TermList)) = renameRuleTerm(T:Term), renameRuleTerms(TL:TermList) .
+    op collectVarIndices : Term -> VarIndices .
+    eq collectVarIndices(C:Constant) = fail .
+    eq collectVarIndices(F:Qid[TL:TermList]) = collectVarIndices(TL:TermList) .
+    eq collectVarIndices(V) = findVarIndices(string(V), "#") findVarIndices(string(V), "%") findVarIndices(string(V), "@") .
+    
+    op renameRuleTerms : TermList -> TermList .
+    eq renameRuleTerms(empty) = empty .
+    eq renameRuleTerms((T:Term, TL:TermList)) = renameRuleTerm(T:Term), renameRuleTerms(TL:TermList) .
 
-  --- Rename auto-generated variable names so that they can be used inside rule definitions
-  op renameRuleTerm : Term -> Term .
-  eq renameRuleTerm(C:Constant) = C:Constant .
-  eq renameRuleTerm(F:Qid[TL:TermList]) = F:Qid[renameRuleTerms(TL:TermList)] .
-  eq renameRuleTerm(V) = qid(renameVarString(string(V), findVarIndices(string(V), "#") findVarIndices(string(V), "%") findVarIndices(string(V), "@"))) .
+    --- Rename auto-generated variable names so that they can be used inside rule definitions
+    op renameRuleTerm : Term -> Term .
+    eq renameRuleTerm(C:Constant) = C:Constant .
+    eq renameRuleTerm(F:Qid[TL:TermList]) = F:Qid[renameRuleTerms(TL:TermList)] .
+    eq renameRuleTerm(V) = qid(renameVarString(string(V), findVarIndices(string(V), "#") findVarIndices(string(V), "%") findVarIndices(string(V), "@"))) .
 
-  sort Qid? .
-  subsort Qid < Qid? .
-  op noInternalPrefix : -> Qid? [ctor] .
+    sort Qid? .
+    subsort Qid < Qid? .
+    op noInternalPrefix : -> Qid? [ctor] .
 
-  op findInternalPrefix : VarIndices -> Qid? .
-  eq findInternalPrefix({Prf,P,C,L} VIS) = qid(Prf) .
-  eq findInternalPrefix(VIS) = noInternalPrefix [owise] .
+    op findInternalPrefix : VarIndices -> Qid? .
+    eq findInternalPrefix({Prf,P,C,L} VIS) = qid(Prf) .
+    eq findInternalPrefix(VIS) = noInternalPrefix [owise] .
 
-  op findInternalPrefix : Term -> Qid? .
-  eq findInternalPrefix(T:Term) = findInternalPrefix(collectVarIndices(T:Term)) .
+    op findInternalPrefix : Term -> Qid? .
+    eq findInternalPrefix(T:Term) = findInternalPrefix(collectVarIndices(T:Term)) .
 endfm
 
 fmod COMPLETENESS-DECLARATION is
-  pr SATISFACTION .
-  pr COMPLETENESS .
+    pr SATISFACTION .
+    pr COMPLETENESS .
 
-  sorts CompletenessMapData CompletenessMap CompletenessKey .
-  op %prop : Qid -> CompletenessKey [ctor] .
-  op %operator : Qid -> CompletenessKey [ctor] .
-  op _=>_ : CompletenessKey CompletenessSet -> CompletenessMapData [ctor prec 45] . 
+    sorts CompletenessMapData CompletenessMap CompletenessKey .
+    op %prop : Qid -> CompletenessKey [ctor] .
+    op %operator : Qid -> CompletenessKey [ctor] .
+    op _=>_ : CompletenessKey CompletenessSet -> CompletenessMapData [ctor prec 45] . 
 
-  op nil : -> CompletenessMapData [ctor] .
-  op _;_ : CompletenessMapData CompletenessMapData -> CompletenessMapData [assoc comm ctor prec 50 id: nil] .
-  op empty : -> CompletenessMap [ctor] .
-  op {_} : CompletenessMapData -> CompletenessMap [ctor] .
+    op nil : -> CompletenessMapData [ctor] .
+    op _;_ : CompletenessMapData CompletenessMapData -> CompletenessMapData [assoc comm ctor prec 50 id: nil] .
+    op empty : -> CompletenessMap [ctor] .
+    op {_} : CompletenessMapData -> CompletenessMap [ctor] .
 
-  sort MaybeBool .
-  subsort Bool < MaybeBool .
-  op unknown : -> MaybeBool .
+    sort MaybeBool .
+    subsort Bool < MaybeBool .
+    op unknown : -> MaybeBool .
 
-  var M : Module .
-  vars T T' ST BT PT IT : Term .
-  var TL : TermList .
-  var CK : CompletenessKey .
-  vars CS CS' : CompletenessSet .
-  var CM : CompletenessMapData .
-  vars B B' : Bool .
-  var OPDS : OpDeclSet .
-  var EQS : EquationSet .
-  var ATRS : AttrSet .
+    var M : Module .
+    vars T T' ST BT PT IT : Term .
+    var TL : TermList .
+    var CK : CompletenessKey .
+    vars CS CS' : CompletenessSet .
+    var CM : CompletenessMapData .
+    vars B B' : Bool .
+    var OPDS : OpDeclSet .
+    var EQS : EquationSet .
+    var ATRS : AttrSet .
 
-  op fillCompleteness : CompletenessSet -> CompletenessSet .
-  eq fillCompleteness(complete(B)) = complete(B), incomplete(not B) .
-  eq fillCompleteness(incomplete(B)) = complete(not B), incomplete(B) .
-  eq fillCompleteness(CS) = CS [owise] .
+    op fillCompleteness : CompletenessSet -> CompletenessSet .
+    eq fillCompleteness(complete(B)) = complete(B), incomplete(not B) .
+    eq fillCompleteness(incomplete(B)) = complete(not B), incomplete(B) .
+    eq fillCompleteness(CS) = CS [owise] .
 
-  op insert : CompletenessKey CompletenessSet CompletenessMap -> CompletenessMap .
-  eq insert(CK, CS, empty) = { CK => CS } .
-  eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
-  eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
+    op insert : CompletenessKey CompletenessSet CompletenessMap -> CompletenessMap .
+    eq insert(CK, CS, empty) = { CK => CS } .
+    eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
+    eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
 
-  op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
-  eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
-  eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
-  eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
+    op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
+    eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
+    eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
+    eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
 
-  op prin : Substitution? -> Substitution? .
-  eq prin(SUB?::Substitution?) = SUB?::Substitution? [print SUB?::Substitution?] .
+    op prin : Substitution? -> Substitution? .
+    eq prin(SUB?::Substitution?) = SUB?::Substitution? [print SUB?::Substitution?] .
 
-  op errorTerm : -> [Term] .
-  op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
-  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) .
-  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) .
-  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) .
-  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
-  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
-  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
-  
-  eq declaredCompleteness(M, OPDS, EQS) = empty [owise] .
-
-  op declaredCompleteness : Module -> CompletenessMap [memo] .
-  eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
-
-  op prin : CompletenessMap -> CompletenessMap .
-  eq prin(CM:CompletenessMap) = CM:CompletenessMap [print "[CompletenessMap] " CM:CompletenessMap] .
-
-  op prin : MaybeBool -> MaybeBool .
-  eq prin(MB:MaybeBool) = MB:MaybeBool [print "[MaybeBool] " MB:MaybeBool] .
-
-  op isPropCompleteFor : Module Qid Bool -> MaybeBool .
-  eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
-
-  op isOpCompleteFor : Module Qid Bool -> MaybeBool .
-  eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
+    op errorTerm : -> [Term] .
+    op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
+    eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) .
+    eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) .
+    eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) .
+    ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
+    ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
+    ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
     
-  op prin : Bool -> Bool .
-  eq prin(B:Bool) = B:Bool [print "[Bool] " B:Bool] .
+    eq declaredCompleteness(M, OPDS, EQS) = empty [owise] .
 
-  op prin : MaybeBool -> MaybeBool .
-  eq prin(B:MaybeBool) = B:MaybeBool [print "[MaybeBool] " B:MaybeBool] .
+    op declaredCompleteness : Module -> CompletenessMap [memo] .
+    eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
 
-  op errorBool : -> Bool .
-  op matchIncomplete : Module TermList Bool -> Bool .
-  eq matchIncomplete(M, empty, B) = false .
-  ceq matchIncomplete(M, (T, TL), B) = matchIncomplete(M, T, B) or matchIncomplete(M, TL, B) if TL =/= empty .
+    op prin : CompletenessMap -> CompletenessMap .
+    eq prin(CM:CompletenessMap) = CM:CompletenessMap [print "[CompletenessMap] " CM:CompletenessMap] .
 
-  op matchIncomplete : Module Term Bool -> Bool . 
-  eq matchIncomplete(M, '_|=_[ST, P:Qid [TL]], B) = isPropCompleteFor(M, P:Qid, B) == false .
-  eq matchIncomplete(M, '_|=_[ST, P:Constant], B) = isPropCompleteFor(M, getName(P:Constant), B) == false .
-  eq matchIncomplete(M, '_or_[TL], B) = matchIncomplete(M, TL, B) .
-  eq matchIncomplete(M, '_and_[TL], B) = matchIncomplete(M, TL, B) .
-  ceq matchIncomplete(M, O:Qid [TL], B) = isOpCompleteFor(M, O:Qid, B) == false if O:Qid =/= '_or_ /\ O:Qid =/= '_and_ /\ O:Qid =/= '_|=_ .
-  eq matchIncomplete(M, C:Constant, B) = isOpCompleteFor(M, C:Constant, B) == false .
+    op prin : MaybeBool -> MaybeBool .
+    eq prin(MB:MaybeBool) = MB:MaybeBool [print "[MaybeBool] " MB:MaybeBool] .
 
-  op checkIncomplete : Module TermList -> Bool .
-  eq checkIncomplete(M, empty) = false .
-  ceq checkIncomplete(M, (T, TL)) = checkIncomplete(M, T) or checkIncomplete(M, TL) if TL =/= empty .
+    op isPropCompleteFor : Module Qid Bool -> MaybeBool .
+    eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
 
-  op checkIncomplete : Module Term -> Bool .
-  eq checkIncomplete(M, '_<=>_[PT, BT]) = matchIncomplete(M, PT, downTerm(BT, errorBool)) .
-  eq checkIncomplete(M, '_and_[TL]) = checkIncomplete(M, TL) .
-  eq checkIncomplete(M, T) = matchIncomplete(M, T, true) [owise] .  
+    op isOpCompleteFor : Module Qid Bool -> MaybeBool .
+    eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
+      
+    op prin : Bool -> Bool .
+    eq prin(B:Bool) = B:Bool [print "[Bool] " B:Bool] .
+
+    op prin : MaybeBool -> MaybeBool .
+    eq prin(B:MaybeBool) = B:MaybeBool [print "[MaybeBool] " B:MaybeBool] .
+
+    op errorBool : -> Bool .
+    op matchIncomplete : Module TermList Bool -> Bool .
+    eq matchIncomplete(M, empty, B) = false .
+    ceq matchIncomplete(M, (T, TL), B) = matchIncomplete(M, T, B) or matchIncomplete(M, TL, B) if TL =/= empty .
+
+    op matchIncomplete : Module Term Bool -> Bool . 
+    eq matchIncomplete(M, '_|=_[ST, P:Qid [TL]], B) = isPropCompleteFor(M, P:Qid, B) == false .
+    eq matchIncomplete(M, '_|=_[ST, P:Constant], B) = isPropCompleteFor(M, getName(P:Constant), B) == false .
+    eq matchIncomplete(M, '_or_[TL], B) = matchIncomplete(M, TL, B) .
+    eq matchIncomplete(M, '_and_[TL], B) = matchIncomplete(M, TL, B) .
+    ceq matchIncomplete(M, O:Qid [TL], B) = isOpCompleteFor(M, O:Qid, B) == false if O:Qid =/= '_or_ /\ O:Qid =/= '_and_ /\ O:Qid =/= '_|=_ .
+    eq matchIncomplete(M, C:Constant, B) = isOpCompleteFor(M, C:Constant, B) == false .
+
+    op checkIncomplete : Module TermList -> Bool .
+    eq checkIncomplete(M, empty) = false .
+    ceq checkIncomplete(M, (T, TL)) = checkIncomplete(M, T) or checkIncomplete(M, TL) if TL =/= empty .
+
+    op checkIncomplete : Module Term -> Bool .
+    eq checkIncomplete(M, '_<=>_[PT, BT]) = matchIncomplete(M, PT, downTerm(BT, errorBool)) .
+    eq checkIncomplete(M, '_and_[TL]) = checkIncomplete(M, TL) .
+    eq checkIncomplete(M, T) = matchIncomplete(M, T, true) [owise] .  
 endfm
 
 fmod RULE-PROP-CONF is
-  pr QID .
-  pr COMPLETENESS .
+    pr QID .
+    pr COMPLETENESS .
 
-  sort PropEval .
+    sort PropEval .
 
-  op genVariants : -> PropEval [ctor] . --- Signifies that variant generation is needed for its corresponding proposition
-  subsort Completeness < PropEval .
+    op genVariants : -> PropEval [ctor] . --- Signifies that variant generation is needed for its corresponding proposition
+    subsort Completeness < PropEval .
 
-  sort PropEvalSet .
-  subsort PropEval < PropEvalSet .
-  op emptyPropEvalSet : -> PropEvalSet [ctor] .
-  op __ : PropEvalSet PropEvalSet -> PropEvalSet [assoc ctor comm id: emptyPropEvalSet] .
-  eq PE:PropEval PE:PropEval = PE:PropEval .
+    sort PropEvalSet .
+    subsort PropEval < PropEvalSet .
+    op emptyPropEvalSet : -> PropEvalSet [ctor] .
+    op __ : PropEvalSet PropEvalSet -> PropEvalSet [assoc ctor comm id: emptyPropEvalSet] .
+    eq PE:PropEval PE:PropEval = PE:PropEval .
 
-  sorts PropEvalMap PropEvalMapping .
-  subsort PropEvalMapping < PropEvalMap .
+    sorts PropEvalMap PropEvalMapping .
+    subsort PropEvalMapping < PropEvalMap .
 
-  op emptyPropEvalMap : -> PropEvalMap [ctor] .
-  op _*>_ : Qid PropEvalSet -> PropEvalMapping .
-  op __ : PropEvalMap PropEvalMap -> PropEvalMap [assoc ctor comm id: emptyPropEvalMap] .
+    op emptyPropEvalMap : -> PropEvalMap [ctor] .
+    op _*>_ : Qid PropEvalSet -> PropEvalMapping .
+    op __ : PropEvalMap PropEvalMap -> PropEvalMap [assoc ctor comm id: emptyPropEvalMap] .
 
-  sorts RulePropConf RulePropConfSet .
-  subsort PropEvalMapping < RulePropConf .
-  op emptyRulePropConf : -> RulePropConf [ctor] .
-  op _,_ : RulePropConf RulePropConf -> RulePropConf [assoc ctor comm id: emptyRulePropConf] .
+    sorts RulePropConf RulePropConfSet .
+    subsort PropEvalMapping < RulePropConf .
+    op emptyRulePropConf : -> RulePropConf [ctor] .
+    op _,_ : RulePropConf RulePropConf -> RulePropConf [assoc ctor comm id: emptyRulePropConf] .
 
-  subsort RulePropConf < RulePropConfSet .
-  op emptyRulePropConfSet : -> RulePropConfSet [ctor] .
-  op _;_ : RulePropConfSet RulePropConfSet -> RulePropConfSet [assoc ctor comm id: emptyRulePropConfSet] .
+    subsort RulePropConf < RulePropConfSet .
+    op emptyRulePropConfSet : -> RulePropConfSet [ctor] .
+    op _;_ : RulePropConfSet RulePropConfSet -> RulePropConfSet [assoc ctor comm id: emptyRulePropConfSet] .
 endfm
 
 fmod PROP-INFO-EXTRACTION is
-  pr RULE-PROP-CONF .
-  pr COMPLETENESS-DECLARATION .
-  pr META-LEVEL .
+    pr RULE-PROP-CONF .
+    pr COMPLETENESS-DECLARATION .
+    pr META-LEVEL .
 
-  var Q : Qid .
-  var M : Module .
-  vars T ST BT PT : Term .
-  vars TL TL1 TL2 TL3 : TermList .
-  
-  var PROP : Constant .
+    var Q : Qid .
+    var M : Module .
+    vars T ST BT PT : Term .
+    vars TL TL1 TL2 TL3 : TermList .
+    
+    var PROP : Constant .
 
-  var TYL : TypeList .
-  var EQS : EquationSet .
-  var OPDS : OpDeclSet .
-  var ATRS : AttrSet .
+    var TYL : TypeList .
+    var EQS : EquationSet .
+    var OPDS : OpDeclSet .
+    var ATRS : AttrSet .
 
-  var PE : PropEval .
-  var PES : PropEvalSet .
-  var PEM : PropEvalMapping .
-  var PEMm : PropEvalMap .
+    var PE : PropEval .
+    var PES : PropEvalSet .
+    var PEM : PropEvalMapping .
+    var PEMm : PropEvalMap .
 
-  var RPC : RulePropConf .
-  var RPCS : RulePropConfSet .
+    var RPC : RulePropConf .
+    var RPCS : RulePropConfSet .
 
-  vars B B' : Bool .
+    vars B B' : Bool .
 
-  op toPropTerm : Qid -> Term .
-  eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
+    op toPropTerm : Qid -> Term .
+    eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
 
-  op dedup : TermList -> TermList .
-  eq dedup((TL1, T, TL2, T, TL3)) = dedup((TL1, T, TL2, TL3)) .
-  eq dedup(TL) = TL [owise] .
+    op dedup : TermList -> TermList .
+    eq dedup((TL1, T, TL2, T, TL3)) = dedup((TL1, T, TL2, TL3)) .
+    eq dedup(TL) = TL [owise] .
 
-  op getIncompleteness : Module Qid Bool -> PropEvalSet .
-  ceq getIncompleteness(M, Q, B) = incomplete(B) if B' := isPropCompleteFor(M, Q, B) /\ not B' .
-  eq getIncompleteness(M, Q, B) = emptyPropEvalSet [owise] .
+    op getIncompleteness : Module Qid Bool -> PropEvalSet .
+    ceq getIncompleteness(M, Q, B) = incomplete(B) if B' := isPropCompleteFor(M, Q, B) /\ not B' .
+    eq getIncompleteness(M, Q, B) = emptyPropEvalSet [owise] .
 
-  op getPropIncompletes : Module Qid -> PropEvalSet .
-  eq getPropIncompletes(M, Q) = getIncompleteness(M, Q, true) getIncompleteness(M, Q, false) .
+    op getPropIncompletes : Module Qid -> PropEvalSet .
+    eq getPropIncompletes(M, Q) = getIncompleteness(M, Q, true) getIncompleteness(M, Q, false) .
 
-  op getVariantEval : Qid EquationSet -> PropEvalSet .
-  ceq getVariantEval(Q, (eq '_|=_[ST, PROP] = BT [variant ATRS] .) EQS) = genVariants if getName(PROP) = Q .
-  eq getVariantEval(Q, EQS) = emptyPropEvalSet [owise] .
+    op getVariantEval : Qid EquationSet -> PropEvalSet .
+    ceq getVariantEval(Q, (eq '_|=_[ST, PROP] = BT [variant ATRS] .) EQS) = genVariants if getName(PROP) = Q .
+    eq getVariantEval(Q, EQS) = emptyPropEvalSet [owise] .
 
-  op getPropInfo : Module TermList EquationSet -> PropEvalMap .
-  ceq getPropInfo(M, (T, TL), EQS) = (Q *> getPropIncompletes(M, Q) getVariantEval(Q, EQS)) getPropInfo(M, TL, EQS) if Q := getName(T) .
-  eq getPropInfo(M, TL, EQS) = emptyPropEvalMap [owise] .
+    op getPropInfo : Module TermList EquationSet -> PropEvalMap .
+    ceq getPropInfo(M, (T, TL), EQS) = (Q *> getPropIncompletes(M, Q) getVariantEval(Q, EQS)) getPropInfo(M, TL, EQS) if Q := getName(T) .
+    eq getPropInfo(M, TL, EQS) = emptyPropEvalMap [owise] .
 
-  op getPropInfo : Module TermList -> PropEvalMap .
-  eq getPropInfo(M, TL) = getPropInfo(M, dedup(TL), getEqs(M)) .
+    op getPropInfo : Module TermList -> PropEvalMap .
+    eq getPropInfo(M, TL) = getPropInfo(M, dedup(TL), getEqs(M)) .
 
-  op insertPropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
-  eq insertPropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
-  eq insertPropInfo(PEM, RPC ; RPCS) = (PEM, RPC) ; insertPropInfo(PEM, RPCS) .
+    op insertPropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
+    eq insertPropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
+    eq insertPropInfo(PEM, RPC ; RPCS) = (PEM, RPC) ; insertPropInfo(PEM, RPCS) .
 
-  --- Get the cross product of PropEvalMappings
-  op crossPropInfo : PropEvalMap -> RulePropConfSet .
-  eq crossPropInfo(emptyPropEvalMap) = emptyRulePropConfSet .
-  eq crossPropInfo((Q *> emptyPropEvalSet) PEMm) = emptyRulePropConfSet .
-  eq crossPropInfo((Q *> PE PES)) = (Q *> PE) ; crossPropInfo((Q *> PES)) .
-  eq crossPropInfo((Q *> PE PES) PEMm) = crossPropInfo((Q *> PES) PEMm) ; insertPropInfo((Q *> PE), crossPropInfo(PEMm)) .
+    --- Get the cross product of PropEvalMappings
+    op crossPropInfo : PropEvalMap -> RulePropConfSet .
+    eq crossPropInfo(emptyPropEvalMap) = emptyRulePropConfSet .
+    eq crossPropInfo((Q *> emptyPropEvalSet) PEMm) = emptyRulePropConfSet .
+    eq crossPropInfo((Q *> PE PES)) = (Q *> PE) ; crossPropInfo((Q *> PES)) .
+    eq crossPropInfo((Q *> PE PES) PEMm) = crossPropInfo((Q *> PES) PEMm) ; insertPropInfo((Q *> PE), crossPropInfo(PEMm)) .
 endfm
 
 fmod VARIANT-GENERATION is
-  pr META-LEVEL .
+    pr META-LEVEL .
 
-  sorts VariantPair VariantPairSet .
-  subsort VariantPair < VariantPairSet .
+    sorts VariantPair VariantPairSet .
+    subsort VariantPair < VariantPairSet .
 
-  op empty : -> VariantPairSet [ctor] .
-  op {_,_} : Term Substitution -> VariantPair [ctor] .
-  op _#_ : VariantPairSet VariantPairSet -> VariantPairSet [assoc comm ctor id: empty] .
+    op empty : -> VariantPairSet [ctor] .
+    op {_,_} : Term Substitution -> VariantPair [ctor] .
+    op _#_ : VariantPairSet VariantPairSet -> VariantPairSet [assoc comm ctor id: empty] .
 
-  vars Q Q' : Qid .
-  var M : Module .
-  vars T T' : Term .
-  var N : Nat .
-  var SUB : Substitution .
-  var B : Bool .
+    vars Q Q' : Qid .
+    var M : Module .
+    vars T T' : Term .
+    var N : Nat .
+    var SUB : Substitution .
+    var B : Bool .
 
-  var VARS : VariantPairSet .
+    var VARS : VariantPairSet .
 
-  op getVariantSet : Module Term Nat Qid Variant? -> VariantPairSet .
-  eq getVariantSet(M, T, N, Q, {T',SUB,Q',P:Parent,B}) = {T',SUB} # getVariantSet(M, T, s N, Q) .
-  eq getVariantSet(M, T, N, Q, VV:Variant?) = empty [owise] .
+    op getVariantSet : Module Term Nat Qid Variant? -> VariantPairSet .
+    eq getVariantSet(M, T, N, Q, {T',SUB,Q',P:Parent,B}) = {T',SUB} # getVariantSet(M, T, s N, Q) .
+    eq getVariantSet(M, T, N, Q, VV:Variant?) = empty [owise] .
 
-  op getVariantSet : Module Term Nat Qid -> VariantPairSet .
-  eq getVariantSet(M, T, N, Q) = getVariantSet(M, T, N, Q, metaGetIrredundantVariant(M, T, empty, Q, N)) .
+    op getVariantSet : Module Term Nat Qid -> VariantPairSet .
+    eq getVariantSet(M, T, N, Q) = getVariantSet(M, T, N, Q, metaGetIrredundantVariant(M, T, empty, Q, N)) .
 
-  op getVariantSet : Module Term Qid -> VariantPairSet .
-  eq getVariantSet(M, T, Q) = getVariantSet(M, T, 0, Q) .
+    op getVariantSet : Module Term Qid -> VariantPairSet .
+    eq getVariantSet(M, T, Q) = getVariantSet(M, T, 0, Q) .
 endfm
 
 fmod RULE-EXPANSION is
-  pr RULE-TERM-RENAMING .
-  pr PROP-INFO-EXTRACTION .
-  pr VARIANT-GENERATION .
-  
-  var Q : Qid .
-  vars M M' : Module .
-  vars T T1 T2 ST ST' PT PT' CT CT' : Term .
-  vars TL PTs CTs CTs' : TermList .
-  var B : Bool .
-  var SUB : Substitution .
-
-  var TY : Type .
-  var TYL : TypeList .
-  var RL : Rule .
-  vars COND COND' : Condition .
-
-  var IL : ImportList .
-  var SS : SortSet .
-  var SSDS : SubsortDeclSet .
-  var OPDS : OpDeclSet .
-  var MAS : MembAxSet .
-  var EQS : EquationSet .
-  var RLS : RuleSet .
-  var ATRS : AttrSet .
-
-  var VARS : VariantPairSet .
-  var RPC : RulePropConf .
-  var RPCS : RulePropConfSet .
-
-  op toPropTerm : Qid -> Term .
-  eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
-
-  op craftPropMap : Term RulePropConf -> TermList .
-  eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
-  eq craftPropMap(ST, ((Q *> incomplete(B)), RPC)) = ('_*>_[toPropTerm(Q), upTerm(B)]), craftPropMap(ST, RPC) .
-  eq craftPropMap(ST, RPC) = empty [owise] .
-
-  op craftConstraints : Term RulePropConf -> TermList . 
-  eq craftConstraints(ST, ((Q *> incomplete(B)), RPC)) = ('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, RPC) .
-  eq craftConstraints(ST, RPC) = empty [owise] .
+    pr RULE-TERM-RENAMING .
+    pr PROP-INFO-EXTRACTION .
+    pr VARIANT-GENERATION .
     
-  op toTermList : Condition -> TermList .
-  eq toTermList(T1 = T2) = '_<=>_[T1, T2] .
-  eq toTermList(COND /\ COND') = toTermList(COND), toTermList(COND') .
-  eq toTermList(COND) = empty [owise] .
+    var Q : Qid .
+    vars M M' : Module .
+    vars T T1 T2 ST ST' PT PT' CT CT' : Term .
+    vars TL PTs CTs CTs' : TermList .
+    var B : Bool .
+    var SUB : Substitution .
 
-  op wrapUU : TermList -> Term .
-  eq wrapUU(T) = T .
-  eq wrapUU(TL) = '__[TL] .
+    var TY : Type .
+    var TYL : TypeList .
+    var RL : Rule .
+    vars COND COND' : Condition .
 
-  op appendAnd : Term TermList -> Term .
-  eq appendAnd(CT, empty) = CT .
-  eq appendAnd('true.Bool, T) = T .
-  eq appendAnd('true.Bool, TL) = '_and_[TL] .
-  eq appendAnd(CT, TL) = '_and_[CT, TL] .
+    var IL : ImportList .
+    var SS : SortSet .
+    var SSDS : SubsortDeclSet .
+    var OPDS : OpDeclSet .
+    var MAS : MembAxSet .
+    var EQS : EquationSet .
+    var RLS : RuleSet .
+    var ATRS : AttrSet .
 
-  op prin : Term -> Term .
-  eq prin(T) = T [print "[Term] " T] .
-
-  op prin : TermList -> TermList .
-  eq prin(TL) = TL [print "[TermList] " TL] .
-
-  op generateRules : Module VariantPairSet AttrSet -> RuleSet .
-  eq generateRules(M, empty, ATRS) = none .
-  ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
-                                                generateRules(M, VARS, ATRS)
-    if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
-  eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .
-
-  op generateInitRules : Module VariantPairSet AttrSet -> RuleSet .
-  eq generateInitRules(M, empty, ATRS) = none .
-  ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_>>>[ST,CT] => '`{`{`{_|_|_`}`}`}[ST, PT, CT'] [ATRS] .)
-                                                    generateInitRules(M, VARS, ATRS)
-    if 'exInitRule[ST,CT,PT,CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT])) = 'true.Bool /\ CT' =/= 'false.Bool .   
-  eq generateInitRules(M, {T,SUB} # VARS, ATRS) = generateInitRules(M, VARS, ATRS) [owise] .
-
-  op expandRule : Module Rule RulePropConfSet -> RuleSet .
-  ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
-    if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
-        CTs := craftConstraints(ST', RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
-        VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
-        RLS := generateRules(M, VARS, narrowing ATRS) . --- [print VARS] .
-  ceq expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPC ; RPCS) = RLS expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPCS)
-    if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
-        CTs := craftConstraints(ST', RPC) /\ CTs' := toTermList(COND) /\ CT' := appendAnd('##CT:Bool, (CTs, CTs')) /\
-        VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
-        RLS := generateRules(M, VARS, narrowing ATRS) .
-  eq expandRule(M, RL, RPCS) = none [owise] .
-
-  op expandInitRule : Module RulePropConfSet -> RuleSet .
-  eq expandInitRule(M, emptyRulePropConfSet) = none .
-  ceq expandInitRule(M, RPC ; RPCS) = RLS expandInitRule(M, RPCS) 
-    if PTs := craftPropMap('##ST:State, RPC) /\ PT' := wrapUU(PTs) /\
-        CTs := craftConstraints('##ST:State, RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
-        VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,PT',CT'], '@) /\
-        RLS := generateInitRules(M, VARS, narrowing) .
-
-  op prin : RuleSet -> RuleSet .
-  eq prin(RLS) = RLS [print RLS] .
-
-  op prin : PropEvalMap -> PropEvalMap .
-  eq prin(PEM:PropEvalMap) = PEM:PropEvalMap [print "[PropEvalMap] " PEM:PropEvalMap] .
+    var VARS : VariantPairSet .
+    var RPC : RulePropConf .
+    var RPCS : RulePropConfSet .
   
-  op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
-  eq expandRuleSet(M, none, RPCS) = none .
-  eq expandRuleSet(M, RL RLS, RPCS) = expandRule(M, RL, RPCS) expandRuleSet(M, RLS, RPCS) .
+    op toPropTerm : Qid -> Term .
+    eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
 
-  op expandRules : Module TermList -> Module [memo] .
-  ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS 
-                              expandInitRule(M, RPCS) expandRuleSet(M, RLS, RPCS)
-                            endm) 
-    if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M /\ RPCS := crossPropInfo(getPropInfo(M, TL)) .
+    op craftPropMap : Term RulePropConf -> TermList .
+    eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
+    eq craftPropMap(ST, ((Q *> incomplete(B)), RPC)) = ('_*>_[toPropTerm(Q), upTerm(B)]), craftPropMap(ST, RPC) .
+    eq craftPropMap(ST, RPC) = empty [owise] .
+
+    op craftConstraints : Term RulePropConf -> TermList . 
+    eq craftConstraints(ST, ((Q *> incomplete(B)), RPC)) = ('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, RPC) .
+    eq craftConstraints(ST, RPC) = empty [owise] .
+      
+    op toTermList : Condition -> TermList .
+    eq toTermList(T1 = T2) = '_<=>_[T1, T2] .
+    eq toTermList(COND /\ COND') = toTermList(COND), toTermList(COND') .
+    eq toTermList(COND) = empty [owise] .
+
+    op wrapUU : TermList -> Term .
+    eq wrapUU(T) = T .
+    eq wrapUU(TL) = '__[TL] .
+
+    op appendAnd : Term TermList -> Term .
+    eq appendAnd(CT, empty) = CT .
+    eq appendAnd('true.Bool, T) = T .
+    eq appendAnd('true.Bool, TL) = '_and_[TL] .
+    eq appendAnd(CT, TL) = '_and_[CT, TL] .
+
+    op prin : Term -> Term .
+    eq prin(T) = T [print "[Term] " T] .
+
+    op prin : TermList -> TermList .
+    eq prin(TL) = TL [print "[TermList] " TL] .
+
+    op generateRules : Module VariantPairSet AttrSet -> RuleSet .
+    eq generateRules(M, empty, ATRS) = none .
+    ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
+                                                 generateRules(M, VARS, ATRS)
+      if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+    eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .
+
+    op generateInitRules : Module VariantPairSet AttrSet -> RuleSet .
+    eq generateInitRules(M, empty, ATRS) = none .
+    ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_>>>[ST,CT] => '`{`{`{_|_|_`}`}`}[ST, PT, CT'] [ATRS] .)
+                                                     generateInitRules(M, VARS, ATRS)
+      if 'exInitRule[ST,CT,PT,CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+    eq generateInitRules(M, {T,SUB} # VARS, ATRS) = generateInitRules(M, VARS, ATRS) [owise] .
+
+    op expandRule : Module Rule RulePropConfSet -> RuleSet .
+    ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
+      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
+         CTs := craftConstraints(ST', RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
+         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
+         RLS := generateRules(M, VARS, narrowing ATRS) . --- [print VARS] .
+    ceq expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPC ; RPCS) = RLS expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPCS)
+      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
+         CTs := craftConstraints(ST', RPC) /\ CTs' := toTermList(COND) /\ CT' := appendAnd('##CT:Bool, (CTs, CTs')) /\
+         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
+         RLS := generateRules(M, VARS, narrowing ATRS) .
+    eq expandRule(M, RL, RPCS) = none [owise] .
+
+    op expandInitRule : Module RulePropConfSet -> RuleSet .
+    eq expandInitRule(M, emptyRulePropConfSet) = none .
+    ceq expandInitRule(M, RPC ; RPCS) = RLS expandInitRule(M, RPCS) 
+      if PTs := craftPropMap('##ST:State, RPC) /\ PT' := wrapUU(PTs) /\
+         CTs := craftConstraints('##ST:State, RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
+         VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,PT',CT'], '@) /\
+         RLS := generateInitRules(M, VARS, narrowing) .
+
+    op prin : RuleSet -> RuleSet .
+    eq prin(RLS) = RLS [print RLS] .
+
+    op prin : PropEvalMap -> PropEvalMap .
+    eq prin(PEM:PropEvalMap) = PEM:PropEvalMap [print "[PropEvalMap] " PEM:PropEvalMap] .
+    
+    op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
+    eq expandRuleSet(M, none, RPCS) = none .
+    eq expandRuleSet(M, RL RLS, RPCS) = expandRule(M, RL, RPCS) expandRuleSet(M, RLS, RPCS) .
+
+    op expandRules : Module TermList -> Module [memo] .
+    ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS 
+                                expandInitRule(M, RPCS) expandRuleSet(M, RLS, RPCS)
+                              endm) 
+      if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M /\ RPCS := crossPropInfo(getPropInfo(M, TL)) .
 endfm
+---
 
 mod META-LMC-THEORY is
   pr LMC-RESULT-SET .
@@ -722,22 +720,21 @@ endm
 fmod META-NARROWING-INTERFACE is
   pr META-LMC-PARAMETERS .
   pr LMC-RESULT-SET .
-  pr FM-META-NARROWING-SEARCH .
-  pr FM-TERMSET .
+  pr VARIANT-GENERATION .
+  pr COMPLETENESS-DECLARATION .
 
   var M : Module . 
-  var RS : RuleSet .
-  vars T T' T1 T2 ST EST BT ST' PT CS : Term .  
-  var TL : TermList .  
+  vars T T' T1 T2 ST ST' PT BT : Term .  
+  vars TL VL : TermList .  
   var TS : TermSet .
   var C : Constant . 
-  var TP : Type . 
   vars SUB SUB' SUB1 SUB2 SUBI : Substitution .  
   vars NextVar NextVar' N : Nat . 
   var VR : Variant . 
-  var VS : VariantSet .
+  var VS : VariantPairSet .
   var SR : StepResult . 
   var SRS : StepResultSet . 
+  var NAR : NarrowingApplyResult . 
   var P : Parent . 
   var B : Bool .
   vars V1 V2 V3 : Variable .
@@ -756,9 +753,6 @@ fmod META-NARROWING-INTERFACE is
    if getType(V1) = getType(V2) .
   eq cleanRedundant(SR) = SR [owise] .
 
-  op metaNarrow2 : Module Term -> StepResult .
-  eq metaNarrow2(M,T) = metaNarrowCollect(M, T, 0) |> T .
-
   op metaNarrowCollect : Module Term Nat -> StepResultSet .
   ceq metaNarrowCollect(M, T, N) 
     = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} 
@@ -773,6 +767,12 @@ fmod META-NARROWING-INTERFACE is
   op genVariants : Module StepResultSet -> StepResultSet .
   eq genVariants(M, empty) = empty .
   eq genVariants(M, {T,SUB,RN | ST} || SRS) = getVariantTerms(getVariantSet(M, T, '@), T) || genVariants(M, SRS) .
+ 
+--- variant narrowing prop instantiations.
+--- compute the PI-instantated states of the given state.
+  op conjAsBoolList : Term TermList -> TermList .
+  eq conjAsBoolList(ST, (T,TL)) = '_|=_[ST, T], conjAsBoolList(ST, TL) .
+  eq conjAsBoolList(ST, empty) = 'nil.GrBoolList .
 
   op simplifySubstitutions : StepResultSet -> StepResultSet .
   eq simplifySubstitutions(empty) = empty .
@@ -783,85 +783,79 @@ fmod META-NARROWING-INTERFACE is
   ceq filterStates(M, {'`{`{`{_|_|_`}`}`}[ST, PT, BT],SUB,RN | T} || SRS) = filterStates(M, SRS) if BT == 'false.Bool or (BT =/= 'true.Bool and not checkIncomplete(M, BT)) .
   ceq filterStates(M, {'<<<_|_>>>[ST,BT],SUB,RN | T} || SRS) = filterStates(M, SRS) if BT == 'false.Bool or (BT =/= 'true.Bool and not checkIncomplete(M, BT)) .
   eq filterStates(M, {ST,SUB,RN | T} || SRS) = {ST,SUB,RN | T} || filterStates(M, SRS) [owise] .
-
---- variant narrowing prop instantiations.
---- compute the PI-instantated states of the given state.
-  op conjAsBoolList : Term TermList -> TermList .
-  eq conjAsBoolList(ST, (T,TL)) = '_|=_[ST, T], conjAsBoolList(ST, TL) .
-  eq conjAsBoolList(ST, empty) = 'nil.GrBoolList .  
 endfm
 
 mod PARTIAL-COMPLETENESS-FOLDING is
-  pr STATE-SYNTAX .
-  pr VARIANT-GENERATION .
-  pr COMPLETENESS-DECLARATION .
-  pr RULE-TERM-RENAMING .
+    pr STATE-SYNTAX .
+    pr VARIANT-GENERATION .
+    pr COMPLETENESS-DECLARATION .
+    pr RULE-TERM-RENAMING .
 
-  var M : Module .
-  vars T T1 T2 : Term .
-  vars ST1 PT1 CT1 ST2 PT2 CT2 : Term .
-  var P : Term .
-  vars VAR1 VAR2 : VariantPair .
-  vars VARS1 VARS2 : VariantPairSet .
-  vars BT1 BT2 : Term .
-  var ET : Term .
-  vars TL TL1 TL2 : TermList .
-  var B : Bool .
-  var IB : Bool .
-  vars SUB1 SUB2 SUB' : Substitution .
-  vars V1 V2 : Variable .
+    var M : Module .
+    vars T T1 T2 : Term .
+    vars ST1 PT1 CT1 ST2 PT2 CT2 : Term .
+    var P : Term .
+    vars VAR1 VAR2 : VariantPair .
+    vars VARS1 VARS2 : VariantPairSet .
+    vars BT1 BT2 : Term .
+    var ET : Term .
+    vars TL TL1 TL2 : TermList .
+    var B : Bool .
+    var IB : Bool .
+    vars SUB1 SUB2 SUB' : Substitution .
+    vars V1 V2 : Variable .
 
-  op negate : Term -> Term .
-  eq negate('true.Bool) = 'false.Bool .
-  eq negate('false.Bool) = 'true.Bool .
-  eq negate('_<=>_[ET, BT1]) = '_<=>_[ET, negate(BT1)] .
-  eq negate('_and_[TL1]) = '_or_[negate(TL1)] .
-  eq negate('_or_[TL1]) = '_and_[negate(TL1)] .
+    op negate : Term -> Term .
+    eq negate('true.Bool) = 'false.Bool .
+    eq negate('false.Bool) = 'true.Bool .
+    eq negate('_<=>_[ET, BT1]) = '_<=>_[ET, negate(BT1)] .
+    eq negate('_and_[TL1]) = '_or_[negate(TL1)] .
+    eq negate('_or_[TL1]) = '_and_[negate(TL1)] .
 
-  op negate : TermList -> TermList .
-  eq negate(empty) = empty .
-  eq negate((T1, TL1)) = (negate(T1), negate(TL1)) .
+    op negate : TermList -> TermList .
+    eq negate(empty) = empty .
+    eq negate((T1, TL1)) = (negate(T1), negate(TL1)) .
 
-  op filterTrue : VariantPairSet -> VariantPairSet .
-  eq filterTrue({'true.Bool, SUB1} # VARS1) = {'true.Bool, SUB1} # filterTrue(VARS1) .
-  eq filterTrue(VARS1) = empty [owise] .
+    op filterTrue : VariantPairSet -> VariantPairSet .
+    eq filterTrue({'true.Bool, SUB1} # VARS1) = {'true.Bool, SUB1} # filterTrue(VARS1) .
+    eq filterTrue(VARS1) = empty [owise] .
 
-  op getConstraintVariants : Module Term -> VariantPairSet .
-  eq getConstraintVariants(M, T) = filterTrue(getVariantSet(M, renameRuleTerm(T), '%)) .
+    op getConstraintVariants : Module Term -> VariantPairSet .
+    eq getConstraintVariants(M, T) = filterTrue(getVariantSet(M, renameRuleTerm(T), '%)) .
 
-  op _>>_ : Substitution Substitution -> Substitution .
-  eq none >> SUB2 = SUB2 .
-  eq (V1 <- T1 ; SUB1) >> SUB2 = V1 <- $applySubstitution(T1, SUB2) ; (SUB1 >> SUB2) .
+    op _>>_ : Substitution Substitution -> Substitution .
+    eq none >> SUB2 = SUB2 .
+    eq (V1 <- T1 ; SUB1) >> SUB2 = V1 <- $applySubstitution(T1, SUB2) ; (SUB1 >> SUB2) .
 
-  op substitutionIncludes : Module Substitution Substitution -> Bool .
-  eq substitutionIncludes(M, none, SUB2) = true .
-  eq substitutionIncludes(M, (V1 <- T1) ; SUB1, (V1 <- T2) ; SUB2) = metaMatch(M, T1, T2, nil, 0) :: Substitution and substitutionIncludes(M, SUB1, SUB2) .
-  eq substitutionIncludes(M, SUB1, SUB2) = false [owise] .
+    op substitutionIncludes : Module Substitution Substitution -> Bool .
+    eq substitutionIncludes(M, none, SUB2) = true .
+    eq substitutionIncludes(M, (V1 <- T1) ; SUB1, (V1 <- T2) ; SUB2) = metaMatch(M, T1, T2, nil, 0) :: Substitution and substitutionIncludes(M, SUB1, SUB2) .
+    eq substitutionIncludes(M, SUB1, SUB2) = false [owise] .
 
-  op variantIncludes : Module VariantPair VariantPair Substitution -> Bool .
-  eq variantIncludes(M, {T1,SUB1}, {T2,SUB2}, SUB') = substitutionIncludes(M, SUB1, SUB' >> SUB2) .
+    op variantIncludes : Module VariantPair VariantPair Substitution -> Bool .
+    eq variantIncludes(M, {T1,SUB1}, {T2,SUB2}, SUB') = substitutionIncludes(M, SUB1, SUB' >> SUB2) .
 
-  op variantSetIncludes : Module VariantPairSet VariantPairSet Substitution -> Bool .
-  eq variantSetIncludes(M, empty, VAR2, SUB') = true .
-  eq variantSetIncludes(M, VAR1 # VARS1, VAR2, SUB') = variantIncludes(M, VAR1, VAR2, SUB') or variantSetIncludes(M, VARS1, VAR2, SUB') .
+    op variantSetIncludes : Module VariantPairSet VariantPairSet Substitution -> Bool .
+    eq variantSetIncludes(M, empty, VAR2, SUB') = true .
+    eq variantSetIncludes(M, VAR1 # VARS1, VAR2, SUB') = variantIncludes(M, VAR1, VAR2, SUB') or variantSetIncludes(M, VARS1, VAR2, SUB') .
 
-  op variantSetIncludes : Module VariantPairSet VariantPairSet Substitution -> Bool .
-  eq variantSetIncludes(M, VARS1, empty, SUB') = true .
-  eq variantSetIncludes(M, VARS1, VAR2 # VARS2, SUB') = variantSetIncludes(M, VARS1, VAR2, SUB') or variantSetIncludes(M, VARS1, VARS2, SUB') .
+    op variantSetIncludes : Module VariantPairSet VariantPairSet Substitution -> Bool .
+    eq variantSetIncludes(M, VARS1, empty, SUB') = true .
+    eq variantSetIncludes(M, VARS1, VAR2 # VARS2, SUB') = variantSetIncludes(M, VARS1, VAR2, SUB') or variantSetIncludes(M, VARS1, VARS2, SUB') .
 
-  op constraintIncludes : Module Term Term Substitution -> Bool .
-  eq constraintIncludes(M, T1, 'true.Bool, SUB') = getTerm(metaReduce(M, T1)) == 'true.Bool .
-  ceq constraintIncludes(M, T1, T2, SUB') = variantSetIncludes(M, getConstraintVariants(M, T1), getConstraintVariants(M, T2), SUB')
-    if not checkIncomplete(M, T1) /\ not checkIncomplete(M, T2) .
-  ceq constraintIncludes(M, T1, T2, SUB') = constraintIncludes(M, negate(T2), negate(T1), SUB')
-    if checkIncomplete(M, T1) /\ checkIncomplete(M, T2) /\ not checkIncomplete(M, negate(T1)) /\ not checkIncomplete(M, negate(T2)) .
-  eq constraintIncludes(M, T1, T2, SUB') = false [owise] .
+    op constraintIncludes : Module Term Term Substitution -> Bool .
+    eq constraintIncludes(M, T1, 'true.Bool, SUB') = getTerm(metaReduce(M, T1)) == 'true.Bool .
+    ceq constraintIncludes(M, T1, T2, SUB') = variantSetIncludes(M, getConstraintVariants(M, T1), getConstraintVariants(M, T2), SUB')
+      if not checkIncomplete(M, T1) /\ not checkIncomplete(M, T2) .
+    ceq constraintIncludes(M, T1, T2, SUB') = constraintIncludes(M, negate(T2), negate(T1), SUB')
+      if checkIncomplete(M, T1) /\ checkIncomplete(M, T2) /\ not checkIncomplete(M, negate(T1)) /\ not checkIncomplete(M, negate(T2)) .
+    eq constraintIncludes(M, T1, T2, SUB') = false [owise] .
 
-  op _>=_[_] : Term Term Module -> Bool .
-  ceq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = (PT1 == PT2) and constraintIncludes(M, CT1, CT2, SUB')
-    if SUB' := metaMatch(M, ST1, ST2, nil, 0) .
-  eq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = false .
-  eq T1 >= T2 [ M ] = metaMatch(M, T1, T2, nil, 0) :: Substitution .
+    op _>=_[_] : Term Term Module -> Bool .
+    ceq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = (PT1 == PT2) and constraintIncludes(M, CT1, CT2, SUB')
+      if SUB' := metaMatch(M, ST1, ST2, nil, 0) .
+    eq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = false .
+    eq T1 >= T2 [ M ] = metaMatch(M, T1, T2, nil, 0) :: Substitution .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
@@ -872,13 +866,13 @@ mod META-SYMBOLIC-CONNECTOR is
   pr DECL-META-PRETTY-PRINT 
    * (op addOps to addOpsSE, op addEqs to addEqsSE, op addSorts to addSortsSE) .
   pr RULE-EXPANSION .
+  pr PARTIAL-COMPLETENESS-FOLDING .
 
   var M : Module .  
-  vars T T' T1 T2 ST ST' BT BT' PT CT CS CS' C C' : Term . 
-  vars CSS CSS' : TermSet .
+  vars T T' T1 T2 ST ST' PT CT : Term . 
   var RN : RuleName . 
   var RS : RuleSet . 
-  vars TL TL' : TermList .  
+  var TL : TermList .  
   var V : Variable . 
   var TP : Type . 
   vars SUB SUB' SUB'' : Substitution .  
@@ -888,20 +882,27 @@ mod META-SYMBOLIC-CONNECTOR is
   var RT : ResultTriple .  
   var RTS : ResultTripleSet . 
 
-  --- meta prop and state
+--- meta prop and state
   ceq mid(ST) |= prop(PT) 
    = getTerm(metaReduce((##m##), '_|=_[ST, PT])) == 'true.Bool if TT:Term := getTerm(metaReduce((##m##), '_|=_[ST, PT])) .
+
+  op prin : Bool Term Term -> Bool .
+  eq prin(true, ST, ST') = true [print "Folded \n" ST' "\ninto " ST "\n"].
+  eq prin(false, ST, ST') = false .
 
 --- state folding
   eq init(ST) >= init(ST) = true .
   eq mid(ST) >= mid(ST') = ST >= ST' [##m##] .
-  eq S1:State >= S2:State = false [owise]  .
+  eq S1:State >= S2:State = false [owise] .
 
 --- renaming folding
   eq init(ST) ~= init(ST) = true .
   eq mid(ST) ~= mid(ST')
    = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
   eq S1:State ~= S2:State = false [owise] .
+
+  op prin : StepResultSet -> StepResultSet .
+  eq prin(SRS:StepResultSet) = SRS:StepResultSet [print "[StepResultSet] " SRS:StepResultSet] .
 
   op nextCandidates : Term -> StepResultSet .
   eq nextCandidates(ST) = metaNarrowCollect(expandRules(trMod(##m##), ##f##), ST, 0) |> ST .
@@ -913,12 +914,11 @@ mod META-SYMBOLIC-CONNECTOR is
   eq initStep(empty) = empty .
   eq initStep({T,SUB,RN | ST} || SRS:StepResultSet) = next(T) || initStep(SRS:StepResultSet) .
 
---- compute the next states
---- TODO: keep both a state and a substitution for a counter example..
   eq next(ST)    
-   = filterStates(trMod(##m##), nextCandidates(ST)) .
+   = simplifySubstitutions(filterStates(trMod(##m##), nextCandidates(ST))) .
+
   eq initVariant(ST) 
-   = initStep(filterStates(trMod(##m##), initCandidates(ST))) .
+   = initStep(simplifySubstitutions(filterStates(trMod(##m##), initCandidates(ST)))) .
 
   op wrapInitState : Term -> Term .
   eq wrapInitState('<<<_|_>>>[TL]) = '<<<_|_>>>[TL] .
@@ -929,11 +929,14 @@ mod META-SYMBOLIC-CONNECTOR is
   eq trStateSet('_\/_[T,TL]) = {wrapInitState(T),none,unlabeled | wrapInitState(T)} || trStateSet('_\/_[TL]) .
   eq trStateSet(ST) = {wrapInitState(ST),none,unlabeled | wrapInitState(ST)} [owise] .
 
+  op prin : BoundedModelCheckReport -> BoundedModelCheckReport .
+  eq prin(BMCR:BoundedModelCheckReport) = BMCR:BoundedModelCheckReport [print "[BoundedModelCheckReport] " BMCR:BoundedModelCheckReport] .
+
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, B, D) 
-   = symbolicModelCheck(init(getTerm(metaReduce(##m##, 'initExtend[ST]))), O tilde((##m##),PT), B, D) 
-  if sortLeq((##m##), leastSort((##m##),ST), 'State)
+   = symbolicModelCheck(init(ST), O O tilde((##m##),PT), B, D) 
+  if sortLeq((##m##), leastSort((##m##),ST), 'StateSet)
   /\ sortLeq((##m##), leastSort((##m##),PT), 'Formula) .
 
 --- meta formula
@@ -974,11 +977,13 @@ fmod FM-BANNER is
   eq banner = "Logical Model Checker" .
 endfm
 
+
 fmod LMC-COMMANDS is
   inc FM-COMMANDS .
   op lmc_|=_. : @Bubble@ @Bubble@ -> @Command@ [ctor] .
   op lfmc_|=_. : @Bubble@ @Bubble@ -> @Command@ [ctor] .
 endfm
+
 
 --- REDEFINED
 fmod FULL-MAUDE-SIGN is
@@ -1010,9 +1015,9 @@ fmod META-PROP-SET is
   eq #props(M, T)            = empty [owise] .
 endfm
 
+
 mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   pr META-LMC-THEORY .
-  pr META-LMC-COND-THEORY .
   pr BOUNDED-FOLDING-MODEL-CHECKER .
 
   vars Q F : Qid . 
@@ -1094,12 +1099,6 @@ mod LMC-COMMAND-PROCESSING is
   var RP : ResultPair . 
   var  RP? : [ResultPair] .
 
---- command condition type
-  op lmcCmdCond : Qid -> Type? .
-  eq lmcCmdCond('lmc_|=_.)  = 'Formula .
-  eq lmcCmdCond('lfmc_|=_.) = 'Formula .
-  eq lmcCmdCond(QI) = anyType [owise] . --- no condition
-
 --- process lmc commands
   op procLMCComd : Term ModuleExpression Database -> Tuple{Database,QidList} .
 
@@ -1146,29 +1145,29 @@ mod LMC-COMMAND-PROCESSING is
   eq procLMCComd(F, TL, unitError(QIL), B, D, VDS, DB, TL1) = << DB ; QIL >> .
 
   --- the first argument
- ceq procLMCComd(F, (T,TL), M, B, D, VDS, DB, empty)  
-   = if getModule(TMVB) :: Module and-then getTerm(TMVB) :: Term
-     then procLMCComd(F, TL, getModule(TMVB), B, getBound(TMVB),
-                      getVars(TMVB), getDatabase(TMVB), getTerm(TMVB))
-     else << DB ; getMsg(getTerm(metaReduce(getModule(TMVB), getTerm(TMVB)))) >>
-     fi
-   if TMVB := solveBubblesRew(T, M, B, unbounded, VDS, DB) . --- "[1] in MOD :"
+  ceq procLMCComd(F, (T,TL), M, B, D, VDS, DB, empty)  
+    = if getModule(TMVB) :: Module and-then getTerm(TMVB) :: Term
+      then procLMCComd(F, TL, getModule(TMVB), B, getBound(TMVB),
+                        getVars(TMVB), getDatabase(TMVB), getTerm(TMVB))
+      else << DB ; getMsg(getTerm(metaReduce(getModule(TMVB), getTerm(TMVB)))) >>
+      fi
+    if TMVB := solveBubblesRew(T, M, B, unbounded, VDS, DB) . --- "[1] in MOD :"
 
- --- intermediate arguments
- ceq procLMCComd(F, (T1,T2,TL), M, B, D, VDS, DB, TL1) 
-   = if T?:[Term] :: Term
-     then procLMCComd(F, (T2,TL), M, B, D, VDS, DB, (TL1,T?:[Term]))
-     else << DB ; getMsg(T?:[Term]) >> fi
-  if T?:[Term] := solveBubbles(T1,M,B,VDS,DB) .
+  --- intermediate arguments
+  ceq procLMCComd(F, (T1,T2,TL), M, B, D, VDS, DB, TL1) 
+    = if T?:[Term] :: Term
+      then procLMCComd(F, (T2,TL), M, B, D, VDS, DB, (TL1,T?:[Term]))
+      else << DB ; getMsg(T?:[Term]) >> fi
+    if T?:[Term] := solveBubbles(T1,M,B,VDS,DB) .
 
- --- the last argument (no condition)
- ceq procLMCComd(F, 'bubble[QI], M, B, D, VDS, DB, TL1) 
-   = if T?:[Term] :: Term
-     then procLMC(F, (TL1,T?:[Term]), nil, D, M, VDS,DB)
-     else << DB ; getMsg(T?:[Term]) >> fi
-  if T?:[Term] := solveBubbles('bubble[QI],M,B,VDS,DB) .
+  --- the last argument (no condition)
+  ceq procLMCComd(F, 'bubble[QI], M, B, D, VDS, DB, TL1) 
+    = if T?:[Term] :: Term
+      then procLMC(F, (TL1,T?:[Term]), nil, D, M, VDS,DB)
+      else << DB ; getMsg(T?:[Term]) >> fi
+    if T?:[Term] := solveBubbles('bubble[QI],M,B,VDS,DB) .
 
- --- the last argument (may have condition)
+  --- the last argument (may have condition)
   ceq procLMCComd(F, 'bubble['__[TL]], M, B, D, VDS, DB, TL1)
   = if T?:[Term] :: Term
       then procLMC(F, (TL1,T?:[Term]), nil, D, M, VDS,DB)
@@ -1233,8 +1232,9 @@ mod LMC-COMMAND-PROCESSING is
   if RP := metaReduce(upModule('META-LMC-COUNTEREXAMPLE-TRANSFORMER,false),
                       'transRes[T]) .
   eq printLMCCE(M, T)
-   = 'invalid 'counterexample 'term [owise] .
+   = 'invalid 'counterexample 'term .
 endm
+
 
 mod LMC-DATABASE-HANDLING is
   inc FM-DATABASE-HANDLING .
@@ -1261,6 +1261,7 @@ mod LMC-DATABASE-HANDLING is
        default : ME, Atts > 
    if (F == 'lmc_|=_.) or-else (F == 'lfmc_|=_.) .
 endm
+
 
 mod LMC-FULL-MAUDE is
   pr FULL-MAUDE .
