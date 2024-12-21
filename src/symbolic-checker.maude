@@ -37,55 +37,59 @@ fmod COMPLETENESS is
 endfm
 
 fmod STATE-SYNTAX is
-    pr COMPLETENESS .
+  pr COMPLETENESS .
 
-    sorts InitState ExState .
-    subsorts InitState ExState < State .
+  sorts InitState ExState .
+  subsorts InitState ExState < State .
 
-    sorts PropMapping PropMap .
-    subsort PropMapping < PropMap .
+  sorts PropMapping PropMap .
+  subsort PropMapping < PropMap .
 
-    op _*>_ : Prop Bool -> PropMapping [ctor] .
-    op emptyPropMap : -> PropMap [ctor] .
-    op __ : PropMap PropMap -> PropMap [assoc ctor comm id: emptyPropMap] .
+  op _*>_ : Prop Bool -> PropMapping [ctor] .
+  op emptyPropMap : -> PropMap [ctor] .
+  op __ : PropMap PropMap -> PropMap [assoc ctor comm id: emptyPropMap] .
 
-    --- if-and-only-if operator for boolean values
-    --- We use this instead of Maude's standard == operator to delay reduction when non-ground terms are included in either side of the equation
-    op _<=>_ : Bool Bool -> Bool .
-    eq true <=> true = true .
-    eq false <=> false = true .
-    eq true <=> false = false .
-    eq false <=> true = false .
-    
-    op _~_ : Universal Universal -> Bool [prec 51 poly (1 2)] .
+  --- if-and-only-if operator for boolean values
+  --- We use this instead of Maude's standard == operator to delay reduction when non-ground terms are included in either side of the equation
+  op _<=>_ : Bool Bool -> Bool .
+  eq true <=> true = true .
+  eq false <=> false = true .
+  eq true <=> false = false .
+  eq false <=> true = false .
+  
+  op _~_ : Universal Universal -> Bool [prec 51 poly (1 2)] .
 
-    var PM : PropMap .
-    vars P P' : Prop .
-    var B : Bool .
+  var PM : PropMap .
+  vars P P' : Prop .
+  var B : Bool .
 
-    --- Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable)
-    op isComplete : PropMap -> Bool .
-    eq isComplete(emptyPropMap) = true .
-    eq isComplete(P *> true) = true .
-    eq isComplete(P *> false) = true .
-    eq isComplete((P *> true) (P' *> B) PM) = isComplete((P' *> B) PM) .
-    eq isComplete((P *> false) (P' *> B) PM) = isComplete((P' *> B) PM) .
-    eq isComplete(PM) = false [owise] .
+  --- Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable)
+  op isComplete : PropMap -> Bool .
+  eq isComplete(emptyPropMap) = true .
+  eq isComplete(P *> true) = true .
+  eq isComplete(P *> false) = true .
+  eq isComplete((P *> true) (P' *> B) PM) = isComplete((P' *> B) PM) .
+  eq isComplete((P *> false) (P' *> B) PM) = isComplete((P' *> B) PM) .
+  eq isComplete(PM) = false [owise] .
 
-    op <<<_|_>>> : State Bool -> InitState [ctor] .
-    op {{{_|_|_}}} : State PropMap Bool -> ExState [ctor] .   
+  op <<<_|_|_>>> : State Bool CompletenessSet -> InitState [ctor] .    
+  op {{{_|_|_|_}}} : State PropMap Bool CompletenessSet -> ExState [ctor] .   
 
-    var ST : State .
-    var CT : Bool .
+  op <<<_|_>>> : State Bool -> InitState .
 
-    eq <<< ST | CT >>> |= P = ST |= P .
+  var ST : State .
+  var CT : Bool .
+  var CS : CompletenessSet .
 
-    eq {{{ ST | (P *> B) PM | CT }}} |= P = B .
-    eq {{{ ST | PM | CT }}} |= P = false [owise] .
+  eq <<< ST | CT >>> = <<< ST | CT | complete(true), complete(false) >>> .    
+  eq <<< ST | CT | CS >>> |= P = ST |= P .    
 
-    sorts ExRuleElements ExInitRuleElements .
-    op exRule : State PropMap Bool State PropMap Bool -> ExRuleElements [ctor] .
-    op exInitRule : State Bool PropMap Bool -> ExInitRuleElements [ctor] .
+  eq {{{ ST | (P *> B) PM | CT | CS }}} |= P = B .
+  eq {{{ ST | PM | CT | CS }}} |= P = false [owise] .
+
+  sorts ExRuleElements ExInitRuleElements .
+  op exRule : State PropMap Bool State PropMap Bool -> ExRuleElements [ctor] .
+  op exInitRule : State Bool PropMap Bool -> ExInitRuleElements [ctor] .
 endfm
 
 fmod SYMBOLIC-CHECKER is
