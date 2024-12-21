@@ -28,3 +28,10 @@ fmod BAKERY-SYNTAX is
   sort Conf . 
   op _;_;_ : Nat Nat ProcSet -> Conf .
 endfm
+
+mod BAKERY is
+  protecting BAKERY-SYNTAX . 
+
+  op @K : -> Nat .
+
+endm
