@@ -34,5 +34,6 @@ mod FILTER is
   protecting FILTER-SYNTAX .
   var PS : ProcSet .  var VS : VictSet .
   vars I J L : Nat .
-  
+
+  op @NL : -> Nat . --- #procs, #levels (maxLevel = NL - 1)  
 endm
