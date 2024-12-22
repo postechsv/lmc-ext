@@ -19,4 +19,5 @@ mod MODEL is
 
   op waitLHS : -> Prop [ctor] .
   eq vict(s L, J) VS ; proc(I, L, on) PS |= waitLHS = true .
+  eq S |= waitLHS = false [owise] .
 endm
