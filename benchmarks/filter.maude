@@ -36,4 +36,6 @@ mod FILTER is
   vars I J L : Nat .
 
   op @NL : -> Nat . --- #procs, #levels (maxLevel = NL - 1)  
+
+  rl [wait] : vict(s L, J) VS ; proc(I, L, on) PS => vict(s L, I) VS ; proc(I, s L, wait) PS .
 endm
