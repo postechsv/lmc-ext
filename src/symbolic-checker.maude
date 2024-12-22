@@ -707,7 +707,7 @@ fmod RULE-EXPANSION is
 
     op expandRules : Module TermList -> Module [memo] .
     ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS 
-                                expandInitRule(M, RPCS) expandRuleSet(M, RLS, RPCS)
+                                prin(expandInitRule(M, RPCS) expandRuleSet(M, RLS, RPCS))
                               endm) 
       if mod Q is IL sorts SS . SSDS OPDS MAS EQS RLS endm := M /\ RPCS := crossPropInfo(getPropInfo(M, TL)) .
 endfm
