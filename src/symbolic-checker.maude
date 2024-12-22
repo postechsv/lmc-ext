@@ -53,7 +53,7 @@ fmod STATE-SYNTAX is
 
   op _*>_ : Prop Bool -> PropMapping [ctor] .
   op emptyPropMap : -> PropMap [ctor] .
-  op __ : PropMap PropMap -> PropMap [assoc ctor comm id: emptyPropMap] .
+  op __ : PropMapping PropMapping -> PropMapping [assoc ctor comm id: emptyPropMap] .
 
   --- if-and-only-if operator for boolean values
   --- We use this instead of Maude's standard == operator to delay reduction when non-ground terms are included in either side of the equation
