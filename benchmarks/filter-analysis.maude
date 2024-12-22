@@ -2,4 +2,8 @@ load ../tool2 .
 load filter .
 
 mod MODEL is
+  pr FILTER .
+  inc SATISFACTION .
+  inc OBSERVATION .
+
 endm
