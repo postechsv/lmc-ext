@@ -53,5 +53,6 @@ mod FILTER-TEST is
   
   op init : -> Conf .
   eq init = vict(1,0) vict(2,0) vict(3,0) vict(4,0) ; proc(1, 0, on) proc(2, 0, on) proc(3, 0, on) proc(4, 0, on) proc(5, 0, on) .
+  eq @NL = 5 .
 
 endm
