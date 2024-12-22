@@ -59,4 +59,5 @@ mod QLOCK is
 *** State components
   op pc[_]:_ : Pid Label -> Val .
   op queue:_ : Queue -> Val .  
+  op tmp[_]:_ : Pid Queue -> Val .  
 endm
