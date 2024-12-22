@@ -34,4 +34,7 @@ mod MODEL is
   op exitLHS : -> Prop [ctor] .
   eq VS ; proc(I, L, crit) PS |= exitLHS = true .  
   eq S |= exitLHS = false [owise] .  
+
+  --- Defining Observations ---
+  eq obs(S) = < obsUpto(S, waitLHS ; filterLHS ; critLHS ; exitLHS ; twoCrits) > .
 endm
