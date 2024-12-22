@@ -44,4 +44,6 @@ mod MODEL is
 endm
 
 mod FILTER-TEST is
+  protecting MODEL .
+  op goal : -> Prop .
 endm
