@@ -28,4 +28,5 @@ fmod QUEUE is
   sort Queue .
 
   op empty : -> Queue .  
+  op __ : Pid Queue -> Queue .  
 endfm
