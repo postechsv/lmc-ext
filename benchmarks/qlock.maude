@@ -33,4 +33,7 @@ fmod QUEUE is
   op enq : Queue Pid -> Queue .
   op deq : Queue -> Queue .
   op top : Queue -> Pid .  
+
+  var Q : Queue .
+  vars X Y : Pid .  
 endfm
