@@ -42,4 +42,7 @@ fmod QUEUE is
 
   eq deq(empty) = empty .
   eq deq((X Q)) = Q .  
+
+  eq top(empty) = nop .
+  eq top((X Q)) = X .  
 endfm
