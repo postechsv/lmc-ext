@@ -36,4 +36,7 @@ fmod QUEUE is
 
   var Q : Queue .
   vars X Y : Pid .  
+
+  eq enq(empty,X) = X empty .
+  eq enq((Y Q),X) = Y enq(Q,X) .  
 endfm
