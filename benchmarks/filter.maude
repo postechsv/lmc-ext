@@ -31,4 +31,8 @@ fmod FILTER-SYNTAX is
 endfm
 
 mod FILTER is
+  protecting FILTER-SYNTAX .
+  var PS : ProcSet .  var VS : VictSet .
+  vars I J L : Nat .
+  
 endm
