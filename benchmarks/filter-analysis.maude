@@ -11,4 +11,7 @@ mod MODEL is
   var S : State .
   var VS : VictSet .  var PS : ProcSet .
   vars I J L : Nat .  
+
+  --- Defining State Propositions ---
+  op twoCrits : -> Prop [ctor] .
 endm
