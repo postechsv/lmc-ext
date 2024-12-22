@@ -607,8 +607,17 @@ fmod RULE-EXPANSION is
     var RPC : RulePropConf .
     var RPCS : RulePropConfSet .
   
+    var CS : CompletenessSet .
+
+    var CP : Completeness .
+
     op toPropTerm : Qid -> Term .
     eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
+
+    op conditionToTerm : Condition -> Term .
+    eq conditionToTerm(T1 = T2) = '_<=>_[T1, T2] .
+    ceq conditionToTerm(COND /\ COND') = '_and_[conditionToTerm(COND), conditionToTerm(COND')] if COND =/= nil /\ COND' =/= nil .
+    eq conditionToTerm(COND) = 'true.Bool [owise] .
 
     op craftPropMap : Term RulePropConf -> TermList .
     eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
