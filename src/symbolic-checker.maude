@@ -863,13 +863,13 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     eq variantSetIncludes(M, VARS1, empty, SUB') = true .
     eq variantSetIncludes(M, VARS1, VAR2 # VARS2, SUB') = variantSetIncludes(M, VARS1, VAR2, SUB') or variantSetIncludes(M, VARS1, VARS2, SUB') .
 
-    op constraintIncludes : Module Term Term Substitution -> Bool .
-    eq constraintIncludes(M, T1, 'true.Bool, SUB') = getTerm(metaReduce(M, T1)) == 'true.Bool .
-    ceq constraintIncludes(M, T1, T2, SUB') = variantSetIncludes(M, getConstraintVariants(M, T1), getConstraintVariants(M, T2), SUB')
-      if not checkIncomplete(M, T1) /\ not checkIncomplete(M, T2) .
-    ceq constraintIncludes(M, T1, T2, SUB') = constraintIncludes(M, negate(T2), negate(T1), SUB')
-      if checkIncomplete(M, T1) /\ checkIncomplete(M, T2) /\ not checkIncomplete(M, negate(T1)) /\ not checkIncomplete(M, negate(T2)) .
-    eq constraintIncludes(M, T1, T2, SUB') = false [owise] .
+    op constraintIncludes : Module Term Term Term Term Substitution -> Bool .
+    eq constraintIncludes(M, CT1, 'true.Bool, CPT1, CPT2, SUB') = getTerm(metaReduce(M, CT1)) == 'true.Bool .
+    ceq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = variantSetIncludes(M, getConstraintVariants(M, CT1), getConstraintVariants(M, CT2), SUB')
+      if not isMarkedIncomplete(M, CPT1, true) .
+    ceq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = variantSetIncludes(M, getConstraintVariants(M, negate(CT1)), getConstraintVariants(M, negate(CT2)), SUB')
+      if isMarkedIncomplete(M, CPT1, true) /\ isMarkedIncomplete(M, CPT2, true) .    
+    eq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = false [owise] .
 
     op _>=_[_] : Term Term Module -> Bool .
     ceq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = (PT1 == PT2) and constraintIncludes(M, CT1, CT2, SUB')
