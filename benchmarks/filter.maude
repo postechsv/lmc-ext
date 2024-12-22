@@ -38,4 +38,12 @@ mod FILTER is
   op @NL : -> Nat . --- #procs, #levels (maxLevel = NL - 1)  
 
   rl [wait] : vict(s L, J) VS ; proc(I, L, on) PS => vict(s L, I) VS ; proc(I, s L, wait) PS .
+
+  crl [filter] : VS ; proc(I, L, wait) PS => VS ; proc(I, L, on) PS
+    if L < @NL and not conflict(I, L, VS ; proc(I, L, wait) PS) .
+
+  crl [crit] : VS ; proc(I, L, on) PS => VS ; proc(I, L, crit) PS
+    if s L = @NL .  
+
+  rl [exit] : VS ; proc(I, L, crit) PS => VS ; proc(I, 0, on) PS .  
 endm
