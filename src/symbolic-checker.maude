@@ -855,9 +855,9 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     op constraintIncludes : Module Term Term Term Term Substitution -> Bool .
     eq constraintIncludes(M, CT1, 'true.Bool, CPT1, CPT2, SUB') = getTerm(metaReduce(M, CT1)) == 'true.Bool .
     ceq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = variantSetIncludes(M, getConstraintVariants(M, CT1), getConstraintVariants(M, CT2), SUB')
-      if not isMarkedIncomplete(M, CPT1, true) .
+      if not isMarkedIncomplete(M, CPT1, true) /\ not isMarkedIncomplete(M, CPT2, true) .
     ceq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = variantSetIncludes(M, getConstraintVariants(M, negate(CT1)), getConstraintVariants(M, negate(CT2)), SUB')
-      if isMarkedIncomplete(M, CPT1, true) /\ isMarkedIncomplete(M, CPT2, true) .    
+      if isMarkedIncomplete(M, CPT1, true) /\ isMarkedIncomplete(M, CPT2, true) /\ not isMarkedIncomplete(M, CPT1, false) /\ not isMarkedIncomplete(M, CPT2, false) .    
     eq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = false [owise] .
 
     op _>=_[_] : Term Term Module -> Bool .
