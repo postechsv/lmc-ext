@@ -20,5 +20,7 @@ mod MODEL is
   eq N ; M ; [idle] PS |= wakeLHS = true .
   eq S |= wakeLHS = false [owise] .
 
-
+  op critLHS : -> Prop [ctor] .
+  eq N ; M ; [wait(M)] PS |= critLHS = true .
+  eq S |= critLHS = false [owise] .
 endm
