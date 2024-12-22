@@ -14,4 +14,6 @@ mod MODEL is
 
   --- Defining State Propositions ---
   op twoCrits : -> Prop [ctor] .
+  eq VS ; proc(I, L, crit) proc(J, L, crit) PS:ProcSet |= twoCrits = true .
+  eq S |= twoCrits = false [owise] .
 endm
