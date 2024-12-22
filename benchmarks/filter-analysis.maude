@@ -22,4 +22,6 @@ mod MODEL is
   eq S |= waitLHS = false [owise] .
 
   op filterLHS : -> Prop [ctor] .
+  ceq VS ; proc(I, L, wait) PS |= filterLHS = true
+    if L < @NL and not conflict(I, L, VS ; proc(I, L, wait) PS) .
 endm
