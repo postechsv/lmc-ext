@@ -12,3 +12,7 @@
 *** rs, es, ws, cs and ds stand for remainder section,  enqueuing section,
 *** waiting section, critical section and dequeuing section.
 ***
+fmod LABEL is
+  sort Label .
+  ops rs es ws cs ds : -> Label .
+endfm
