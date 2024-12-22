@@ -935,8 +935,8 @@ mod META-SYMBOLIC-CONNECTOR is
    = initStep(simplifySubstitutions(filterStates(trMod(##m##), initCandidates(ST)))) .
 
   op wrapInitState : Term -> Term .
-  eq wrapInitState('<<<_|_>>>[TL]) = '<<<_|_>>>[TL] .
-  eq wrapInitState(T) = '<<<_|_>>>[T, 'true.Bool] [owise] .
+  eq wrapInitState('<<<_|_|_>>>[TL]) = '<<<_|_|_>>>[TL] .
+  eq wrapInitState(T) = '<<<_|_|_>>>[T, 'true.Bool, '_`,_['complete['true.Bool], 'complete['false.Bool]]] [owise] .
 
   op trStateSet : Term -> StepResultSet .
   eq trStateSet('_\/_[empty]) = empty .
