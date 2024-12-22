@@ -54,4 +54,6 @@ mod QLOCK is
 
   sorts Val Sys .
   subsorts Val < Sys .
+*** Configurations
+  op __ : Sys Sys -> Sys [assoc comm] .  
 endm
