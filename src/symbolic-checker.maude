@@ -95,7 +95,9 @@ fmod STATE-SYNTAX is
 
   sorts ExRuleElements ExInitRuleElements .
   op exRule : State PropMap Bool State PropMap Bool -> ExRuleElements [ctor] .
+  op exRule : State PropMap Bool CompletenessSet State PropMap Bool CompletenessSet -> ExRuleElements [ctor] .
   op exInitRule : State Bool PropMap Bool -> ExInitRuleElements [ctor] .
+  op exInitRule : State Bool CompletenessSet PropMap Bool CompletenessSet -> ExInitRuleElements [ctor] .
 endfm
 
 fmod SYMBOLIC-CHECKER is
