@@ -37,4 +37,6 @@ mod MODEL is
 
   --- Defining Observations ---
   eq obs(S) = < obsUpto(S, waitLHS ; filterLHS ; critLHS ; exitLHS ; twoCrits) > .
+  eq reward(< FV:FeatVec , (twoCrits : true) , FV':FeatVec >) = 1.0 .
+
 endm
