@@ -22,3 +22,8 @@ fmod PID is
   sort Pid .
   ops p1 p2 nop : -> Pid .
 endfm
+
+fmod QUEUE is
+  pr PID .
+  sort Queue .
+endfm
