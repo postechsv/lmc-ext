@@ -16,4 +16,6 @@ mod MODEL is
   op twoCrits : -> Prop [ctor] .
   eq VS ; proc(I, L, crit) proc(J, L, crit) PS:ProcSet |= twoCrits = true .
   eq S |= twoCrits = false [owise] .
+
+  op waitLHS : -> Prop [ctor] .
 endm
