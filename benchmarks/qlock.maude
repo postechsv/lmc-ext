@@ -56,4 +56,7 @@ mod QLOCK is
   subsorts Val < Sys .
 *** Configurations
   op __ : Sys Sys -> Sys [assoc comm] .  
+*** State components
+  op pc[_]:_ : Pid Label -> Val .
+  op queue:_ : Queue -> Val .  
 endm
