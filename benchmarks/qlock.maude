@@ -16,3 +16,6 @@ fmod LABEL is
   sort Label .
   ops rs es ws cs ds : -> Label .
 endfm
+
+fmod PID is
+endfm
