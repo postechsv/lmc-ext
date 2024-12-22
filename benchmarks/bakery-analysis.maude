@@ -7,5 +7,7 @@ mod MODEL is
   inc OBSERVATION .
   
   subsort Conf < State .
-    
+
+  var S : State .
+  var PS : ProcSet .  vars N N' M M' : Nat . 
 endm
