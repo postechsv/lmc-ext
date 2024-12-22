@@ -29,4 +29,5 @@ mod MODEL is
   op critLHS : -> Prop [ctor] .
   ceq VS ; proc(I, L, on) PS |= critLHS = true
     if s L = @NL .
+  eq S |= critLHS = false [owise] .    
 endm
