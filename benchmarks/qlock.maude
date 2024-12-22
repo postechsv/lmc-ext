@@ -72,4 +72,7 @@ mod QLOCK is
 
   crl [wt] : (pc[I]: ws) (queue: Q)
      => (pc[I]: cs) (queue: Q) if top(Q) = I .     
+
+  rl [dq1] : (pc[I]: cs) (queue: Q) (tmp[I]: R)
+     => (pc[I]: ds) (queue: Q) (tmp[I]: deq(Q)) .
 endm
