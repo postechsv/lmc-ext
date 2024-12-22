@@ -18,4 +18,7 @@ fmod LABEL is
 endfm
 
 fmod PID is
+  protecting NAT .
+  sort Pid .
+  ops p1 p2 nop : -> Pid .
 endfm
