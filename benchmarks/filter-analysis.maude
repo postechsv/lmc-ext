@@ -46,4 +46,6 @@ endm
 mod FILTER-TEST is
   protecting MODEL .
   op goal : -> Prop .
+  eq goal = twoCrits .
+  ops init2 init3 init4 init5 init : -> Conf .  
 endm
