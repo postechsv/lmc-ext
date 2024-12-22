@@ -47,3 +47,8 @@ mod FILTER is
 
   rl [exit] : VS ; proc(I, L, crit) PS => VS ; proc(I, 0, on) PS .  
 endm
+
+mod FILTER-TEST is
+  protecting FILTER .
+
+endm
