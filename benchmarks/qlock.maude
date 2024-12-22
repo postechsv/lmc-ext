@@ -46,3 +46,9 @@ fmod QUEUE is
   eq top(empty) = nop .
   eq top((X Q)) = X .  
 endfm
+
+mod QLOCK is
+  pr LABEL .
+  pr PID .
+  pr QUEUE .
+endm
