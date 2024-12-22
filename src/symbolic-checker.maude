@@ -619,6 +619,12 @@ fmod RULE-EXPANSION is
     ceq conditionToTerm(COND /\ COND') = '_and_[conditionToTerm(COND), conditionToTerm(COND')] if COND =/= nil /\ COND' =/= nil .
     eq conditionToTerm(COND) = 'true.Bool [owise] .
 
+    op errorBool : -> Bool .
+    op conditionCompleteness : Module Condition -> CompletenessSet .
+    ceq conditionCompleteness(M, Q[TL] = T) = incomplete(B) if B := downTerm(T, errorBool) /\ isOpCompleteFor(M, Q, B) = false .
+    ceq conditionCompleteness(M, COND /\ COND') = conditionCompleteness(M, COND), conditionCompleteness(M, COND') if COND =/= nil /\ COND' =/= nil .
+    eq conditionCompleteness(M, COND) = undefined .
+
     op craftPropMap : Term RulePropConf -> TermList .
     eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
     eq craftPropMap(ST, ((Q *> incomplete(B)), RPC)) = ('_*>_[toPropTerm(Q), upTerm(B)]), craftPropMap(ST, RPC) .
