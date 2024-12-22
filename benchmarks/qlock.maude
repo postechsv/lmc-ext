@@ -64,4 +64,6 @@ mod QLOCK is
   vars Q R : Queue .
   var I : Pid .
 
+  rl [eq1] : (pc[I]: rs) (queue: Q) (tmp[I]: R)
+     => (pc[I]: es) (queue: Q) (tmp[I]: enq(Q,I)) .
 endm
