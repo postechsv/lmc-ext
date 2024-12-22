@@ -456,7 +456,7 @@ fmod RULE-PROP-CONF is
     sort PropEval .
 
     op genVariants : -> PropEval [ctor] . --- Signifies that variant generation is needed for its corresponding proposition
-    subsort Completeness < PropEval .
+    op incomplete : Bool Completeness -> PropEval [ctor] .
 
     sort PropEvalSet .
     subsort PropEval < PropEvalSet .
