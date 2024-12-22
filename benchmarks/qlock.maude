@@ -29,4 +29,8 @@ fmod QUEUE is
 
   op empty : -> Queue .  
   op __ : Pid Queue -> Queue .  
+
+  op enq : Queue Pid -> Queue .
+  op deq : Queue -> Queue .
+  op top : Queue -> Pid .  
 endfm
