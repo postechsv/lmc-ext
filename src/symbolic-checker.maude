@@ -627,14 +627,14 @@ fmod RULE-EXPANSION is
     ceq conditionCompleteness(M, COND /\ COND') = conditionCompleteness(M, COND), conditionCompleteness(M, COND') if COND =/= nil /\ COND' =/= nil .
     eq conditionCompleteness(M, COND) = undefined .
 
-    op craftPropMap : Term RulePropConf -> TermList .
-    eq craftPropMap(ST, ((Q *> genVariants), RPC)) = ('_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]]), craftPropMap(ST, RPC) .
-    eq craftPropMap(ST, ((Q *> incomplete(B)), RPC)) = ('_*>_[toPropTerm(Q), upTerm(B)]), craftPropMap(ST, RPC) .
-    eq craftPropMap(ST, RPC) = empty [owise] .
+    op craftPropMap : Term RulePropConf -> Term .
+    eq craftPropMap(ST, ((Q *> genVariants), RPC)) = '__['_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]], craftPropMap(ST, RPC)] .
+    eq craftPropMap(ST, ((Q *> incomplete(B, CP)), RPC)) = '__['_*>_[toPropTerm(Q), upTerm(B)], craftPropMap(ST, RPC)] .
+    eq craftPropMap(ST, RPC) = 'emptyPropMap.PropMap [owise] .
 
-    op craftConstraints : Term RulePropConf -> TermList . 
-    eq craftConstraints(ST, ((Q *> incomplete(B)), RPC)) = ('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, RPC) .
-    eq craftConstraints(ST, RPC) = empty [owise] .
+    op craftConstraints : Term Term Condition RulePropConf -> Term . 
+    eq craftConstraints(ST, CT, COND, ((Q *> incomplete(B, CP)), RPC)) = '_and_[('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, CT, COND, RPC)] .
+    eq craftConstraints(ST, CT, COND, RPC) = '_and_[conditionToTerm(COND), CT] [owise] .
 
     op craftCompleteness : Term RulePropConf CompletenessSet -> Term .
     eq craftCompleteness(CPT, ((Q *> incomplete(B, complete(B'))), RPC), CS) = 'update[craftCompleteness(CPT, RPC, CS), 'incomplete['true.Bool]] .
