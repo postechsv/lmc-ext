@@ -51,4 +51,7 @@ mod QLOCK is
   pr LABEL .
   pr PID .
   pr QUEUE .
+
+  sorts Val Sys .
+  subsorts Val < Sys .
 endm
