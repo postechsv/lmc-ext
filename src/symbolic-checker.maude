@@ -861,9 +861,9 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     eq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = false [owise] .
 
     op _>=_[_] : Term Term Module -> Bool .
-    ceq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = (PT1 == PT2) and constraintIncludes(M, CT1, CT2, SUB')
+    ceq '`{`{`{_|_|_|_`}`}`}[ST1, PT1, CT1, CPT1] >= '`{`{`{_|_|_|_`}`}`}[ST2, PT2, CT2, CPT2] [ M ] = (PT1 == PT2) and constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB')
       if SUB' := metaMatch(M, ST1, ST2, nil, 0) .
-    eq '`{`{`{_|_|_`}`}`}[ST1, PT1, CT1] >= '`{`{`{_|_|_`}`}`}[ST2, PT2, CT2] [ M ] = false .
+    eq '`{`{`{_|_|_|_`}`}`}[ST1, PT1, CT1, CPT1] >= '`{`{`{_|_|_|_`}`}`}[ST2, PT2, CT2, CPT2] [ M ] = false .
     eq T1 >= T2 [ M ] = metaMatch(M, T1, T2, nil, 0) :: Substitution .
 endm
 
