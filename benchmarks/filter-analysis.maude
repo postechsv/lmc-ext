@@ -48,5 +48,6 @@ mod FILTER-TEST is
   op goal : -> Prop .
   eq goal = twoCrits .
   ops init2 init3 init4 init5 init : -> Conf .  
-  eq init2 = vict(1,0) ; proc(1, 0, on) proc(2, 0, on) . --- safe(no sol). why?  
+  eq init2 = vict(1,0) ; proc(1, 0, on) proc(2, 0, on) . --- safe(no sol). why?
+  eq init3 = vict(1,0) vict(2,0) ; proc(1, 0, on) proc(2, 0, on) proc(3, 0, on) . --- error    
 endm
