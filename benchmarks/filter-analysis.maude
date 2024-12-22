@@ -18,4 +18,5 @@ mod MODEL is
   eq S |= twoCrits = false [owise] .
 
   op waitLHS : -> Prop [ctor] .
+  eq vict(s L, J) VS ; proc(I, L, on) PS |= waitLHS = true .
 endm
