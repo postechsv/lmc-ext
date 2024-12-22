@@ -640,22 +640,7 @@ fmod RULE-EXPANSION is
     eq craftCompleteness(CPT, ((Q *> incomplete(B, complete(B'))), RPC), CS) = 'update[craftCompleteness(CPT, RPC, CS), 'incomplete['true.Bool]] .
     eq craftCompleteness(CPT, ((Q *> incomplete(B, incomplete(B'))), RPC), CS) = 'update[craftCompleteness(CPT, RPC, CS), '_`,_['incomplete['true.Bool], 'incomplete['false.Bool]]] .
     eq craftCompleteness(CPT, RPC, CS) = 'update[CPT, upTerm(CS)] [owise] .
-      
-    op toTermList : Condition -> TermList .
-    eq toTermList(T1 = T2) = '_<=>_[T1, T2] .
-    eq toTermList(COND /\ COND') = toTermList(COND), toTermList(COND') .
-    eq toTermList(COND) = empty [owise] .
-
-    op wrapUU : TermList -> Term .
-    eq wrapUU(T) = T .
-    eq wrapUU(TL) = '__[TL] .
-
-    op appendAnd : Term TermList -> Term .
-    eq appendAnd(CT, empty) = CT .
-    eq appendAnd('true.Bool, T) = T .
-    eq appendAnd('true.Bool, TL) = '_and_[TL] .
-    eq appendAnd(CT, TL) = '_and_[CT, TL] .
-
+    
     op prin : Term -> Term .
     eq prin(T) = T [print "[Term] " T] .
 
@@ -664,37 +649,39 @@ fmod RULE-EXPANSION is
 
     op generateRules : Module VariantPairSet AttrSet -> RuleSet .
     eq generateRules(M, empty, ATRS) = none .
-    ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
+    ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_|_`}`}`}[ST, PT, CT, CPT] => '`{`{`{_|_|_|_`}`}`}[ST', PT', CT', CPT'] [ATRS] .)
                                                  generateRules(M, VARS, ATRS)
-      if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
-    eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .
+      if 'exRule[ST,PT,CT,CPT,ST',PT',CT',CPT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+    eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .    
 
     op generateInitRules : Module VariantPairSet AttrSet -> RuleSet .
     eq generateInitRules(M, empty, ATRS) = none .
-    ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_>>>[ST,CT] => '`{`{`{_|_|_`}`}`}[ST, PT, CT'] [ATRS] .)
+    ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_|_>>>[ST,CT,CPT] => '`{`{`{_|_|_|_`}`}`}[ST, PT, CT', CPT'] [ATRS] .)
                                                      generateInitRules(M, VARS, ATRS)
-      if 'exInitRule[ST,CT,PT,CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+      if 'exInitRule[ST,CT,CPT,PT,CT',CPT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT])) = 'true.Bool /\ CT' =/= 'false.Bool .   
     eq generateInitRules(M, {T,SUB} # VARS, ATRS) = generateInitRules(M, VARS, ATRS) [owise] .
+
+    op isNarrowingRule : AttrSet -> Bool .
+    eq isNarrowingRule(metadata("narrowing") ATRS) = true .
+    eq isNarrowingRule(ATRS) = false [owise] .
 
     op expandRule : Module Rule RulePropConfSet -> RuleSet .
     ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
-      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
-         CTs := craftConstraints(ST', RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
-         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
-         RLS := generateRules(M, VARS, narrowing ATRS) . --- [print VARS] .
-    ceq expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPC ; RPCS) = RLS expandRule(M, (crl ST => ST' if COND [metadata("narrowing") ATRS] .), RPCS)
-      if PTs := craftPropMap(ST', RPC) /\ PT' := wrapUU(PTs) /\
-         CTs := craftConstraints(ST', RPC) /\ CTs' := toTermList(COND) /\ CT' := appendAnd('##CT:Bool, (CTs, CTs')) /\
-         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, ST', PT', CT'], '@) /\
+      if PT' := craftPropMap(ST', RPC) /\ CT' := craftConstraints(ST', '##CT:Bool, nil, RPC) /\ CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, undefined) /\
+         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet, ST', PT', CT', CPT'], '@) /\
+         RLS := generateRules(M, VARS, narrowing ATRS) .
+    ceq expandRule(M, (crl ST => ST' if COND [ATRS] .), RPC ; RPCS) = RLS expandRule(M, (crl ST => ST' if COND [ATRS] .), RPCS)
+      if isNarrowingRule(ATRS) /\
+         PT' := craftPropMap(ST', RPC) /\ CT' := craftConstraints(ST', '##CT:Bool, COND, RPC) /\ CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, fillCompleteness(conditionCompleteness(M, COND))) /\
+         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet, ST', PT', CT', CPT'], '@) /\
          RLS := generateRules(M, VARS, narrowing ATRS) .
     eq expandRule(M, RL, RPCS) = none [owise] .
 
     op expandInitRule : Module RulePropConfSet -> RuleSet .
     eq expandInitRule(M, emptyRulePropConfSet) = none .
     ceq expandInitRule(M, RPC ; RPCS) = RLS expandInitRule(M, RPCS) 
-      if PTs := craftPropMap('##ST:State, RPC) /\ PT' := wrapUU(PTs) /\
-         CTs := craftConstraints('##ST:State, RPC) /\ CT' := appendAnd('##CT:Bool, CTs) /\
-         VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,PT',CT'], '@) /\
+      if PT' := craftPropMap('##ST:State, RPC) /\ CT' := craftConstraints('##ST:State, '##CT:Bool, nil, RPC) /\ CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, undefined) /\
+         VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,'##CPT:CompletenessSet,PT',CT',CPT'], '@) /\
          RLS := generateInitRules(M, VARS, narrowing) .
 
     op prin : RuleSet -> RuleSet .
