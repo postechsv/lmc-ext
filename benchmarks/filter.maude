@@ -29,3 +29,6 @@ fmod FILTER-SYNTAX is
   ceq conflict(I, LI, vict(LI, I) VS ; proc(J, LI, M) PS) = true if I =/= J .
   eq conflict(I, LI, VS ; PS) = false [owise] .
 endfm
+
+mod FILTER is
+endm
