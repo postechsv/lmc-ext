@@ -69,4 +69,7 @@ mod QLOCK is
 
   rl [eq2] : (pc[I]: es) (queue: Q) (tmp[I]: R)
      => (pc[I]: ws) (queue: R) (tmp[I]: R) .     
+
+  crl [wt] : (pc[I]: ws) (queue: Q)
+     => (pc[I]: cs) (queue: Q) .     
 endm
