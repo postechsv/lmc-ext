@@ -24,4 +24,6 @@ fmod FILTER-SYNTAX is
   vars I J LI LJ : Nat .
   var PS : ProcSet . var VS : VictSet . var M : Mode .
 
+  op conflict : Nat Nat Conf -> Bool .
+  ceq conflict(I, LI, VS ; proc(J, LJ, M) PS) = true.
 endfm
