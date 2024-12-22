@@ -26,4 +26,6 @@ endfm
 fmod QUEUE is
   pr PID .
   sort Queue .
+
+  op empty : -> Queue .  
 endfm
