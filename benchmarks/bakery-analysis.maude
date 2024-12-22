@@ -34,5 +34,5 @@ mod MODEL is
   eq reward(MS:MDPState) = 0.0 [owise] .  
 
   var P : Prop . var B : Bool .
-
+  eq < FV:FeatVec , (P : B) , FV':FeatVec > |= P = B . --- TODO: this may be default
 endm
