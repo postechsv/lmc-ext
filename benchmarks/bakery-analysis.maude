@@ -6,4 +6,6 @@ mod MODEL is
   inc SATISFACTION .
   inc OBSERVATION .
   
+  subsort Conf < State .
+    
 endm
