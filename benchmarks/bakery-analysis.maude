@@ -1,0 +1,9 @@
+load ../tool2 .
+load bakery .
+
+mod MODEL is 
+  pr BAKERY .
+  inc SATISFACTION .
+  inc OBSERVATION .
+  
+endm
