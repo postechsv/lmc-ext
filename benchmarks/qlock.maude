@@ -39,4 +39,7 @@ fmod QUEUE is
 
   eq enq(empty,X) = X empty .
   eq enq((Y Q),X) = Y enq(Q,X) .  
+
+  eq deq(empty) = empty .
+  eq deq((X Q)) = Q .  
 endfm
