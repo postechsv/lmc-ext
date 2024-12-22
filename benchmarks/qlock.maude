@@ -60,4 +60,8 @@ mod QLOCK is
   op pc[_]:_ : Pid Label -> Val .
   op queue:_ : Queue -> Val .  
   op tmp[_]:_ : Pid Queue -> Val .  
+  
+  vars Q R : Queue .
+  var I : Pid .
+
 endm
