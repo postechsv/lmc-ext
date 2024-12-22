@@ -66,4 +66,7 @@ mod QLOCK is
 
   rl [eq1] : (pc[I]: rs) (queue: Q) (tmp[I]: R)
      => (pc[I]: es) (queue: Q) (tmp[I]: enq(Q,I)) .
+
+  rl [eq2] : (pc[I]: es) (queue: Q) (tmp[I]: R)
+     => (pc[I]: ws) (queue: R) (tmp[I]: R) .     
 endm
