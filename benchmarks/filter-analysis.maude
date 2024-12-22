@@ -24,4 +24,6 @@ mod MODEL is
   op filterLHS : -> Prop [ctor] .
   ceq VS ; proc(I, L, wait) PS |= filterLHS = true
     if L < @NL and not conflict(I, L, VS ; proc(I, L, wait) PS) .
+  eq S |= filterLHS = false [owise] . 
+
 endm
