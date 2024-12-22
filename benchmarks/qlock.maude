@@ -75,4 +75,7 @@ mod QLOCK is
 
   rl [dq1] : (pc[I]: cs) (queue: Q) (tmp[I]: R)
      => (pc[I]: ds) (queue: Q) (tmp[I]: deq(Q)) .
+     
+  rl [dq2] : (pc[I]: ds) (queue: Q) (tmp[I]: R)
+     => (pc[I]: rs) (queue: R) (tmp[I]: R) .
 endm
