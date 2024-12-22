@@ -50,5 +50,6 @@ endm
 
 mod FILTER-TEST is
   protecting FILTER .
-
+  
+  op init : -> Conf .
 endm
