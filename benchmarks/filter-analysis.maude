@@ -55,4 +55,7 @@ mod FILTER-TEST is
   
   eq init = init3 .  
   eq @NL = 2 .  
+
+  eq init = init5 .
+  eq @NL = 4 .  
 endm
