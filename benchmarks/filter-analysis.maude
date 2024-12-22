@@ -30,4 +30,6 @@ mod MODEL is
   ceq VS ; proc(I, L, on) PS |= critLHS = true
     if s L = @NL .
   eq S |= critLHS = false [owise] .    
+
+  op exitLHS : -> Prop [ctor] .
 endm
