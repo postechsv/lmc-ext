@@ -155,5 +155,6 @@ mod TEST-DFS is
   pr SEARCH .
   pr ONETHIRDRULE-TESTCASE .
   pr DFS-SCORE .
-
+  op M : -> Module .
+  eq M = upModule('ONETHIRDRULE-ANALYSIS,true) .
 endm
