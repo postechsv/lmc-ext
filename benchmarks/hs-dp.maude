@@ -25,4 +25,8 @@ fmod ABST-DP is
   op p : APid Status -> APhil .
   op none : -> AState [ctor] .  
   op _||_ : AState AState -> AState [ctor comm assoc id: none] .  
+
+  var I : Nat .
+  var S : Status .
+  var C : Conf . var AS : AState .  
 endfm
