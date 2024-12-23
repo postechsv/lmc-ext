@@ -41,3 +41,6 @@ fmod ABST-DP is
   --- equations for AState
   eq p(--, S) || p(--, S) || AS = p(--, S) || AS .  
 endfm
+
+mod HEURISTIC-SEARCH-DP is
+endm
