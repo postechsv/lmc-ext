@@ -22,7 +22,7 @@ mod ONETHIRDRULE-NO-MSG-LOSS is
     }
     =>
     {TH, V ; VS, O ; OS,
-        < O : Node | status : [R, wait], value : V, decision : nilValue, votes : VOTE, ATTS > 
+        < O : Node | status : [R, wait], value : V, decision : nilValue, votes : update(VOTE, V), ATTS > 
         (multicast vote(V, R) from O to OS)
         CF
     } .
