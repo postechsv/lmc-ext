@@ -60,4 +60,5 @@ mod QLOCK-TEST is
   var N : Nat .             
   op init : Nat -> Sys .
   eq init(0) = (queue: empty) .  
+  eq init(s(N)) = init(N) (pc[p(s(N))]: rs) (tmp[p(s(N))]: empty) .  
 endm
