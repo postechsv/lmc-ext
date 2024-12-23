@@ -281,4 +281,17 @@ mod ONETHIRDRULE-CONST is
     protecting SET{VoteMap} .
     protecting BOOL .
 
+    vars N N' : Nat . 
+    vars V : Value .
+    var Z : Zero .  
+    var S : Step .
+    var CF : Configuration . 
+    var MSG : Msg . 
+    var O : Oid . 
+    var OS : OidSet .
+    var NS : Set{Nat} .
+    var VM : VoteMap .
+    var VMS : Set{VoteMap} .
+    var VS : ValueSet .
+
 endm
