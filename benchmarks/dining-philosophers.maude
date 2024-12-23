@@ -39,4 +39,6 @@ mod N-DINING-PHILOSOPHERS is
 
   crl [se]: p(I,single) || c(J) => p(I,eat) 
     if adj(I,J) = true .
+
+  rl [et]: p(I,eat) => p(I,think) || c(lc(I)) || c(rc(I)) .
 endm
