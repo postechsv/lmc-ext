@@ -20,3 +20,8 @@ fmod STEP is --- a.k.a program counter (pc)
     op init : -> InitStep [ctor] .
     ops wait done : -> Step [ctor] .    
 endfm
+
+
+fmod NODE is
+    sorts Node Cid  .
+endfm        
