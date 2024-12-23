@@ -2,4 +2,7 @@ load ../tool2 .
 load qlock .
 
 mod MODEL is
+  pr QLOCK .
+  inc SATISFACTION .
+  inc OBSERVATION .
 endm
