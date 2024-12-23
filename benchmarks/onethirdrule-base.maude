@@ -305,4 +305,7 @@ mod ONETHIRDRULE-CONST is
     eq sameRound(empty) = true .
 
     op getOids : Configuration -> OidSet [memo] .
+    eq getOids(< O : Node | ATTS:AttributeSet > CF) = O ; getOids(CF) .
+    eq getOids(MSG CF) =  getOids(CF) .
+    eq getOids(none) =  none .
 endm
