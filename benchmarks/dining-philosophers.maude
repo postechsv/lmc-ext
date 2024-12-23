@@ -27,4 +27,6 @@ endm
 
 mod N-DINING-PHILOSOPHERS is
   including DINING-PHILOSOPHERS-BASE .
+
+  vars I J : Nat .	var C : Conf .	  
 endm
