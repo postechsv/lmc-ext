@@ -58,4 +58,6 @@ mod QLOCK-TEST is
              (tmp[p9]: empty) (tmp[p10]: empty) (tmp[p11]: empty) (tmp[p12]: empty) .  
 
   var N : Nat .             
+  op init : Nat -> Sys .
+  eq init(0) = (queue: empty) .  
 endm
