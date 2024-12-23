@@ -37,6 +37,11 @@ fmod STATUS is
     sort InitialRound .
     op [_,_] : Nat Step -> Status [ctor format (d d d s d d)] . 
     op [_,_] : Nat InitStep -> InitStatus [ctor ditto] . 
-    
+
 endfm
 
+fmod VOTE-MAP is
+    protecting NAT .
+    protecting VALUE .
+
+endfm
