@@ -17,4 +17,5 @@ mod MODEL is
 
   op eq1LHS : -> Prop [ctor] .
   eq (pc[I]: rs) (queue: Q) (tmp[I]: R) |= eq1LHS = true .  
+  eq S |= eq1LHS = false [owise] .  
 endm
