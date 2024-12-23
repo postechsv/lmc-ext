@@ -49,4 +49,6 @@ mod HEURISTIC-SEARCH-DP is
   var I : Nat .
   var C : Conf .
   var S : Status .  
+
+  op allSingle : Conf -> Bool .
 endm
