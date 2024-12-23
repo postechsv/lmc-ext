@@ -163,4 +163,5 @@ mod TEST-SEARCH is
   pr V-STAR .
   pr ONETHIRDRULE-TESTCASE .
   subsort Nat < Score .
+  var T : Term . vars N N' : Nat .
 endm
