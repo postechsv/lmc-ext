@@ -78,4 +78,7 @@ mod MODEL is
     ---    CF
     ---} |= updateRHS(V, V') = true .
     ---eq S |= hasDec(D:Value?) = false [owise] .
+
+    op props : -> PropList .
+    eq props = voteLHS(0) ; voteLHS(1) ; receiveLHS(0) ; receiveLHS(1) ; decideLHS(0) ; decideLHS(1) ; decideRHS(0) ; decideRHS(1) ; updateLHS(0, 0) ; updateLHS(0, 1) ; updateLHS(1, 0) ; updateLHS(1, 1) .
 endm
