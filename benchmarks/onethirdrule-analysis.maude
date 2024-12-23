@@ -188,4 +188,8 @@ mod ONETHIRDRULE-ANALYSIS is
 
     ops init3a goal3 : -> Global .
     eq init3a = {2, (0 ; 1), ("B" ; "A" ; "C"), (obA obC obB) } .
+    eq goal3 = {2,0 ; 1, "A" ; "B" ; "C", < "A" : Node | status : [2, done],value : 0,decision : 0,votes : [0 |-> 2 ; 1 |-> 0,2] > < "B" : Node | status : [2, wait], value : 0,decision : nilValue,votes : [0 |-> 1 ; 1 |-> 0,1] > < "C" : Node | status : [1, done],value : 1,decision : 1,votes : [0 |-> 0 ; 1 |-> 2,2] > (multicast
+    vote(0, 1) from "A" to "C") multicast vote(1, 1) from "C" to "A" ; "B"} .
+endm 
+
 endm
