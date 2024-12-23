@@ -13,3 +13,8 @@ fmod VALUE is
     op emptyVs : -> ValueSet [ctor] .    
     op _;_ : ValueSet ValueSet -> ValueSet [ctor assoc comm id: emptyVs] .    
 endfm
+
+fmod STEP is --- a.k.a program counter (pc)
+    sorts Step InitStep .
+    subsort InitStep < Step .
+endfm
