@@ -35,5 +35,5 @@ fmod ABST-DP is
 
   --- state abstraction
   eq abst(p(I, S) || C) = p(--, S) || abst(C) .  
-  eq abst(c(I) || C) = none  .
+  eq abst(c(I) || C) = abst(C) .
 endfm
