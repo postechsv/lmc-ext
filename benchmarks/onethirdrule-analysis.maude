@@ -27,4 +27,10 @@ mod MODEL is
     eq { TH, VS, OS, < O : Node | decision : D:Value?, ATTS > CF } |= hasDec(D:Value?) = true .
     eq S |= hasDec(D:Value?) = false [owise] .
 
+    --- experimental
+    op voteLHS : Value -> Prop [ctor] .
+    eq {TH, V ; VS, O ; OS,
+        < O : Node | status : [R, init], value : V, decision : nilValue, votes : VOTE, ATTS > 
+        CF
+    } |= voteLHS(V) = true .
 endm
