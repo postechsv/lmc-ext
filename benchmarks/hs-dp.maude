@@ -10,3 +10,6 @@ mod DP5 is
   inc N-DINING-PHILOSOPHERS .
   eq #N = 5 .
 endm
+
+fmod ABST-DP is
+endfm
