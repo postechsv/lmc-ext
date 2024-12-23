@@ -11,4 +11,5 @@ fmod VALUE is
     sort ValueSet .
     subsort Value < ValueSet .    
     op emptyVs : -> ValueSet [ctor] .    
+    op _;_ : ValueSet ValueSet -> ValueSet [ctor assoc comm id: emptyVs] .    
 endfm
