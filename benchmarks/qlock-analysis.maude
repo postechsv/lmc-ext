@@ -7,5 +7,6 @@ mod MODEL is
   inc OBSERVATION .
 
   subsort Sys < State .
-  
+  vars I J : Pid . var S : Sys .
+    
 endm
