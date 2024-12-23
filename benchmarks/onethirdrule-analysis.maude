@@ -179,3 +179,8 @@ mod TEST-SEARCH is
   eq initCFG = {waiting, insert([initTerm, score(initTerm)], empty), t(initTerm)} . *** todo : make this as init rule
 
 endm
+
+*** Module for Python
+mod ONETHIRDRULE-ANALYSIS is
+    pr ONETHIRDRULE-TESTCASE .
+endm
