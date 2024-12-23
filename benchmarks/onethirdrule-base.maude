@@ -280,9 +280,9 @@ mod ONETHIRDRULE-CONST is
     protecting SET{Nat} .
     protecting SET{VoteMap} .
     protecting BOOL .
-
-    vars N N' : Nat . 
-    vars V : Value .
+    
+    vars N N' R N1 N2 N3 : Nat . 
+    vars V V1 V2 V3 : Value .
     var Z : Zero .  
     var S : Step .
     var CF : Configuration . 
