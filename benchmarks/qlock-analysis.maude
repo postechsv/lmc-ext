@@ -5,4 +5,7 @@ mod MODEL is
   pr QLOCK .
   inc SATISFACTION .
   inc OBSERVATION .
+
+  subsort Sys < State .
+  
 endm
