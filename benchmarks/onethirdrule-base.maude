@@ -97,8 +97,119 @@ mod ALT-CFIGURATION is
     sort Node .
     subsort Node < Cid .
     op Node : -> Cid [ctor] .
-    
+
     op status`:_ : Status -> Attribute [ctor prec 15 gather (&)] .
     op value`:_ : Value -> Attribute [ctor prec 15 gather (&)] .
     op decision`:_ : Value? -> Attribute [ctor prec 15 gather (&)] .
+fmod VALUE is
+    protecting NAT .
+
+    sorts Value InitValue? Value? .
+    subsort  Value < Value? .
+    subsort InitValue? < Value? .
+
+    subsort Nat < Value .
+
+    op nilValue : -> InitValue? [ctor] .
+
+    sort ValueSet .
+    subsort Value < ValueSet .
+    op emptyVs : -> ValueSet [ctor] .
+    op _;_ : ValueSet ValueSet -> ValueSet [ctor assoc comm id: emptyVs] .
+endfm
+
+
+fmod STEP is --- a.k.a program counter (pc)
+    sorts Step InitStep .
+    subsort InitStep < Step .
+    op init : -> InitStep [ctor] .
+    ops wait done : -> Step [ctor] .
+endfm
+
+
+fmod NODE is
+    sorts Node Cid  .
+    subsort Node < Cid .
+    op Node : -> Cid [ctor] .
+endfm
+
+
+fmod STATUS is
+    protecting NAT .
+    protecting STEP .
+
+    sorts Status InitStatus .
+    subsort InitStatus < Status .
+    sort InitialRound .
+
+    op [_,_] : Nat Step -> Status [ctor format (d d d s d d)] . 
+    op [_,_] : Nat InitStep -> InitStatus [ctor ditto] . 
+endfm
+
+
+fmod VOTE-MAP is
+    protecting NAT .
+    protecting VALUE .
+
+    sorts  VoteMap InitVoteMap Entry InitEntry .
+    subsort InitEntry < Entry InitVoteMap < VoteMap .
+
+    op  _|->_ : Value Nat -> Entry [ctor prec 50] .
+    op  _|->_ : Value Zero -> InitEntry [ctor prec 50] .
+
+    op none : -> InitEntry [ctor] .
+    op _;_ : VoteMap VoteMap -> VoteMap [ctor assoc comm id: none prec 60] .
+    op _;_ : InitVoteMap InitVoteMap -> InitVoteMap [ctor assoc comm id: none prec 60] .
+endfm
+
+view VoteMap from TRIV to VOTE-MAP is
+    sort Elt to VoteMap .
+endv
+
+fmod VOTE is
+    protecting VOTE-MAP .
+
+    sort Vote .
+    op [_,_] : VoteMap Nat -> Vote [ctor prec 70] .
+
+    sort InitVote .
+    subsort InitVote < Vote .
+
+    op [_,_] : InitVoteMap Zero -> InitVote [ctor prec 70] .
+endfm
+
+
+mod OID-SET is
+    protecting CONFIGURATION .
+    sort OidSet .
+    subsort Oid < OidSet .
+    op none : -> OidSet [ctor] .
+    op _;_ : OidSet OidSet -> OidSet [ctor assoc comm id: none] .
+endm
+
+---------------------------------------------------------------------------------------
+mod ALT-CFIGURATION is
+    ---protecting NODE .
+    ---protecting INITIAL-SORTS .
+    including STATUS .
+    including VOTE .
+    including STEP .
+    including VALUE .
+    including OID-SET .
+
+    ---sorts None Object Msg ObjectSet Configuration InitObject InitConfiguration .
+    sorts InitObject InitConfiguration .
+    subsort InitObject < Object InitConfiguration < Configuration .
+    subsort Msg < Configuration .
+
+    sort Node .
+    subsort Node < Cid .
+    op Node : -> Cid [ctor] .
+
+    op status`:_ : Status -> Attribute [ctor prec 15 gather (&)] .
+    op value`:_ : Value -> Attribute [ctor prec 15 gather (&)] .
+    op decision`:_ : Value? -> Attribute [ctor prec 15 gather (&)] .
+    op votes`:_ : Vote -> Attribute [ctor prec 15 gather (&)] .
+    op neighbors`:_ : OidSet -> Attribute [ctor prec 15 gather (&)] .
+        
 endm
