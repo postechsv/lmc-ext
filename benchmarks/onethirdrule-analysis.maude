@@ -108,4 +108,8 @@ mod ONETHIRDRULE-OBS is
 
     var P : Prop . var B : Bool .
     eq < FV:FeatVec , (P : B) , FV':FeatVec > |= P = B .
+
+    --- data observation
+    var V : Value .
+
 endm
