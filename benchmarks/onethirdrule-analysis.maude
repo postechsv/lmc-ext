@@ -166,4 +166,8 @@ mod TEST-SEARCH is
   var T : Term . vars N N' : Nat .
 
   eq score(T) = 0 .
+
+  eq N gt N' = N > N' .
+  eq N lt N' = N < N' .
+  eq N le N' = N <= N' .
 endm
