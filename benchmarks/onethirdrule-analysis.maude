@@ -119,3 +119,7 @@ mod ONETHIRDRULE-OBS is
     eq obs('update, 'V, data(V)) = 'V := data(V) . --- old value
     eq obs('update, 'V', data(V)) = 'V' := data(V) . --- new value
 endm
+
+mod ONETHIRDRULE-TESTCASE is
+    pr ONETHIRDRULE-OBS .
+endm
