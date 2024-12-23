@@ -24,4 +24,6 @@ endfm
 
 fmod NODE is
     sorts Node Cid  .
+    subsort Node < Cid .
+    op Node : -> Cid [ctor] .    
 endfm        
