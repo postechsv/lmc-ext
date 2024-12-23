@@ -57,3 +57,10 @@ endfm
 view VoteMap from TRIV to VOTE-MAP is
     sort Elt to VoteMap .
 endv
+
+fmod VOTE is
+    protecting VOTE-MAP .
+
+    sort Vote .
+    op [_,_] : VoteMap Nat -> Vote [ctor prec 70] .
+endfm
