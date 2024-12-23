@@ -300,4 +300,7 @@ mod ONETHIRDRULE-CONST is
     op sameRound : Set{Nat} -> Bool .
     ceq sameRound((R, N, NS)) = false if R =/= N .
     eq sameRound((R, R, NS)) = sameRound((R, NS)) .
+
+    eq sameRound(R) = true .
+    eq sameRound(empty) = true .
 endm
