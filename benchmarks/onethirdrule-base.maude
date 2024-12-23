@@ -78,3 +78,9 @@ mod OID-SET is
     op none : -> OidSet [ctor] .
     op _;_ : OidSet OidSet -> OidSet [ctor assoc comm id: none] .
 endm
+
+
+mod ALT-CFIGURATION is
+    ---protecting NODE .
+    ---protecting INITIAL-SORTS .
+endm
