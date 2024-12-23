@@ -70,4 +70,8 @@ mod ONETHIRDRULE is
     var MSG : Msg .
     var VS : ValueSet .
 
+    rl [loss] : 
+    {TH, VS, OS, MSG CF}
+    =>
+    {TH, VS, OS, CF} .
 endm
