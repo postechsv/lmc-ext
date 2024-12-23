@@ -54,4 +54,5 @@ mod HEURISTIC-SEARCH-DP is
   eq allSingle(p(I,single) || C) = allSingle(C) .  
   eq allSingle(p(I,S) || C) = false [owise] .  
   eq allSingle(c(I) || C) = allSingle(C) .  
+  eq allSingle(none) = true .  
 endm
