@@ -16,4 +16,5 @@ mod MODEL is
   eq S |= twoCrits = false [owise] .
 
   op eq1LHS : -> Prop [ctor] .
+  eq (pc[I]: rs) (queue: Q) (tmp[I]: R) |= eq1LHS = true .  
 endm
