@@ -193,4 +193,4 @@ mod ONETHIRDRULE-ANALYSIS is
 endm
 
 ---search in TEST-SEARCH : initCFG =>* { found , PQ:LTree{QItem<=} , VIS:Set{TItem} } .
-search [1] init3 =>* X:State such that X:State |= goal .
+---search [1] init3 =>* X:State such that X:State |= goal . --- searches 822 states
