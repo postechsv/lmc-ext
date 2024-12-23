@@ -61,4 +61,4 @@ mod HEURISTIC-SEARCH-DP is
   eq C |= deadlock = allSingle(C) . 
 endm
 
-red p(0,single) || p(1,single) || p(2,hungry) .
+red abst(p(0,single) || p(1,single) || p(2,hungry)) .
