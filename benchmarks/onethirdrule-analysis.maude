@@ -33,4 +33,6 @@ mod MODEL is
         < O : Node | status : [R, init], value : V, decision : nilValue, votes : VOTE, ATTS > 
         CF
     } |= voteLHS(V) = true .
+    eq S |= voteLHS(V) = false [owise] .
+
 endm
