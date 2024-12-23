@@ -32,4 +32,6 @@ mod MODEL is
   eq S |= dq1LHS = false [owise] .
 
   op dq2LHS : -> Prop [ctor] .
+  eq (pc[I]: ds) (queue: Q) (tmp[I]: R) |= dq2LHS = true .
+  eq S |= dq2LHS = false [owise] .  
 endm
