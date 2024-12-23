@@ -12,4 +12,6 @@ mod DP5 is
 endm
 
 fmod ABST-DP is
+  pr DINING-PHILOSOPHERS-BASE .
+  inc HEURISTIC-SEARCH .
 endfm
