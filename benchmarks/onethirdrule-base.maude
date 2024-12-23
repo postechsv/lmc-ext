@@ -266,4 +266,7 @@ fmod FUNCTIONS is
 
     op genConst : Value Nat VoteMap ValueSet -> Bool .
     eq genConst(V, N, none, emptyVs) = true .
+
+    eq genConst(V, N, (V' |-> N') ; VM, (V' ; VS))
+     = ((N' < N) or ((N' <= N) and (V < V'))) and genConst(V, N, VM, VS) .
 endfm
