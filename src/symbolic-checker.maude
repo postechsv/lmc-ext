@@ -913,10 +913,13 @@ mod META-SYMBOLIC-CONNECTOR is
   eq trStateSet('_\/_[T,TL]) = {wrapInitState(T),none,unlabeled | wrapInitState(T)} || trStateSet('_\/_[TL]) .
   eq trStateSet(ST) = {wrapInitState(ST),none,unlabeled | wrapInitState(ST)} [owise] .
 
+  op verificationFailure : -> BoundedModelCheckReport [ctor] .
+
 --- run LMC model check : State Formula -> Result
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, B, D) 
-   = symbolicModelCheck(init(ST), O O tilde((##m##),PT), B, D) 
+   = if verifyUserDefinedRules(##m##) then symbolicModelCheck(init(ST), O O tilde((##m##),PT), B, D) 
+     else verificationFailure fi
   if sortLeq((##m##), leastSort((##m##),ST), 'StateSet)
   /\ sortLeq((##m##), leastSort((##m##),PT), 'Formula) .
 
