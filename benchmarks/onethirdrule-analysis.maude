@@ -187,4 +187,5 @@ mod ONETHIRDRULE-ANALYSIS is
     eq goal = disagree .
 
     ops init3a goal3 : -> Global .
+    eq init3a = {2, (0 ; 1), ("B" ; "A" ; "C"), (obA obC obB) } .
 endm
