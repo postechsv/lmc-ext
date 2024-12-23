@@ -235,4 +235,5 @@ fmod MULTICAST is
   var MC : MsgContent . 
   var SENDER : Oid .
 
+  eq multicast MC from SENDER to none = none .
 endm
