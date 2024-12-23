@@ -214,5 +214,7 @@ mod ALT-CFIGURATION is
 
     op none : -> InitConfiguration [ctor ditto] .
     op __ : InitConfiguration InitConfiguration -> InitConfiguration [ctor ditto] .
-    
+
+    op <_:_|_> : Oid Cid AttributeSet -> InitObject [ctor ditto] .    
+
 endm
