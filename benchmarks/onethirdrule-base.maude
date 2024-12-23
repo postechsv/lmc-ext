@@ -83,4 +83,9 @@ endm
 mod ALT-CFIGURATION is
     ---protecting NODE .
     ---protecting INITIAL-SORTS .
+    including STATUS .
+    including VOTE .
+    including STEP .
+    including VALUE .
+    including OID-SET .    
 endm
