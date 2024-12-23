@@ -254,4 +254,8 @@ fmod FUNCTIONS is
 
     vars N N' NA N1 N2 TH : Nat .
     var VM : VoteMap .
+    var VS : ValueSet .
+    vars V V' : Value .
+
+
 endfm
