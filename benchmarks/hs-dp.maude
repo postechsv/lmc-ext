@@ -29,4 +29,7 @@ fmod ABST-DP is
   var I : Nat .
   var S : Status .
   var C : Conf . var AS : AState .  
+
+  --- data abstraction (= action abstraction)
+  eq abst(I) = -- .  
 endfm
