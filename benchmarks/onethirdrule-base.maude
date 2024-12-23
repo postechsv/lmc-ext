@@ -244,4 +244,6 @@ mod GLOBAL is
 
     sort Global .
     op {_,_,_,_} : Nat ValueSet OidSet Configuration -> Global [ctor format (d d d d d s d s d d)] .
+    op decide? :  Value Bool Nat ValueSet OidSet Object Configuration -> Global [ctor] .
+    op update? :  Value Bool Nat ValueSet OidSet Object Configuration -> Global [ctor] .
 endm
