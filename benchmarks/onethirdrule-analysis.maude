@@ -186,4 +186,5 @@ mod ONETHIRDRULE-ANALYSIS is
     op goal : -> Prop .
     eq goal = disagree .
 
+    ops init3a goal3 : -> Global .
 endm
