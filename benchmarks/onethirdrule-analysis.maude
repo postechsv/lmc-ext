@@ -41,4 +41,6 @@ mod MODEL is
     ---    (multicast vote(V, R) from O to OS)
     ---    CF
     ---} |= voteRHS(V) = true .
+
+    op receiveLHS : Value -> Prop [ctor] .
 endm
