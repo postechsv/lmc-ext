@@ -1205,6 +1205,7 @@ mod LMC-COMMAND-PROCESSING is
         'counterexample 'found 'at 'depth eMetaPrettyPrint(M,T3) '\n '\s '\s
         printLMCCE(M, T1)
       fi) '\n .
+  eq printLMCOutput(M, 'verificationFailure.BoundedModelCheckReport) = 'Verification 'faliure .
 
   eq printLMCOutput(M, T)
    = '\b 'error: '\o '\n '\s '\s
