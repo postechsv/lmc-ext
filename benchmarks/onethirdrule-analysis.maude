@@ -6,4 +6,5 @@ mod MODEL is
     pr ONETHIRDRULE-NO-MSG-LOSS .
     pr SATISFACTION .
 
+    subsorts Global < State .
 endm
