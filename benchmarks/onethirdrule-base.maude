@@ -263,4 +263,7 @@ fmod FUNCTIONS is
     op incr : Nat -> Nat .
     eq incr(Z:Zero) = 1 .
     eq incr(NZ:NzNat) = s NZ:NzNat .
+
+    op genConst : Value Nat VoteMap ValueSet -> Bool .
+    eq genConst(V, N, none, emptyVs) = true .
 endfm
