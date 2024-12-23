@@ -93,4 +93,9 @@ mod ALT-CFIGURATION is
     sorts InitObject InitConfiguration .
     subsort InitObject < Object InitConfiguration < Configuration .
     subsort Msg < Configuration .  
+
+    sort Node .
+    subsort Node < Cid .
+    op Node : -> Cid [ctor] .
+
 endm
