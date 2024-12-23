@@ -35,4 +35,8 @@ fmod STATUS is
     sorts Status InitStatus .
     subsort InitStatus < Status .
     sort InitialRound .
+    op [_,_] : Nat Step -> Status [ctor format (d d d s d d)] . 
+    op [_,_] : Nat InitStep -> InitStatus [ctor ditto] . 
+    
 endfm
+
