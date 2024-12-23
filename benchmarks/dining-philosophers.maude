@@ -1,0 +1,4 @@
+fmod DINING-PHILOSOPHERS-BASE is
+  protecting NAT .
+  sorts Status .    
+endm
