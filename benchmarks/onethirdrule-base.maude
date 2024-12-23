@@ -315,5 +315,8 @@ mod ONETHIRDRULE-CONST is
     eq numObjs(none) = 0 .
 
     op getRounds : Configuration -> Set{Nat} .
+    eq getRounds(< O : Node | status : [R, S], ATTS:AttributeSet > CF) = R, getRounds(CF) .
+    eq getRounds(MSG CF) = getRounds(CF) .
+    eq getRounds(none) = 0 .
 
 endm
