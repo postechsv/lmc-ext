@@ -36,5 +36,6 @@ mod MODEL is
   eq S |= dq2LHS = false [owise] .  
 
   --- Defining Observations ---
-  eq obs(S) = < obsUpto(S, eq1LHS ; eq2LHS ; wtLHS ; dq1LHS ; dq2LHS ; twoCrits) > .  
+  eq obs(S) = < obsUpto(S, eq1LHS ; eq2LHS ; wtLHS ; dq1LHS ; dq2LHS ; twoCrits) > . 
+  eq reward(< FV:FeatVec , (twoCrits : true) , FV':FeatVec >) = 1.0 . 
 endm
