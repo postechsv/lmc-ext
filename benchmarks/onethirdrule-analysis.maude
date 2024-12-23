@@ -7,4 +7,15 @@ mod MODEL is
     pr SATISFACTION .
 
     subsorts Global < State .
+
+    vars O O' : Oid . vars CF : Configuration . var C : Cid .
+    vars OS OS' : OidSet . 
+    var R TH N VA : Nat .
+    var VS : ValueSet .
+    var S : State .
+    var MSG : Msg .
+    vars ATTS ATTS' : AttributeSet .
+    vars V V' : Value .
+    var VM : VoteMap .
+    var VOTE : Vote .
 endm
