@@ -326,5 +326,6 @@ mod ONETHIRDRULE-CONST is
 
     op getVoteMaps : Configuration -> Set{VoteMap} .
     eq getVoteMaps(< O : Node | votes : [VM, N], ATTS:AttributeSet > CF) = VM, getVoteMaps(CF) .
-
+    eq getVoteMaps(MSG CF) = getVoteMaps(CF) .
+    eq getVoteMaps(none) = empty .
 endm
