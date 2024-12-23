@@ -4,4 +4,6 @@ fmod VALUE is
     subsort  Value < Value? .
     subsort InitValue? < Value? .
 
+    subsort Nat < Value .
+    
 endfm
