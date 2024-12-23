@@ -98,7 +98,8 @@ mod ONETHIRDRULE-OBS is
     op mstate : Configuration -> MDPState [ctor] .
 
     --- state observation
-    eq obs({ TH, VS, OS, CF }) = mstate(CF) .
-    eq reward(mstate(< O : Node | decision : 0, ATTS > < O' : Node | decision : 1, ATTS' > CF)) = 1.0 .
-    eq reward(mstate(CF)) = 0.0 [owise] .
+    --- eq obs({ TH, VS, OS, CF }) = mstate(CF) .
+    --- eq reward(mstate(< O : Node | decision : 0, ATTS > < O' : Node | decision : 1, ATTS' > CF)) = 1.0 .
+    --- eq reward(mstate(CF)) = 0.0 [owise] .
+
 endm
