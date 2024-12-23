@@ -70,4 +70,12 @@ mod MODEL is
         CF
     } |= updateLHS(V, V') = true if (N < TH) and (TH <= VA) and genConst(V', N, VM, VS) .
     eq S |= updateLHS(V, V') = false [owise] .
+
+
+    ---op updateRHS : Value Value -> Prop [ctor] .
+    ---eq {TH, V' ; VS, OS,
+    ---    < O : Node | status : [s R, init], value : V', decision : nilValue, votes : [initVotes(V' ; VS), 0], ATTS >
+    ---    CF
+    ---} |= updateRHS(V, V') = true .
+    ---eq S |= hasDec(D:Value?) = false [owise] .
 endm
