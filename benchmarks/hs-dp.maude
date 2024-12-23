@@ -1,2 +1,7 @@
 load dining-philosophers .
 load ../../heuristic-search .
+
+mod DP3 is
+  inc N-DINING-PHILOSOPHERS .
+  eq #N = 3 .
+endm
