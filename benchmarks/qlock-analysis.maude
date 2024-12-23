@@ -47,4 +47,5 @@ endm
 mod QLOCK-TEST is
   pr MODEL .
   op init : -> Sys .
+  eq init = (pc[p1]: rs) (pc[p2]: rs) (queue: empty) (tmp[p1]: empty) (tmp[p2]: empty) .  
 endm
