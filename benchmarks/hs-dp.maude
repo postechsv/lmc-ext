@@ -51,4 +51,5 @@ mod HEURISTIC-SEARCH-DP is
   var S : Status .  
 
   op allSingle : Conf -> Bool .
+  eq allSingle(p(I,single) || C) = allSingle(C) .  
 endm
