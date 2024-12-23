@@ -1,0 +1,5 @@
+load ../../tool2 .
+load onethirdrule .
+
+mod MODEL is
+endm
