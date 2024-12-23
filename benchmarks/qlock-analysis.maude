@@ -34,4 +34,7 @@ mod MODEL is
   op dq2LHS : -> Prop [ctor] .
   eq (pc[I]: ds) (queue: Q) (tmp[I]: R) |= dq2LHS = true .
   eq S |= dq2LHS = false [owise] .  
+
+  --- Defining Observations ---
+  eq obs(S) = < obsUpto(S, eq1LHS ; eq2LHS ; wtLHS ; dq1LHS ; dq2LHS ; twoCrits) > .  
 endm
