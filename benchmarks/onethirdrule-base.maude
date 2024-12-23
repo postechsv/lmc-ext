@@ -310,4 +310,5 @@ mod ONETHIRDRULE-CONST is
     eq getOids(none) =  none .
 
     op numObjs : Configuration -> Nat .
+    eq numObjs(< O : Node | ATTS:AttributeSet > CF) = s numObjs(CF) .
 endm
