@@ -63,4 +63,7 @@ fmod VOTE is
 
     sort Vote .
     op [_,_] : VoteMap Nat -> Vote [ctor prec 70] .
+
+    sort InitVote .
+    subsort InitVote < Vote .    
 endfm
