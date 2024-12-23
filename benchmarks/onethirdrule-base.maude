@@ -66,4 +66,6 @@ fmod VOTE is
 
     sort InitVote .
     subsort InitVote < Vote .    
+
+    op [_,_] : InitVoteMap Zero -> InitVote [ctor prec 70] .
 endfm
