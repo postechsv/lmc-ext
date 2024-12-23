@@ -333,4 +333,6 @@ mod ONETHIRDRULE-CONST is
     eq validVM(V ; VS, (V |-> N) ; VM) = validVM(VS, VM) .
     eq validVM(emptyVs, (V |-> N) ; VM) = false .
     eq validVM(V ; VS, none) = false .
+    eq validVM(emptyVs, none) = true .
+
 endm
