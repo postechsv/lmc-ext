@@ -8,5 +8,8 @@ mod MODEL is
 
   subsort Sys < State .
   vars I J : Pid . var S : Sys .
-  vars Q R : Queue .    
+  vars Q R : Queue .
+
+  --- Defining State Propositions ---
+  op twoCrits : -> Prop [ctor] .  
 endm
