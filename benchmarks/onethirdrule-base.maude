@@ -216,5 +216,12 @@ mod ALT-CFIGURATION is
     op __ : InitConfiguration InitConfiguration -> InitConfiguration [ctor ditto] .
 
     op <_:_|_> : Oid Cid AttributeSet -> InitObject [ctor ditto] .    
-
 endm
+
+fmod MESSAGE-CONTENT is
+    protecting NAT .
+    protecting VALUE .
+
+    sort MsgContent . 
+    op vote : Value Nat -> MsgContent [ctor] .
+endfm
