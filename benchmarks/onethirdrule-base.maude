@@ -225,3 +225,8 @@ fmod MESSAGE-CONTENT is
     sort MsgContent . 
     op vote : Value Nat -> MsgContent [ctor] .
 endfm
+
+fmod MULTICAST is
+  including ALT-CFIGURATION .
+  including MESSAGE-CONTENT .  
+endm
