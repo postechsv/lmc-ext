@@ -336,4 +336,6 @@ mod ONETHIRDRULE-CONST is
     eq validVM(emptyVs, none) = true .
 
     op validVMS : ValueSet Set{VoteMap} -> Bool .
+    eq validVMS(VS, (VM, VMS)) = validVM(VS, VM) and validVMS(VS, VMS) .
+    eq validVMS(VS, empty) = true .
 endm
