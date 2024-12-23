@@ -251,4 +251,7 @@ endm
 
 fmod FUNCTIONS is
     protecting VOTE .
+
+    vars N N' NA N1 N2 TH : Nat .
+    var VM : VoteMap .
 endfm
