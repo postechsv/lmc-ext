@@ -111,5 +111,7 @@ mod ONETHIRDRULE-OBS is
 
     --- data observation
     var V : Value .
+    eq obs('vote, 'V, data(V)) = 'V := data(V) .
+    eq obs('receive, 'V, data(V)) = 'V := data(V) .
 
 endm
