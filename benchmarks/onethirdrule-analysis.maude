@@ -95,4 +95,6 @@ mod ONETHIRDRULE-OBS is
     var MSG : Msg .
     vars ATTS ATTS' : AttributeSet .
 
+    op mstate : Configuration -> MDPState [ctor] .
+
 endm
