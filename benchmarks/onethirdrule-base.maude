@@ -274,3 +274,6 @@ fmod FUNCTIONS is
     eq initVotes(V ; VS) = (V |-> 0) ; initVotes(VS) .
     eq initVotes(emptyVs) = none .
 endfm
+
+mod ONETHIRDRULE-CONST is
+endm
