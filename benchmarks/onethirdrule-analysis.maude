@@ -125,4 +125,7 @@ mod ONETHIRDRULE-TESTCASE is
 
     protecting STRING .
     subsort String < Oid .
+
+    ops obA obB obC obD obE obF obG obH : -> InitObject .
+    ops init3 init4 init5a init5b init5c init6a init6b init7a init7b : -> Global .
 endm
