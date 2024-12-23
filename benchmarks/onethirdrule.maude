@@ -61,3 +61,8 @@ mod ONETHIRDRULE-NO-MSG-LOSS is
         CF
     } if (N < TH) and (TH <= VA) and genConst(V', N, VM, VS) .
 endm
+
+mod ONETHIRDRULE is
+    including ONETHIRDRULE-NO-MSG-LOSS .
+
+endm
