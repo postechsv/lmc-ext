@@ -49,4 +49,11 @@ mod MODEL is
         CF
     } |= receiveLHS(V) = true .
     eq S |= receiveLHS(V) = false [owise] .
+
+    ---op receiveLHS : Value -> Prop [ctor] .
+    ---eq {TH, V ; VS, OS,
+    ---    < O : Node | status : [R, wait], decision : nilValue, votes : update(VOTE, V), ATTS > 
+    ---    (multicast vote(V, R) from O' to OS')  
+    ---    CF
+    ---}  |= receiveRHS(V) = true .
 endm
