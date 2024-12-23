@@ -319,4 +319,5 @@ mod ONETHIRDRULE-CONST is
     eq getRounds(MSG CF) = getRounds(CF) .
     eq getRounds(none) = 0 .
 
+    op valid1/2 : Nat Nat -> Bool .
 endm
