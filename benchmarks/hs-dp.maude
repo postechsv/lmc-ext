@@ -5,3 +5,8 @@ mod DP3 is
   inc N-DINING-PHILOSOPHERS .
   eq #N = 3 .
 endm
+
+mod DP5 is
+  inc N-DINING-PHILOSOPHERS .
+  eq #N = 5 .
+endm
