@@ -97,4 +97,7 @@ mod ONETHIRDRULE-OBS is
 
     op mstate : Configuration -> MDPState [ctor] .
 
+    --- state observation
+    eq obs({ TH, VS, OS, CF }) = mstate(CF) .
+
 endm
