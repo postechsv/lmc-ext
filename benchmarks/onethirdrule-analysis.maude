@@ -24,5 +24,7 @@ mod MODEL is
     eq S |= disagree = false [owise] .
 
     op hasDec : Nat -> Prop [ctor] .
+    eq { TH, VS, OS, < O : Node | decision : D:Value?} |= hasDec(D:Value?) = true .
+    eq S |= hasDec(D:Value?) = false [owise] .
 
 endm
