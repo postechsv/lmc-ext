@@ -32,4 +32,7 @@ fmod ABST-DP is
 
   --- data abstraction (= action abstraction)
   eq abst(I) = -- .  
+
+  --- state abstraction
+  eq abst(p(I, S) || C) = p(--, S) || abst(C) .  
 endfm
