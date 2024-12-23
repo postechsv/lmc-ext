@@ -55,4 +55,7 @@ mod HEURISTIC-SEARCH-DP is
   eq allSingle(p(I,S) || C) = false [owise] .  
   eq allSingle(c(I) || C) = allSingle(C) .  
   eq allSingle(none) = true .  
+  
+  --- define goals
+  ops deadlock : -> Prop [ctor] .  
 endm
