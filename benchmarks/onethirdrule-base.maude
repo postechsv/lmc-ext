@@ -330,4 +330,5 @@ mod ONETHIRDRULE-CONST is
     eq getVoteMaps(none) = empty .
 
     op validVM : ValueSet VoteMap -> Bool .
+    eq validVM(V ; VS, (V |-> N) ; VM) = validVM(VS, VM) .
 endm
