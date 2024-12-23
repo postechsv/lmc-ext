@@ -52,4 +52,5 @@ mod HEURISTIC-SEARCH-DP is
 
   op allSingle : Conf -> Bool .
   eq allSingle(p(I,single) || C) = allSingle(C) .  
+  eq allSingle(p(I,S) || C) = false [owise] .  
 endm
