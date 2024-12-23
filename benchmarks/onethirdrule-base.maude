@@ -293,7 +293,10 @@ mod ONETHIRDRULE-CONST is
     var VM : VoteMap .
     var VMS : Set{VoteMap} .
     var VS : ValueSet .
-    
+
     op noDupl : OidSet -> Bool .
     eq noDupl(O ; O ; OS) = false .
+
+    op sameRound : Set{Nat} -> Bool .
+    ceq sameRound((R, N, NS)) = false if R =/= N .
 endm
