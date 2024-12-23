@@ -308,4 +308,6 @@ mod ONETHIRDRULE-CONST is
     eq getOids(< O : Node | ATTS:AttributeSet > CF) = O ; getOids(CF) .
     eq getOids(MSG CF) =  getOids(CF) .
     eq getOids(none) =  none .
+
+    op numObjs : Configuration -> Nat .
 endm
