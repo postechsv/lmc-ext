@@ -44,4 +44,6 @@ endfm
 
 mod HEURISTIC-SEARCH-DP is
   pr DP5 . inc ABST-DP . inc HEURISTIC-SEARCH .
+  subsort Conf < State .
+
 endm
