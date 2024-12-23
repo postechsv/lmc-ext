@@ -196,4 +196,4 @@ endm
 ---search [1] init3 =>* X:State such that X:State |= goal . --- searches 822 states
 
 --- check ---
-red in TEST-DFS : getState(search(M, upTerm(init3), disagree)) .
+---red in TEST-DFS : getState(search(M, upTerm(init3), disagree)) .
