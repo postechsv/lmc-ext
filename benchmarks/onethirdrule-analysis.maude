@@ -23,4 +23,6 @@ mod MODEL is
     eq { TH, VS, OS, < O : Node | decision : 0, ATTS > < O' : Node | decision : 1, ATTS' > CF } |= disagree = true .
     eq S |= disagree = false [owise] .
 
+    op hasDec : Nat -> Prop [ctor] .
+
 endm
