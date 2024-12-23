@@ -66,5 +66,5 @@ endm
 --- search [1] in QLOCK-TEST : init(10) =>* (pc[P:Pid]: cs) (pc[Q:Pid]: cs) (S:Sys) .
 --- show path 33 .
 
-search [1] in QLOCK-INIT : init =>* (S:Sys) such that false .
+--- search [1] in QLOCK-INIT : init =>* (S:Sys) such that false .
 --- Seems non-terminating.
