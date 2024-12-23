@@ -229,4 +229,7 @@ endfm
 fmod MULTICAST is
   including ALT-CFIGURATION .
   including MESSAGE-CONTENT .  
+
+  op multicast_from_to_ : MsgContent Oid OidSet -> Msg [ctor] .
+    
 endm
