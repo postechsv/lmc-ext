@@ -323,4 +323,8 @@ mod ONETHIRDRULE-CONST is
     ---eq valid1/2(s s N', s N) = valid1/2(N', N) .
     ---eq valid1/2(N, Z) = false .
     ---eq valid1/2(s N, s N N') = true .
+
+    op getVoteMaps : Configuration -> Set{VoteMap} .
+    eq getVoteMaps(< O : Node | votes : [VM, N], ATTS:AttributeSet > CF) = VM, getVoteMaps(CF) .
+
 endm
