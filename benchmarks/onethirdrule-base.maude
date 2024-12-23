@@ -81,11 +81,13 @@ endm
 
 
 mod ALT-CFIGURATION is
-    ---protecting NODE .
-    ---protecting INITIAL-SORTS .
-    including STATUS .
-    including VOTE .
-    including STEP .
-    including VALUE .
-    including OID-SET .    
+  ---protecting NODE .
+  ---protecting INITIAL-SORTS .
+  including STATUS .
+  including VOTE .
+  including STEP .
+  including VALUE .
+  including OID-SET .    
+
+  sorts None Object Msg ObjectSet Configuration InitObject InitConfiguration .
 endm
