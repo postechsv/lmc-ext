@@ -15,4 +15,5 @@ mod MODEL is
   eq (pc[I]: cs) (pc[J]: cs) S |= twoCrits = true .
   eq S |= twoCrits = false [owise] .
 
+  op eq1LHS : -> Prop [ctor] .
 endm
