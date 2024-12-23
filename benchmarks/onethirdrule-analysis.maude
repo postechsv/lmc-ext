@@ -2,4 +2,8 @@ load ../../tool2 .
 load onethirdrule .
 
 mod MODEL is
+    ---pr ONETHIRDRULE .
+    pr ONETHIRDRULE-NO-MSG-LOSS .
+    pr SATISFACTION .
+
 endm
