@@ -24,7 +24,7 @@ mod MODEL is
   eq S |= eq2LHS = false [owise] .  
 
   op wtLHS : -> Prop [ctor] .  
-  ceq (pc[I]: ws) (queue: Q) |= wtLHS = true .
+  ceq (pc[I]: ws) (queue: Q) |= wtLHS = true if top(Q) = I .
   eq S |= wtLHS = false [owise] .
 
 endm
