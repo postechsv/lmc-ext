@@ -63,4 +63,11 @@ mod MODEL is
         CF
     } |= decideRHS(V) = true .
     eq S |= decideRHS(V) = false [owise] .
+
+    op updateLHS : Value Value -> Prop [ctor] .
+   ceq {TH, V' ; VS, OS,
+        < O : Node | status : [R, wait], value : V, decision : nilValue, votes : [V' |-> N ; VM, VA], ATTS >
+        CF
+    } |= updateLHS(V, V') = true if (N < TH) and (TH <= VA) and genConst(V', N, VM, VS) .
+    eq S |= updateLHS(V, V') = false [owise] .
 endm
