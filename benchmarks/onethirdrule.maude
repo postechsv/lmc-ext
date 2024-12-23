@@ -38,4 +38,16 @@ mod ONETHIRDRULE-NO-MSG-LOSS is
         (multicast vote(V', R) from O' to OS')  
         CF
     } .
+
+    crl [decide] :
+    {TH, VS, OS,
+        < O : Node | status : [R, wait], decision : nilValue, votes : [(V |-> N ; VM), VA], ATTS > 
+        CF
+    }
+    =>
+    {TH, VS, OS,
+        < O : Node | status : [R, done], decision : V, votes : [(V |-> N ; VM), VA], ATTS >
+        CF
+    } if TH <= N .
+
 endm
