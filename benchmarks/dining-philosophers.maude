@@ -17,4 +17,6 @@ fmod DINING-PHILOSOPHERS-BASE is
 
   sorts Conf Phil Chop .
   subsorts Phil Chop < Conf .     
+
+  op p : Nat Status -> Phil [ctor] .  
 endm
