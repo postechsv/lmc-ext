@@ -231,5 +231,8 @@ fmod MULTICAST is
   including MESSAGE-CONTENT .  
 
   op multicast_from_to_ : MsgContent Oid OidSet -> Msg [ctor] .
-    
+
+  var MC : MsgContent . 
+  var SENDER : Oid .
+
 endm
