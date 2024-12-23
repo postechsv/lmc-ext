@@ -1,5 +1,7 @@
 fmod VALUE is
     protecting NAT .
-
+    sorts Value InitValue? Value? .
+    subsort  Value < Value? .
+    subsort InitValue? < Value? .
 
 endfm
