@@ -164,4 +164,6 @@ mod TEST-SEARCH is
   pr ONETHIRDRULE-TESTCASE .
   subsort Nat < Score .
   var T : Term . vars N N' : Nat .
+
+  eq score(T) = 0 .
 endm
