@@ -33,5 +33,7 @@ mod N-DINING-PHILOSOPHERS is
   *** NOTE: rule attributes also declare the simplified version of
   *** spatial action patterns, e.g., wake(I) = {'wake : 'I \ I}  
   rl [th]: p(I,think) => p(I,hungry) .
-    
+
+ crl [hs]: p(I,hungry) || c(J) => p(I,single) 
+   if adj(I,J) .
 endm
