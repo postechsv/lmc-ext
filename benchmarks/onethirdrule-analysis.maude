@@ -176,4 +176,6 @@ mod TEST-SEARCH is
   op initCFG : -> SConfig .
   op initTerm : -> Term .
   eq initTerm = upTerm(init3) .
+  eq initCFG = {waiting, insert([initTerm, score(initTerm)], empty), t(initTerm)} . *** todo : make this as init rule
+
 endm
