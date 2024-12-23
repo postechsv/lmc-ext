@@ -237,3 +237,9 @@ fmod MULTICAST is
 
   eq multicast MC from SENDER to none = none .
 endm
+
+mod GLOBAL is
+    protecting ALT-CFIGURATION .
+    protecting NAT .
+
+endm
