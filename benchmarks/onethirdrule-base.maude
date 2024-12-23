@@ -27,3 +27,12 @@ fmod NODE is
     subsort Node < Cid .
     op Node : -> Cid [ctor] .    
 endfm        
+
+fmod STATUS is
+    protecting NAT .
+    protecting STEP .
+
+    sorts Status InitStatus .
+    subsort InitStatus < Status .
+    sort InitialRound .
+endfm
