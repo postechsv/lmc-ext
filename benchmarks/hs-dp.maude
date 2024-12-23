@@ -43,4 +43,5 @@ fmod ABST-DP is
 endfm
 
 mod HEURISTIC-SEARCH-DP is
+  pr DP5 . inc ABST-DP . inc HEURISTIC-SEARCH .
 endm
