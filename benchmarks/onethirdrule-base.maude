@@ -43,5 +43,7 @@ endfm
 fmod VOTE-MAP is
     protecting NAT .
     protecting VALUE .
-
+    sorts  VoteMap InitVoteMap Entry InitEntry .
+    subsort InitEntry < Entry InitVoteMap < VoteMap .
+    
 endfm
