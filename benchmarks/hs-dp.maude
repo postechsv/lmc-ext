@@ -24,4 +24,5 @@ fmod ABST-DP is
   subsort APhil < AState .
   op p : APid Status -> APhil .
   op none : -> AState [ctor] .  
+  op _||_ : AState AState -> AState [ctor comm assoc id: none] .  
 endfm
