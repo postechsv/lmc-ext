@@ -20,4 +20,6 @@ mod MODEL is
   eq S |= eq1LHS = false [owise] .  
 
   op eq2LHS : -> Prop [ctor] .  
+  eq (pc[I]: es) (queue: Q) (tmp[I]: R) |= eq2LHS = true .
+  eq S |= eq2LHS = false [owise] .  
 endm
