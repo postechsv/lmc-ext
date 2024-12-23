@@ -48,5 +48,8 @@ fmod VOTE-MAP is
 
     op  _|->_ : Value Nat -> Entry [ctor prec 50] .
     op  _|->_ : Value Zero -> InitEntry [ctor prec 50] .
-    
+
+    op none : -> InitEntry [ctor] .
+    op _;_ : VoteMap VoteMap -> VoteMap [ctor assoc comm id: none prec 60] .
+    op _;_ : InitVoteMap InitVoteMap -> InitVoteMap [ctor assoc comm id: none prec 60] .
 endfm
