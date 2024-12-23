@@ -34,6 +34,9 @@ mod N-DINING-PHILOSOPHERS is
   *** spatial action patterns, e.g., wake(I) = {'wake : 'I \ I}  
   rl [th]: p(I,think) => p(I,hungry) .
 
- crl [hs]: p(I,hungry) || c(J) => p(I,single) 
-   if adj(I,J) .
+  crl [hs]: p(I,hungry) || c(J) => p(I,single) 
+    if adj(I,J) .
+
+  crl [se]: p(I,single) || c(J) => p(I,eat) 
+    if adj(I,J)
 endm
