@@ -8,5 +8,6 @@ fmod DINING-PHILOSOPHERS-BASE is
   vars I J : Nat .  
 
   ops lc rc : Nat ~> Nat .    
-
+  eq lc(I) = I .    
+  ceq rc(I) = s(I) if (s(I) < #N) = true .
 endm
