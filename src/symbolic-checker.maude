@@ -17,87 +17,87 @@ fmod RULE-NAME is
 endfm
 
 fmod COMPLETENESS is 
-  pr META-LEVEL .    
-  pr SATISFACTION .
+    pr META-LEVEL .    
+    pr SATISFACTION .
 
-  sorts Completeness CompletenessSet .
-  subsort Completeness < CompletenessSet .
+    sorts Completeness CompletenessSet .
+    subsort Completeness < CompletenessSet .
 
-  op incomplete : Bool -> Completeness [ctor] . --- Denotes true/false-COMPLETENESS of its corresponding proposition
-  op complete : Bool -> Completeness [ctor] .
-  op undefined : -> CompletenessSet [ctor] .
+    op incomplete : Bool -> Completeness [ctor] . --- Denotes true/false-COMPLETENESS of its corresponding proposition
+    op complete : Bool -> Completeness [ctor] .
+    op undefined : -> CompletenessSet [ctor] .
 
-  op _,_ : CompletenessSet CompletenessSet -> CompletenessSet [assoc comm ctor id: undefined] .
-  eq C:Completeness, C:Completeness = C:Completeness .
+    op _,_ : CompletenessSet CompletenessSet -> CompletenessSet [assoc comm ctor id: undefined] .
+    eq C:Completeness, C:Completeness = C:Completeness .
 
-  op find : CompletenessSet Bool -> CompletenessSet .
-  eq find((complete(B:Bool), CS:CompletenessSet), B:Bool) = complete(B:Bool) .
-  eq find((incomplete(B:Bool), CS:CompletenessSet), B:Bool) = incomplete(B:Bool) .
-  eq find(CS:CompletenessSet, B:Bool) = undefined [owise] .
+    op find : CompletenessSet Bool -> CompletenessSet .
+    eq find((complete(B:Bool), CS:CompletenessSet), B:Bool) = complete(B:Bool) .
+    eq find((incomplete(B:Bool), CS:CompletenessSet), B:Bool) = incomplete(B:Bool) .
+    eq find(CS:CompletenessSet, B:Bool) = undefined [owise] .
 
-  op update : CompletenessSet CompletenessSet -> CompletenessSet [assoc] .
-  eq update(CS:CompletenessSet, undefined) = CS:CompletenessSet .
-  eq update(undefined, CS:CompletenessSet) = CS:CompletenessSet .
-  eq update((complete(B:Bool), CS:CompletenessSet), (incomplete(B:Bool), CS':CompletenessSet)) = (incomplete(B:Bool), update(CS:CompletenessSet, CS':CompletenessSet)) .
-  eq update((C:Completeness, CS:CompletenessSet), CS':CompletenessSet) = update(CS:CompletenessSet, CS':CompletenessSet) [owise] .
+    op update : CompletenessSet CompletenessSet -> CompletenessSet [assoc] .
+    eq update(CS:CompletenessSet, undefined) = CS:CompletenessSet .
+    eq update(undefined, CS:CompletenessSet) = CS:CompletenessSet .
+    eq update((complete(B:Bool), CS:CompletenessSet), (incomplete(B:Bool), CS':CompletenessSet)) = (incomplete(B:Bool), update(CS:CompletenessSet, CS':CompletenessSet)) .
+    eq update((C:Completeness, CS:CompletenessSet), CS':CompletenessSet) = update(CS:CompletenessSet, CS':CompletenessSet) [owise] .
 endfm
 
 fmod STATE-SYNTAX is
-  pr COMPLETENESS .
+    pr COMPLETENESS .
 
-  sorts InitState ExState .
-  subsorts InitState ExState < State .
+    sorts InitState ExState .
+    subsorts InitState ExState < State .
 
-  sorts PropMapping PropMap .
-  subsort PropMapping < PropMap .
+    sorts PropMapping PropMap .
+    subsort PropMapping < PropMap .
 
-  op _*>_ : Prop Bool -> PropMapping [ctor] .
-  op emptyPropMap : -> PropMap [ctor] .
-  op __ : PropMapping PropMapping -> PropMapping [assoc ctor comm id: emptyPropMap] .
+    op _*>_ : Prop Bool -> PropMapping [ctor] .
+    op emptyPropMap : -> PropMap [ctor] .
+    op __ : PropMapping PropMapping -> PropMapping [assoc ctor comm id: emptyPropMap] .
 
-  --- if-and-only-if operator for boolean values
-  --- We use this instead of Maude's standard == operator to delay reduction when non-ground terms are included in either side of the equation
-  op _<=>_ : Bool Bool -> Bool .
-  eq true <=> true = true .
-  eq false <=> false = true .
-  eq true <=> false = false .
-  eq false <=> true = false .
-  
-  op _~_ : Universal Universal -> Bool [prec 51 poly (1 2)] .
+    --- if-and-only-if operator for boolean values
+    --- We use this instead of Maude's standard == operator to delay reduction when non-ground terms are included in either side of the equation
+    op _<=>_ : Bool Bool -> Bool .
+    eq true <=> true = true .
+    eq false <=> false = true .
+    eq true <=> false = false .
+    eq false <=> true = false .
+    
+    op _~_ : Universal Universal -> Bool [prec 51 poly (1 2)] .
 
-  var PM : PropMap .
-  vars P P' : Prop .
-  var B : Bool .
+    var PM : PropMap .
+    vars P P' : Prop .
+    var B : Bool .
 
-  --- Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable)
-  op isComplete : PropMap -> Bool .
-  eq isComplete(emptyPropMap) = true .
-  eq isComplete(P *> true) = true .
-  eq isComplete(P *> false) = true .
-  eq isComplete((P *> true) (P' *> B) PM) = isComplete((P' *> B) PM) .
-  eq isComplete((P *> false) (P' *> B) PM) = isComplete((P' *> B) PM) .
-  eq isComplete(PM) = false [owise] .
+    --- Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable)
+    op isComplete : PropMap -> Bool .
+    eq isComplete(emptyPropMap) = true .
+    eq isComplete(P *> true) = true .
+    eq isComplete(P *> false) = true .
+    eq isComplete((P *> true) (P' *> B) PM) = isComplete((P' *> B) PM) .
+    eq isComplete((P *> false) (P' *> B) PM) = isComplete((P' *> B) PM) .
+    eq isComplete(PM) = false [owise] .
 
-  op <<<_|_|_>>> : State Bool CompletenessSet -> InitState [ctor] .    
-  op {{{_|_|_|_}}} : State PropMap Bool CompletenessSet -> ExState [ctor] .   
+    op <<<_|_|_>>> : State Bool CompletenessSet -> InitState [ctor] .    
+    op {{{_|_|_|_}}} : State PropMap Bool CompletenessSet -> ExState [ctor] .   
 
-  op <<<_|_>>> : State Bool -> InitState .
+    op <<<_|_>>> : State Bool -> InitState .
 
-  var ST : State .
-  var CT : Bool .
-  var CS : CompletenessSet .
+    var ST : State .
+    var CT : Bool .
+    var CS : CompletenessSet .
 
-  eq <<< ST | CT >>> = <<< ST | CT | complete(true), complete(false) >>> .    
-  eq <<< ST | CT | CS >>> |= P = ST |= P .    
+    eq <<< ST | CT >>> = <<< ST | CT | complete(true), complete(false) >>> .    
+    eq <<< ST | CT | CS >>> |= P = ST |= P .    
 
-  eq {{{ ST | (P *> B) PM | CT | CS }}} |= P = B .
-  eq {{{ ST | PM | CT | CS }}} |= P = false [owise] .
+    eq {{{ ST | (P *> B) PM | CT | CS }}} |= P = B .
+    eq {{{ ST | PM | CT | CS }}} |= P = false [owise] .
 
-  sorts ExRuleElements ExInitRuleElements .
-  op exRule : State PropMap Bool State PropMap Bool -> ExRuleElements [ctor] .
-  op exRule : State PropMap Bool CompletenessSet State PropMap Bool CompletenessSet -> ExRuleElements [ctor] .
-  op exInitRule : State Bool PropMap Bool -> ExInitRuleElements [ctor] .
-  op exInitRule : State Bool CompletenessSet PropMap Bool CompletenessSet -> ExInitRuleElements [ctor] .
+    sorts ExRuleElements ExInitRuleElements .
+    op exRule : State PropMap Bool State PropMap Bool -> ExRuleElements [ctor] .
+    op exRule : State PropMap Bool CompletenessSet State PropMap Bool CompletenessSet -> ExRuleElements [ctor] .
+    op exInitRule : State Bool PropMap Bool -> ExInitRuleElements [ctor] .
+    op exInitRule : State Bool CompletenessSet PropMap Bool CompletenessSet -> ExInitRuleElements [ctor] .
 endfm
 
 fmod SYMBOLIC-CHECKER is
@@ -367,86 +367,86 @@ fmod RULE-TERM-RENAMING is
 endfm
 
 fmod COMPLETENESS-DECLARATION is
-  pr SATISFACTION .
-  pr COMPLETENESS .
+    pr SATISFACTION .
+    pr COMPLETENESS .
 
-  sorts CompletenessMapData CompletenessMap CompletenessKey .
-  op %prop : Qid -> CompletenessKey [ctor] .
-  op %operator : Qid -> CompletenessKey [ctor] .
-  op _=>_ : CompletenessKey CompletenessSet -> CompletenessMapData [ctor prec 45] . 
+    sorts CompletenessMapData CompletenessMap CompletenessKey .
+    op %prop : Qid -> CompletenessKey [ctor] .
+    op %operator : Qid -> CompletenessKey [ctor] .
+    op _=>_ : CompletenessKey CompletenessSet -> CompletenessMapData [ctor prec 45] . 
 
-  op nil : -> CompletenessMapData [ctor] .
-  op _;_ : CompletenessMapData CompletenessMapData -> CompletenessMapData [assoc comm ctor prec 50 id: nil] .
-  op empty : -> CompletenessMap [ctor] .
-  op {_} : CompletenessMapData -> CompletenessMap [ctor] .
+    op nil : -> CompletenessMapData [ctor] .
+    op _;_ : CompletenessMapData CompletenessMapData -> CompletenessMapData [assoc comm ctor prec 50 id: nil] .
+    op empty : -> CompletenessMap [ctor] .
+    op {_} : CompletenessMapData -> CompletenessMap [ctor] .
 
-  sort MaybeBool .
-  subsort Bool < MaybeBool .
-  op unknown : -> MaybeBool .
+    sort MaybeBool .
+    subsort Bool < MaybeBool .
+    op unknown : -> MaybeBool .
 
-  var M : Module .
-  vars T T' ST BT PT IT : Term .
-  var TL : TermList .
-  var CK : CompletenessKey .
-  vars CS CS' : CompletenessSet .
-  var CM : CompletenessMapData .
-  vars B B' : Bool .
-  var OPDS : OpDeclSet .
-  var EQS : EquationSet .
-  var ATRS : AttrSet .
+    var M : Module .
+    vars T T' ST BT PT IT : Term .
+    var TL : TermList .
+    var CK : CompletenessKey .
+    vars CS CS' : CompletenessSet .
+    var CM : CompletenessMapData .
+    vars B B' : Bool .
+    var OPDS : OpDeclSet .
+    var EQS : EquationSet .
+    var ATRS : AttrSet .
 
-  op fillCompleteness : CompletenessSet -> CompletenessSet .
-  eq fillCompleteness(complete(B)) = complete(B), incomplete(not B) .
-  eq fillCompleteness(incomplete(B)) = complete(not B), incomplete(B) .
-  eq fillCompleteness(CS) = CS [owise] .
+    op fillCompleteness : CompletenessSet -> CompletenessSet .
+    eq fillCompleteness(complete(B)) = complete(B), incomplete(not B) .
+    eq fillCompleteness(incomplete(B)) = complete(not B), incomplete(B) .
+    eq fillCompleteness(CS) = CS [owise] .
 
-  op insert : CompletenessKey CompletenessSet CompletenessMap -> CompletenessMap .
-  eq insert(CK, CS, empty) = { CK => CS } .
-  eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
-  eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
+    op insert : CompletenessKey CompletenessSet CompletenessMap -> CompletenessMap .
+    eq insert(CK, CS, empty) = { CK => CS } .
+    eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
+    eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
 
-  op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
-  eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
-  eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
-  eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
+    op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
+    eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
+    eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
+    eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
 
-  op prin : Substitution? -> Substitution? .
-  eq prin(SUB?::Substitution?) = SUB?::Substitution? [print SUB?::Substitution?] .
+    op prin : Substitution? -> Substitution? .
+    eq prin(SUB?::Substitution?) = SUB?::Substitution? [print SUB?::Substitution?] .
 
-  op errorTerm : -> [Term] .
-  op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
-  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) .
-  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) .
-  eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) .
-  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
-  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
-  ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
-  
-  eq declaredCompleteness(M, OPDS, EQS) = empty [owise] .
-
-  op declaredCompleteness : Module -> CompletenessMap [memo] .
-  eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
-
-  op prin : CompletenessMap -> CompletenessMap .
-  eq prin(CM:CompletenessMap) = CM:CompletenessMap [print "[CompletenessMap] " CM:CompletenessMap] .
-
-  op prin : MaybeBool -> MaybeBool .
-  eq prin(MB:MaybeBool) = MB:MaybeBool [print "[MaybeBool] " MB:MaybeBool] .
-
-  op isPropCompleteFor : Module Qid Bool -> MaybeBool .
-  eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
-
-  op isOpCompleteFor : Module Qid Bool -> MaybeBool .
-  eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
+    op errorTerm : -> [Term] .
+    op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
+    eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) .
+    eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) .
+    eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) .
+    ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
+    ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
+    ceq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> TY:Type [metadata("incomplete(both)") ATRS].) OPDS, EQS) = insert(%operator(O:Qid), fillCompleteness((incomplete(true), incomplete(false))), declaredCompleteness(M, OPDS, EQS)) if TY:Type =/= 'Prop .
     
-  op prin : Bool -> Bool .
-  eq prin(B:Bool) = B:Bool [print "[Bool] " B:Bool] .
+    eq declaredCompleteness(M, OPDS, EQS) = empty [owise] .
 
-  op prin : MaybeBool -> MaybeBool .
-  eq prin(B:MaybeBool) = B:MaybeBool [print "[MaybeBool] " B:MaybeBool] .
+    op declaredCompleteness : Module -> CompletenessMap [memo] .
+    eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
 
-  op isMarkedIncomplete : Module Term Bool -> Bool .
-  eq isMarkedIncomplete(M, T, B) = getTerm(metaReduce(M, 'find[T, upTerm(B)])) == 'incomplete[upTerm(B)] .
+    op prin : CompletenessMap -> CompletenessMap .
+    eq prin(CM:CompletenessMap) = CM:CompletenessMap [print "[CompletenessMap] " CM:CompletenessMap] .
+
+    op prin : MaybeBool -> MaybeBool .
+    eq prin(MB:MaybeBool) = MB:MaybeBool [print "[MaybeBool] " MB:MaybeBool] .
+
+    op isPropCompleteFor : Module Qid Bool -> MaybeBool .
+    eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
+
+    op isOpCompleteFor : Module Qid Bool -> MaybeBool .
+    eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
+      
+    op prin : Bool -> Bool .
+    eq prin(B:Bool) = B:Bool [print "[Bool] " B:Bool] .
+
+    op prin : MaybeBool -> MaybeBool .
+    eq prin(B:MaybeBool) = B:MaybeBool [print "[MaybeBool] " B:MaybeBool] .
+
+    op isMarkedIncomplete : Module Term Bool -> Bool .
+    eq isMarkedIncomplete(M, T, B) = getTerm(metaReduce(M, 'find[T, upTerm(B)])) == 'incomplete[upTerm(B)] .
 endfm
 
 fmod RULE-PROP-CONF is
@@ -482,71 +482,71 @@ fmod RULE-PROP-CONF is
 endfm
 
 fmod PROP-INFO-EXTRACTION is
-  pr RULE-PROP-CONF .
-  pr COMPLETENESS-DECLARATION .
-  pr META-LEVEL .
+    pr RULE-PROP-CONF .
+    pr COMPLETENESS-DECLARATION .
+    pr META-LEVEL .
 
-  var Q : Qid .
-  var M : Module .
-  vars T ST BT PT : Term .
-  vars TL TL1 TL2 TL3 : TermList .
-  
-  var PROP : Constant .
+    var Q : Qid .
+    var M : Module .
+    vars T ST BT PT : Term .
+    vars TL TL1 TL2 TL3 : TermList .
+    
+    var PROP : Constant .
 
-  var TYL : TypeList .
-  var EQS : EquationSet .
-  var OPDS : OpDeclSet .
-  var ATRS : AttrSet .
+    var TYL : TypeList .
+    var EQS : EquationSet .
+    var OPDS : OpDeclSet .
+    var ATRS : AttrSet .
 
-  var PE : PropEval .
-  var PES : PropEvalSet .
-  var PEM : PropEvalMapping .
-  var PEMm : PropEvalMap .
+    var PE : PropEval .
+    var PES : PropEvalSet .
+    var PEM : PropEvalMapping .
+    var PEMm : PropEvalMap .
 
-  var RPC : RulePropConf .
-  var RPCS : RulePropConfSet .
+    var RPC : RulePropConf .
+    var RPCS : RulePropConfSet .
 
-  vars B B' : Bool .
+    vars B B' : Bool .
 
-  op toPropTerm : Qid -> Term .
-  eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
+    op toPropTerm : Qid -> Term .
+    eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
 
-  op dedup : TermList -> TermList .
-  eq dedup((TL1, T, TL2, T, TL3)) = dedup((TL1, T, TL2, TL3)) .
-  eq dedup(TL) = TL [owise] .
+    op dedup : TermList -> TermList .
+    eq dedup((TL1, T, TL2, T, TL3)) = dedup((TL1, T, TL2, TL3)) .
+    eq dedup(TL) = TL [owise] .
 
-  op negationIncompleteness : Module Qid Bool -> Completeness .
-  ceq negationIncompleteness(M, Q, B) = incomplete(not B) if B' := isPropCompleteFor(M, Q, not B) /\ not B' .
-  eq negationIncompleteness(M, Q, B) = complete(not B) [owise] .
+    op negationIncompleteness : Module Qid Bool -> Completeness .
+    ceq negationIncompleteness(M, Q, B) = incomplete(not B) if B' := isPropCompleteFor(M, Q, not B) /\ not B' .
+    eq negationIncompleteness(M, Q, B) = complete(not B) [owise] .
 
-  op getIncompleteness : Module Qid Bool -> PropEvalSet .
-  ceq getIncompleteness(M, Q, B) = incomplete(B, negationIncompleteness(M, Q, B)) if B' := isPropCompleteFor(M, Q, B) /\ not B' .
-  eq getIncompleteness(M, Q, B) = emptyPropEvalSet [owise] .
+    op getIncompleteness : Module Qid Bool -> PropEvalSet .
+    ceq getIncompleteness(M, Q, B) = incomplete(B, negationIncompleteness(M, Q, B)) if B' := isPropCompleteFor(M, Q, B) /\ not B' .
+    eq getIncompleteness(M, Q, B) = emptyPropEvalSet [owise] .
 
-  op getPropIncompletes : Module Qid -> PropEvalSet .
-  eq getPropIncompletes(M, Q) = getIncompleteness(M, Q, true) getIncompleteness(M, Q, false) .
+    op getPropIncompletes : Module Qid -> PropEvalSet .
+    eq getPropIncompletes(M, Q) = getIncompleteness(M, Q, true) getIncompleteness(M, Q, false) .
 
-  op getVariantEval : Qid EquationSet -> PropEvalSet .
-  ceq getVariantEval(Q, (eq '_|=_[ST, PROP] = BT [variant ATRS] .) EQS) = genVariants if getName(PROP) = Q .
-  eq getVariantEval(Q, EQS) = emptyPropEvalSet [owise] .
+    op getVariantEval : Qid EquationSet -> PropEvalSet .
+    ceq getVariantEval(Q, (eq '_|=_[ST, PROP] = BT [variant ATRS] .) EQS) = genVariants if getName(PROP) = Q .
+    eq getVariantEval(Q, EQS) = emptyPropEvalSet [owise] .
 
-  op getPropInfo : Module TermList EquationSet -> PropEvalMap .
-  ceq getPropInfo(M, (T, TL), EQS) = (Q *> getPropIncompletes(M, Q) getVariantEval(Q, EQS)) getPropInfo(M, TL, EQS) if Q := getName(T) .
-  eq getPropInfo(M, TL, EQS) = emptyPropEvalMap [owise] .
+    op getPropInfo : Module TermList EquationSet -> PropEvalMap .
+    ceq getPropInfo(M, (T, TL), EQS) = (Q *> getPropIncompletes(M, Q) getVariantEval(Q, EQS)) getPropInfo(M, TL, EQS) if Q := getName(T) .
+    eq getPropInfo(M, TL, EQS) = emptyPropEvalMap [owise] .
 
-  op getPropInfo : Module TermList -> PropEvalMap .
-  eq getPropInfo(M, TL) = getPropInfo(M, dedup(TL), getEqs(M)) .
+    op getPropInfo : Module TermList -> PropEvalMap .
+    eq getPropInfo(M, TL) = getPropInfo(M, dedup(TL), getEqs(M)) .
 
-  op insertPropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
-  eq insertPropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
-  eq insertPropInfo(PEM, RPC ; RPCS) = (PEM, RPC) ; insertPropInfo(PEM, RPCS) .
+    op insertPropInfo : PropEvalMapping RulePropConfSet -> RulePropConfSet .
+    eq insertPropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
+    eq insertPropInfo(PEM, RPC ; RPCS) = (PEM, RPC) ; insertPropInfo(PEM, RPCS) .
 
-  --- Get the cross product of PropEvalMappings
-  op crossPropInfo : PropEvalMap -> RulePropConfSet .
-  eq crossPropInfo(emptyPropEvalMap) = emptyRulePropConfSet .
-  eq crossPropInfo((Q *> emptyPropEvalSet) PEMm) = emptyRulePropConfSet .
-  eq crossPropInfo((Q *> PE PES)) = (Q *> PE) ; crossPropInfo((Q *> PES)) .
-  eq crossPropInfo((Q *> PE PES) PEMm) = crossPropInfo((Q *> PES) PEMm) ; insertPropInfo((Q *> PE), crossPropInfo(PEMm)) .
+    --- Get the cross product of PropEvalMappings
+    op crossPropInfo : PropEvalMap -> RulePropConfSet .
+    eq crossPropInfo(emptyPropEvalMap) = emptyRulePropConfSet .
+    eq crossPropInfo((Q *> emptyPropEvalSet) PEMm) = emptyRulePropConfSet .
+    eq crossPropInfo((Q *> PE PES)) = (Q *> PE) ; crossPropInfo((Q *> PES)) .
+    eq crossPropInfo((Q *> PE PES) PEMm) = crossPropInfo((Q *> PES) PEMm) ; insertPropInfo((Q *> PE), crossPropInfo(PEMm)) .
 endfm
 
 fmod VARIANT-GENERATION is
@@ -586,9 +586,9 @@ fmod RULE-EXPANSION is
     
     var Q : Qid .
     vars M M' : Module .
-    vars T T1 T2 ST ST' PT PT' CT CT' : Term .
+    vars T T1 T2 ST ST' PT PT' CT CT' CPT CPT' : Term .
     vars TL PTs CTs CTs' : TermList .
-    var B : Bool .
+    vars B B' : Bool .
     var SUB : Substitution .
 
     var TY : Type .
@@ -608,11 +608,11 @@ fmod RULE-EXPANSION is
     var VARS : VariantPairSet .
     var RPC : RulePropConf .
     var RPCS : RulePropConfSet .
-  
+
     var CS : CompletenessSet .
 
     var CP : Completeness .
-
+  
     op toPropTerm : Qid -> Term .
     eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
 
@@ -626,7 +626,7 @@ fmod RULE-EXPANSION is
     ceq conditionCompleteness(M, Q[TL] = T) = incomplete(B) if B := downTerm(T, errorBool) /\ isOpCompleteFor(M, Q, B) = false .
     ceq conditionCompleteness(M, COND /\ COND') = conditionCompleteness(M, COND), conditionCompleteness(M, COND') if COND =/= nil /\ COND' =/= nil .
     eq conditionCompleteness(M, COND) = undefined .
-
+    
     op craftPropMap : Term RulePropConf -> Term .
     eq craftPropMap(ST, ((Q *> genVariants), RPC)) = '__['_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]], craftPropMap(ST, RPC)] .
     eq craftPropMap(ST, ((Q *> incomplete(B, CP)), RPC)) = '__['_*>_[toPropTerm(Q), upTerm(B)], craftPropMap(ST, RPC)] .
@@ -733,7 +733,7 @@ fmod META-NARROWING-INTERFACE is
   pr COMPLETENESS-DECLARATION .
 
   var M : Module . 
-  vars T T' T1 T2 ST ST' PT BT : Term .  
+  vars T T' T1 T2 ST ST' PT BT CPT : Term .  
   vars TL VL : TermList .  
   var TS : TermSet .
   var C : Constant . 
@@ -786,7 +786,7 @@ fmod META-NARROWING-INTERFACE is
   op simplifySubstitutions : StepResultSet -> StepResultSet .
   eq simplifySubstitutions(empty) = empty .
   eq simplifySubstitutions({ST,SUB,RN | T} || SRS) = cleanRedundant({ST,summarize(T, SUB),RN | T}) || simplifySubstitutions(SRS) .
-
+  
   op filterStates : Module StepResultSet -> StepResultSet .
   eq filterStates(M, empty) = empty .
   ceq filterStates(M, {'`{`{`{_|_|_|_`}`}`}[ST, PT, BT, CPT],SUB,RN | T} || SRS) = filterStates(M, SRS) if BT == 'false.Bool or (not isMarkedIncomplete(M, CPT, true) and BT =/= 'true.Bool) .
@@ -802,7 +802,7 @@ mod PARTIAL-COMPLETENESS-FOLDING is
 
     var M : Module .
     vars T T1 T2 : Term .
-    vars ST1 PT1 CT1 ST2 PT2 CT2 : Term .
+    vars ST1 PT1 CT1 ST2 PT2 CT2 CPT1 CPT2 : Term .
     var P : Term .
     vars VAR1 VAR2 : VariantPair .
     vars VARS1 VARS2 : VariantPairSet .
@@ -888,7 +888,7 @@ mod META-SYMBOLIC-CONNECTOR is
   var B : Bool . 
   var N : Nat . 
   var D : Bound .
-  var RT : ResultTriple .  
+  var RT : ResultTriple .
   var RTS : ResultTripleSet . 
 
 --- meta prop and state
@@ -923,11 +923,11 @@ mod META-SYMBOLIC-CONNECTOR is
   eq initStep(empty) = empty .
   eq initStep({T,SUB,RN | ST} || SRS:StepResultSet) = next(T) || initStep(SRS:StepResultSet) .
 
-  eq next(ST)    
-   = simplifySubstitutions(filterStates(trMod(##m##), nextCandidates(ST))) .
+  eq next(ST) 
+    = simplifySubstitutions(filterStates(trMod(##m##), nextCandidates(ST))) .
 
   eq initVariant(ST) 
-   = initStep(simplifySubstitutions(filterStates(trMod(##m##), initCandidates(ST)))) .
+    = initStep(simplifySubstitutions(filterStates(trMod(##m##), initCandidates(ST)))) .
 
   op wrapInitState : Term -> Term .
   eq wrapInitState('<<<_|_|_>>>[TL]) = '<<<_|_|_>>>[TL] .
