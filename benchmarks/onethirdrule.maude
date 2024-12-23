@@ -64,5 +64,10 @@ endm
 
 mod ONETHIRDRULE is
     including ONETHIRDRULE-NO-MSG-LOSS .
+    vars TH NV : Nat .
+    var OS : OidSet . 
+    var CF : Configuration . 
+    var MSG : Msg .
+    var VS : ValueSet .
 
 endm
