@@ -320,4 +320,7 @@ mod ONETHIRDRULE-CONST is
     eq getRounds(none) = 0 .
 
     op valid1/2 : Nat Nat -> Bool .
+    eq valid1/2(s s N', s N) = valid1/2(N', N) .
+    eq valid1/2(N, Z) = false .
+    eq valid1/2(s N, s N N') = true .
 endm
