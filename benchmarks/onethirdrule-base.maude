@@ -247,3 +247,8 @@ mod GLOBAL is
     op decide? :  Value Bool Nat ValueSet OidSet Object Configuration -> Global [ctor] .
     op update? :  Value Bool Nat ValueSet OidSet Object Configuration -> Global [ctor] .
 endm
+
+
+fmod FUNCTIONS is
+    protecting VOTE .
+endfm
