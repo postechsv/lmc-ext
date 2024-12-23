@@ -76,4 +76,6 @@ mod ONETHIRDRULE is
     {TH, VS, OS, CF} .
 endm
 
-search [1] init5b =>* { TH:Nat, VS:ValueSet, OS:OidSet, < O:Oid : Node | status : [R:Nat, done], decision : 0, ATTR:AttributeSet > < O':Oid : Node | status : [R':Nat, done], decision : 1, ATTR':AttributeSet > CONF:Configuration } .
+--- search [1] init5b =>* { TH:Nat, VS:ValueSet, OS:OidSet, < O:Oid : Node | status : [R:Nat, done], decision : 0, ATTR:AttributeSet > < O':Oid : Node | status : [R':Nat, done], decision : 1, ATTR':AttributeSet > CONF:Configuration } .
+
+search [1] init0 =>* { 2, (0 ; 1), ("A" ; "B" ; "C"), < O:Oid : Node | decision : 0, ATTR:AttributeSet > CONF:Configuration } .
