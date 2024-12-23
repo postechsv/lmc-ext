@@ -269,4 +269,8 @@ fmod FUNCTIONS is
 
     eq genConst(V, N, (V' |-> N') ; VM, (V' ; VS))
      = ((N' < N) or ((N' <= N) and (V < V'))) and genConst(V, N, VM, VS) .
+
+    op initVotes : ValueSet -> VoteMap .
+    eq initVotes(V ; VS) = (V |-> 0) ; initVotes(VS) .
+    eq initVotes(emptyVs) = none .
 endfm
