@@ -147,6 +147,6 @@ mod ONETHIRDRULE-TESTCASE is
     eq init6a = {3, (0 ; 1), ("A" ; "B" ; "C" ; "D" ; "E" ; "F"), (obA obB obC obD obE obF) } . --- 2 (least) vs 4 (rest)
     eq init6b = {4, (0 ; 1), ("A" ; "B" ; "C" ; "D" ; "E" ; "F"), (obA obB obC obD obE obF) } . --- 2 (least) vs 4 (rest)
     eq init7a = {3, (0 ; 1), ("A" ; "B" ; "C" ; "D" ; "E" ; "F" ; "H"), (obA obB obC obD obE obF obH) } . --- 3(least) vs 4 (rest)
-    eq init7b = {4, (0 ; 1), ("A" ; "B" ; "C" ; "D" ; "E" ; "F" ; "H"), (obA obB obC obD obE obF obH obH) } . --- 3(least) vs 4 (rest)
+    eq init7b = {4, (0 ; 1), ("A" ; "B" ; "C" ; "D" ; "E" ; "F" ; "H"), (obA obB obC obD obE obF obH) } . --- 3(least) vs 4 (rest)
 
 endm
