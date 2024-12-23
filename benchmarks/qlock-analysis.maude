@@ -45,5 +45,6 @@ endm
 
 
 mod QLOCK-TEST is
-
+  pr MODEL .
+  op init : -> Sys .
 endm
