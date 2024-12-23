@@ -21,5 +21,6 @@ mod MODEL is
 
     op disagree : -> Prop [ctor] .
     eq { TH, VS, OS, < O : Node | decision : 0, ATTS > < O' : Node | decision : 1, ATTS' > CF } |= disagree = true .
+    eq S |= disagree = false [owise] .
 
 endm
