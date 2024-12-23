@@ -276,4 +276,9 @@ fmod FUNCTIONS is
 endfm
 
 mod ONETHIRDRULE-CONST is
+    protecting ALT-CFIGURATION .
+    protecting SET{Nat} .
+    protecting SET{VoteMap} .
+    protecting BOOL .
+
 endm
