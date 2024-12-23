@@ -4,4 +4,15 @@ mod ONETHIRDRULE-NO-MSG-LOSS is
     including GLOBAL .
     including FUNCTIONS .
     protecting MULTICAST .
+
+    vars O O' : Oid . vars CF : Configuration . var C : Cid .
+    vars OS OS' : OidSet . 
+    var R TH N VA : Nat .
+    var VS : ValueSet .
+    var Z : Zero .
+    vars V V' : Value .
+    var VM : VoteMap .
+    var VOTE : Vote .
+    var ATTS : AttributeSet .
+
 endm
