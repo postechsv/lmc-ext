@@ -175,4 +175,5 @@ mod TEST-SEARCH is
 
   op initCFG : -> SConfig .
   op initTerm : -> Term .
+  eq initTerm = upTerm(init3) .
 endm
