@@ -18,4 +18,5 @@ fmod ABST-DP is
   subsort Nat < Data .  
   sort APid .
   subsort APid < AData .  
+  op -- : -> APid [ctor] .  
 endfm
