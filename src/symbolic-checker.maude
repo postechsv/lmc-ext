@@ -662,7 +662,7 @@ fmod RULE-EXPANSION is
       if PT' := craftPropMap('##ST:State, RPC) /\ CT' := craftConstraints('##ST:State, '##CT:Bool, nil, RPC) /\ CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, undefined) /\
          VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,'##CPT:CompletenessSet,PT',CT',CPT'], '@) /\
          RLS := generateInitRules(M, VARS, narrowing) .
-    
+
     op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
     eq expandRuleSet(M, none, RPCS) = none .
     eq expandRuleSet(M, RL RLS, RPCS) = expandRule(M, RL, RPCS) expandRuleSet(M, RLS, RPCS) .
@@ -858,6 +858,7 @@ mod META-SYMBOLIC-CONNECTOR is
    * (op addOps to addOpsSE, op addEqs to addEqsSE, op addSorts to addSortsSE) .
   pr RULE-EXPANSION .
   pr PARTIAL-COMPLETENESS-FOLDING .
+  pr VERIFY-USER-DEFINED-RULES .
 
   var M : Module .  
   vars T T' T1 T2 ST ST' PT CT : Term . 
@@ -1205,7 +1206,7 @@ mod LMC-COMMAND-PROCESSING is
         'counterexample 'found 'at 'depth eMetaPrettyPrint(M,T3) '\n '\s '\s
         printLMCCE(M, T1)
       fi) '\n .
-  eq printLMCOutput(M, 'verificationFailure.BoundedModelCheckReport) = 'Verification 'faliure .
+    eq printLMCOutput(M, 'verificationFailure.BoundedModelCheckReport) = 'Verification 'faliure .
 
   eq printLMCOutput(M, T)
    = '\b 'error: '\o '\n '\s '\s
