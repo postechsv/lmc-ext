@@ -1,0 +1,4 @@
+load ./onethirdrule-base.maude
+
+mod ONETHIRDRULE-NO-MSG-LOSS is
+endm
