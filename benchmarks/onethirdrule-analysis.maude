@@ -192,4 +192,5 @@ mod ONETHIRDRULE-ANALYSIS is
     vote(0, 1) from "A" to "C") (multicast vote(0, 2) from "A" to "B" ; "C") (multicast vote(0, 2) from "B" to "C") multicast vote(1, 1) from "C" to "A" ; "B"} .
 endm
 
-search in TEST-SEARCH : initCFG =>* { found , PQ:LTree{QItem<=} , VIS:Set{TItem} } .
+---search in TEST-SEARCH : initCFG =>* { found , PQ:LTree{QItem<=} , VIS:Set{TItem} } .
+search [1] init3 =>* X:State such that X:State |= goal .
