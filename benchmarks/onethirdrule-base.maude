@@ -257,5 +257,7 @@ fmod FUNCTIONS is
     var VS : ValueSet .
     vars V V' : Value .
 
+    op update : Vote Value -> Vote .
+    eq update([V |-> N ; VM, NA], V) = [V |-> incr(N) ; VM, incr(NA)] .  
 
 endfm
