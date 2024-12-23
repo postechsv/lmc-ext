@@ -260,4 +260,7 @@ fmod FUNCTIONS is
     op update : Vote Value -> Vote .
     eq update([V |-> N ; VM, NA], V) = [V |-> incr(N) ; VM, incr(NA)] .  
 
+    op incr : Nat -> Nat .
+    eq incr(Z:Zero) = 1 .
+    eq incr(NZ:NzNat) = s NZ:NzNat .
 endfm
