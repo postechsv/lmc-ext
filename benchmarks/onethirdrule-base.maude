@@ -314,4 +314,6 @@ mod ONETHIRDRULE-CONST is
     eq numObjs(MSG CF) = numObjs(CF) .
     eq numObjs(none) = 0 .
 
+    op getRounds : Configuration -> Set{Nat} .
+
 endm
