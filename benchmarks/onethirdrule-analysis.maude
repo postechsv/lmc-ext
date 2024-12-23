@@ -56,4 +56,11 @@ mod MODEL is
     ---    (multicast vote(V, R) from O' to OS')  
     ---    CF
     ---}  |= receiveRHS(V) = true .
+
+    op decideRHS : Value -> Prop [ctor] .
+    eq {TH, VS, OS,
+        < O : Node | status : [R, done], decision : V, votes : [(V |-> N ; VM), VA], ATTS >
+        CF
+    } |= decideRHS(V) = true .
+    eq S |= decideRHS(V) = false [owise] .
 endm
