@@ -69,3 +69,12 @@ fmod VOTE is
 
     op [_,_] : InitVoteMap Zero -> InitVote [ctor prec 70] .
 endfm
+
+
+mod OID-SET is
+    protecting CONFIGURATION .
+    sort OidSet .
+    subsort Oid < OidSet .
+    op none : -> OidSet [ctor] .
+    op _;_ : OidSet OidSet -> OidSet [ctor assoc comm id: none] .
+endm
