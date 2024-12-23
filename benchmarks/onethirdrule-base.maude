@@ -17,4 +17,5 @@ endfm
 fmod STEP is --- a.k.a program counter (pc)
     sorts Step InitStep .
     subsort InitStep < Step .
+    op init : -> InitStep [ctor] .
 endfm
