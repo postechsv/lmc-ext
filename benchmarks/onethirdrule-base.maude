@@ -45,5 +45,8 @@ fmod VOTE-MAP is
     protecting VALUE .
     sorts  VoteMap InitVoteMap Entry InitEntry .
     subsort InitEntry < Entry InitVoteMap < VoteMap .
+
+    op  _|->_ : Value Nat -> Entry [ctor prec 50] .
+    op  _|->_ : Value Zero -> InitEntry [ctor prec 50] .
     
 endfm
