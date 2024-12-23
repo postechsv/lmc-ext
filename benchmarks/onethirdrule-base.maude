@@ -53,3 +53,7 @@ fmod VOTE-MAP is
     op _;_ : VoteMap VoteMap -> VoteMap [ctor assoc comm id: none prec 60] .
     op _;_ : InitVoteMap InitVoteMap -> InitVoteMap [ctor assoc comm id: none prec 60] .
 endfm
+
+view VoteMap from TRIV to VOTE-MAP is
+    sort Elt to VoteMap .
+endv
