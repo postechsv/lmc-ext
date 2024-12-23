@@ -191,3 +191,5 @@ mod ONETHIRDRULE-ANALYSIS is
     eq goal3 = {2,0 ; 1, "A" ; "B" ; "C", < "A" : Node | status : [2, done],value : 0,decision : 0,votes : [0 |-> 2 ; 1 |-> 0,2] > < "B" : Node | status : [2, wait], value : 0,decision : nilValue,votes : [0 |-> 1 ; 1 |-> 0,1] > < "C" : Node | status : [1, done],value : 1,decision : 1,votes : [0 |-> 0 ; 1 |-> 2,2] > (multicast
     vote(0, 1) from "A" to "C") (multicast vote(0, 2) from "A" to "B" ; "C") (multicast vote(0, 2) from "B" to "C") multicast vote(1, 1) from "C" to "A" ; "B"} .
 endm
+
+search in TEST-SEARCH : initCFG =>* { found , PQ:LTree{QItem<=} , VIS:Set{TItem} } .
