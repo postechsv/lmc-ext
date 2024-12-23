@@ -37,4 +37,7 @@ fmod ABST-DP is
   eq abst(p(I, S) || C) = p(--, S) || abst(C) .  
   eq abst(c(I) || C) = abst(C) .
   eq abst(none) = none .  
+
+  --- equations for AState
+  eq p(--, S) || p(--, S) || AS = p(--, S) || AS .  
 endfm
