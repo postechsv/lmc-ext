@@ -56,4 +56,6 @@ mod QLOCK-TEST is
              (tmp[p1]: empty) (tmp[p2]: empty) (tmp[p3]: empty) (tmp[p4]: empty)
              (tmp[p5]: empty) (tmp[p6]: empty) (tmp[p7]: empty) (tmp[p8]: empty)
              (tmp[p9]: empty) (tmp[p10]: empty) (tmp[p11]: empty) (tmp[p12]: empty) .  
+
+  var N : Nat .             
 endm
