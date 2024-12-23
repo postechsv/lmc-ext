@@ -1,0 +1,70 @@
+load ../tool2 .
+load qlock .
+
+mod MODEL is
+  pr QLOCK .
+  inc SATISFACTION .
+  inc OBSERVATION .
+
+  subsort Sys < State .
+  vars I J : Pid . var S : Sys .
+  vars Q R : Queue .
+
+  --- Defining State Propositions ---
+  op twoCrits : -> Prop [ctor] .  
+  eq (pc[I]: cs) (pc[J]: cs) S |= twoCrits = true .
+  eq S |= twoCrits = false [owise] .
+
+  op eq1LHS : -> Prop [ctor] .
+  eq (pc[I]: rs) (queue: Q) (tmp[I]: R) |= eq1LHS = true .  
+  eq S |= eq1LHS = false [owise] .  
+
+  op eq2LHS : -> Prop [ctor] .  
+  eq (pc[I]: es) (queue: Q) (tmp[I]: R) |= eq2LHS = true .
+  eq S |= eq2LHS = false [owise] .  
+
+  op wtLHS : -> Prop [ctor] .  
+  ceq (pc[I]: ws) (queue: Q) |= wtLHS = true if top(Q) = I .
+  eq S |= wtLHS = false [owise] .
+
+  op dq1LHS : -> Prop [ctor] .
+  eq (pc[I]: cs) (queue: Q) (tmp[I]: R) |= dq1LHS = true .
+  eq S |= dq1LHS = false [owise] .
+
+  op dq2LHS : -> Prop [ctor] .
+  eq (pc[I]: ds) (queue: Q) (tmp[I]: R) |= dq2LHS = true .
+  eq S |= dq2LHS = false [owise] .  
+
+  --- Defining Observations ---
+  eq obs(S) = < obsUpto(S, eq1LHS ; eq2LHS ; wtLHS ; dq1LHS ; dq2LHS ; twoCrits) > . 
+  eq reward(< FV:FeatVec , (twoCrits : true) , FV':FeatVec >) = 1.0 . 
+  eq reward(MS:MDPState) = 0.0 [owise] .  
+  var P : Prop . var B : Bool .
+  eq < FV:FeatVec , (P : B) , FV':FeatVec > |= P = B . --- TODO: this may be default  
+endm
+
+
+mod QLOCK-TEST is
+  pr MODEL .
+  op init : -> Sys .
+  eq init = (pc[p1]: rs) (pc[p2]: rs) (queue: empty) (tmp[p1]: empty) (tmp[p2]: empty) .  
+
+  op init' : -> Sys .  
+  eq init' = (pc[p1]: rs) (pc[p2]: rs) (pc[p3]: rs) (pc[p4]: rs)
+             (pc[p5]: rs) (pc[p6]: rs) (pc[p7]: rs) (pc[p8]: rs)
+             (pc[p9]: rs) (pc[p10]: rs) (pc[p11]: rs) (pc[p12]: rs) (queue: empty)
+             (tmp[p1]: empty) (tmp[p2]: empty) (tmp[p3]: empty) (tmp[p4]: empty)
+             (tmp[p5]: empty) (tmp[p6]: empty) (tmp[p7]: empty) (tmp[p8]: empty)
+             (tmp[p9]: empty) (tmp[p10]: empty) (tmp[p11]: empty) (tmp[p12]: empty) .  
+
+  var N : Nat .             
+  op init : Nat -> Sys .
+  eq init(0) = (queue: empty) .  
+  eq init(s(N)) = init(N) (pc[p(s(N))]: rs) (tmp[p(s(N))]: empty) .  
+endm
+
+--- search [1] in QLOCK-TEST : init(10) =>* (pc[P:Pid]: cs) (pc[Q:Pid]: cs) (S:Sys) .
+--- show path 33 .
+
+--- search [1] in QLOCK-INIT : init =>* (S:Sys) such that false .
+--- Seems non-terminating.
