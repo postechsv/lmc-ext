@@ -14,4 +14,6 @@ endm
 fmod ABST-DP is
   pr DINING-PHILOSOPHERS-BASE .
   inc HEURISTIC-SEARCH .
+  subsort Conf < State .
+  subsort Nat < Data .  
 endfm
