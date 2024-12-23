@@ -62,3 +62,6 @@ mod QLOCK-TEST is
   eq init(0) = (queue: empty) .  
   eq init(s(N)) = init(N) (pc[p(s(N))]: rs) (tmp[p(s(N))]: empty) .  
 endm
+
+search [1] in QLOCK-TEST : init(10) =>* (pc[P:Pid]: cs) (pc[Q:Pid]: cs) (S:Sys) .
+show path 33 .
