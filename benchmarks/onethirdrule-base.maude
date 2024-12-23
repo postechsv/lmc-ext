@@ -97,5 +97,8 @@ mod ALT-CFIGURATION is
     sort Node .
     subsort Node < Cid .
     op Node : -> Cid [ctor] .
-
+    
+    op status`:_ : Status -> Attribute [ctor prec 15 gather (&)] .
+    op value`:_ : Value -> Attribute [ctor prec 15 gather (&)] .
+    op decision`:_ : Value? -> Attribute [ctor prec 15 gather (&)] .
 endm
