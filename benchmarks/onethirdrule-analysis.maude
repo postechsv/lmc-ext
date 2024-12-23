@@ -183,4 +183,7 @@ endm
 *** Module for Python
 mod ONETHIRDRULE-ANALYSIS is
     pr ONETHIRDRULE-TESTCASE .
+    op goal : -> Prop .
+    eq goal = disagree .
+
 endm
