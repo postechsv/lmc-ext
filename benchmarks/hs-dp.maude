@@ -16,4 +16,6 @@ fmod ABST-DP is
   inc HEURISTIC-SEARCH .
   subsort Conf < State .
   subsort Nat < Data .  
+  sort APid .
+  subsort APid < AData .  
 endfm
