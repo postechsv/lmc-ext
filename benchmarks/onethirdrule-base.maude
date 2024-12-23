@@ -242,4 +242,6 @@ mod GLOBAL is
     protecting ALT-CFIGURATION .
     protecting NAT .
 
+    sort Global .
+    op {_,_,_,_} : Nat ValueSet OidSet Configuration -> Global [ctor format (d d d d d s d s d d)] .
 endm
