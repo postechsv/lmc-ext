@@ -303,4 +303,6 @@ mod ONETHIRDRULE-CONST is
 
     eq sameRound(R) = true .
     eq sameRound(empty) = true .
+
+    op getOids : Configuration -> OidSet [memo] .
 endm
