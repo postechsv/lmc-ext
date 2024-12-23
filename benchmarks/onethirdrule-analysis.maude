@@ -122,4 +122,7 @@ endm
 
 mod ONETHIRDRULE-TESTCASE is
     pr ONETHIRDRULE-OBS .
+
+    protecting STRING .
+    subsort String < Oid .
 endm
