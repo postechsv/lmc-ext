@@ -211,5 +211,8 @@ mod ALT-CFIGURATION is
     op decision`:_ : Value? -> Attribute [ctor prec 15 gather (&)] .
     op votes`:_ : Vote -> Attribute [ctor prec 15 gather (&)] .
     op neighbors`:_ : OidSet -> Attribute [ctor prec 15 gather (&)] .
-        
+
+    op none : -> InitConfiguration [ctor ditto] .
+    op __ : InitConfiguration InitConfiguration -> InitConfiguration [ctor ditto] .
+    
 endm
