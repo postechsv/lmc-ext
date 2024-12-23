@@ -19,4 +19,7 @@ fmod ABST-DP is
   sort APid .
   subsort APid < AData .  
   op -- : -> APid [ctor] .  
+
+  sort APhil . --- abstract philosopher
+  subsort APhil < AState .
 endfm
