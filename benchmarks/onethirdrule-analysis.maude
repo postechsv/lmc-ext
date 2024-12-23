@@ -103,4 +103,6 @@ mod ONETHIRDRULE-OBS is
     --- eq reward(mstate(CF)) = 0.0 [owise] .
 
     eq obs({ TH, VS, OS, CF }) = < obsUpto({ TH, VS, OS, CF }, props ; disagree) > .
+    eq reward(< FV:FeatVec , (disagree : true) , FV':FeatVec >) = 1.0 .
+    eq reward(MS:MDPState) = 0.0 [owise] .
 endm
