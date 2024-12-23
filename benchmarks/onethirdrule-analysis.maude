@@ -170,4 +170,5 @@ mod TEST-SEARCH is
   eq N gt N' = N > N' .
   eq N lt N' = N < N' .
   eq N le N' = N <= N' .
+  eq isGoal(T) = downTerm(T,(error).State) |= disagree .
 endm
