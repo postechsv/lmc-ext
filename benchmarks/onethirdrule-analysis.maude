@@ -162,4 +162,5 @@ endm
 mod TEST-SEARCH is
   pr V-STAR .
   pr ONETHIRDRULE-TESTCASE .
+  subsort Nat < Score .
 endm
