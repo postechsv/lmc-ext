@@ -159,3 +159,7 @@ endm
 ---   eq M = upModule('ONETHIRDRULE-ANALYSIS,true) .
 --- endm
 
+mod TEST-SEARCH is
+  pr V-STAR .
+  pr ONETHIRDRULE-TESTCASE .
+endm
