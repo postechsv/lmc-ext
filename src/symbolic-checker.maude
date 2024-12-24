@@ -30,11 +30,19 @@ fmod COMPLETENESS is
     op _,_ : CompletenessSet CompletenessSet -> CompletenessSet [assoc comm ctor id: undefined] .
     eq C:Completeness, C:Completeness = C:Completeness .
 
+--- Pre-condition: CS is a CompletenessSet and B is a boolean value.
+--- Post-condition: Returns a CompletenessSet containing the Completeness value in CS that matches the boolean B, or undefined if no match is found.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op find : CompletenessSet Bool -> CompletenessSet .
     eq find((complete(B:Bool), CS:CompletenessSet), B:Bool) = complete(B:Bool) .
     eq find((incomplete(B:Bool), CS:CompletenessSet), B:Bool) = incomplete(B:Bool) .
     eq find(CS:CompletenessSet, B:Bool) = undefined [owise] .
 
+--- Pre-condition: CS and CS' are CompletenessSet values.
+--- Post-condition: Returns a CompletenessSet containing the combined elements of CS and CS', resolving conflicts where a complete and incomplete entry for the same boolean exist (resulting in incomplete).
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op update : CompletenessSet CompletenessSet -> CompletenessSet [assoc] .
     eq update(CS:CompletenessSet, undefined) = CS:CompletenessSet .
     eq update(undefined, CS:CompletenessSet) = CS:CompletenessSet .
@@ -69,7 +77,10 @@ fmod STATE-SYNTAX is
     vars P P' : Prop .
     var B : Bool .
 
-    --- Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable)
+--- Pre-condition: None
+--- Post-condition: Determines if the values of given proposition map consist only of either true or false (that is, it doesn't include a boolean variable).
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op isComplete : PropMap -> Bool .
     eq isComplete(emptyPropMap) = true .
     eq isComplete(P *> true) = true .
@@ -181,8 +192,10 @@ fmod BOUNDED-FOLDING-MODEL-CHECKER is
   sort BoundedModelCheckReport .
   op result:_real:_bound:_complete:_ : ModelCheckResult Bool Nat Bool -> BoundedModelCheckReport [ctor] .
 
---- model checker
---- (InitState,Formula,SubsumptionFolding,Bound)
+--- Pre-condition: InitState is a State, Phi is a Formula, SubsumptionFolding is a Bool, and Bound is a Bound.
+--- Post-condition: Performs symbolic bounded model checking and returns a BoundedModelCheckReport.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op symbolicModelCheck : State Formula Bool Bound ~> BoundedModelCheckReport
     [special (
       id-hook SymbolicModelCheckerSymbol
@@ -255,13 +268,18 @@ fmod META-LMC-PARAMETERS is
   var STDS : StratDeclSet .
   var STDFS : StratDefSet .
 
+--- Pre-condition: ME is a ModuleExpression and M is an SModule.
+--- Post-condition: Returns an SModule with the imports from ME added to M.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
   op addImport : ModuleExpression SModule -> SModule [memo] .
   eq addImport(ME, mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm)
     = mod H is IL (including ME .) sorts SS . SSDS OPDS MAS EQS RLS endm .  
 
-  --- as Full Maude internally generates StratModule, we need
-  --- to remove all strat declarations for narrowing.
-
+--- Pre-condition: M is a Module.
+--- Post-condition: Returns an SModule by removing all strategy declarations from M.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
   op trMod : Module -> SModule [memo] . 
   eq trMod(smod H is IL sorts SS . SSDS OPDS MAS EQS RLS STDS STDFS endsm)
    = mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm .
@@ -321,6 +339,10 @@ fmod RULE-TERM-RENAMING is
     vars P C L : Nat .
     vars S Prf : String .
 
+--- Pre-condition: S is a String and Prf is a String.
+--- Post-condition: Attempts to find indices of a variable with a given prefix (#, %, or @) in the string S. Returns VarIndices containing the prefix, start, colon, and length, or fail if not found.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op findVarIndices : String String -> VarIndices .
     ceq findVarIndices(S, Prf) = {Prf,P,C,L} if P := rfind(S, Prf, length(S)) /\ C := rfind(S, ":", length(S)) /\ L := length(S) /\ P + 1 < C /\ C + 1 < L .
     eq findVarIndices(S, Prf) = fail [owise] .
@@ -330,11 +352,19 @@ fmod RULE-TERM-RENAMING is
     var N : Nat .
     var VIS : VarIndices .
 
+--- Pre-condition: S is a String and VIS is a VarIndices.
+--- Post-condition: Renames a variable string based on its indices, prefixing it and ensuring it's a valid Maude variable name.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op renameVarString : String VarIndices -> String .
     ceq renameVarString(S, {Prf,P,C,L} VIS) = Prf + Prf + NS + ":" + substr(S, C + 1, L + (- 1))
       if NS := substr(S, P + 1, C + (- 1)) /\ N := rat(NS, 10) .
     eq renameVarString(S, VIS) = S [owise] .
 
+--- Pre-condition: TL is a TermList or a Term.
+--- Post-condition: Collects all variable indices from the term or the terms in the TermList.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op collectVarIndices : TermList -> VarIndices .
     eq collectVarIndices(empty) = fail .
     ceq collectVarIndices((T:Term, TL:TermList)) = collectVarIndices(T:Term) collectVarIndices(TL:TermList) if TL:TermList =/= empty .
@@ -344,11 +374,18 @@ fmod RULE-TERM-RENAMING is
     eq collectVarIndices(F:Qid[TL:TermList]) = collectVarIndices(TL:TermList) .
     eq collectVarIndices(V) = findVarIndices(string(V), "#") findVarIndices(string(V), "%") findVarIndices(string(V), "@") .
     
+--- Pre-condition: TL is a TermList.
+--- Post-condition: Renames the terms in the TermList to ensure valid Maude variable names.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op renameRuleTerms : TermList -> TermList .
     eq renameRuleTerms(empty) = empty .
     eq renameRuleTerms((T:Term, TL:TermList)) = renameRuleTerm(T:Term), renameRuleTerms(TL:TermList) .
 
-    --- Rename auto-generated variable names so that they can be used inside rule definitions
+--- Pre-condition: T is a Term.
+--- Post-condition: Renames the term to ensure valid Maude variable names.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24    
     op renameRuleTerm : Term -> Term .
     eq renameRuleTerm(C:Constant) = C:Constant .
     eq renameRuleTerm(F:Qid[TL:TermList]) = F:Qid[renameRuleTerms(TL:TermList)] .
@@ -358,6 +395,10 @@ fmod RULE-TERM-RENAMING is
     subsort Qid < Qid? .
     op noInternalPrefix : -> Qid? [ctor] .
 
+--- Pre-condition: VIS is a VarIndices / T is a Term
+--- Post-condition: Attempts to find the internal prefix (#, %, or @) of a variable based on its indices or within the term.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op findInternalPrefix : VarIndices -> Qid? .
     eq findInternalPrefix({Prf,P,C,L} VIS) = qid(Prf) .
     eq findInternalPrefix(VIS) = noInternalPrefix [owise] .
@@ -395,22 +436,39 @@ fmod COMPLETENESS-DECLARATION is
     var EQS : EquationSet .
     var ATRS : AttrSet .
 
+--- Pre-condition: CS is a CompletenessSet.
+--- Post-condition: Returns a CompletenessSet with both complete and incomplete variants for each boolean value in the input set.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op fillCompleteness : CompletenessSet -> CompletenessSet .
     eq fillCompleteness(complete(B)) = complete(B), incomplete(not B) .
     eq fillCompleteness(incomplete(B)) = complete(not B), incomplete(B) .
     eq fillCompleteness(CS) = CS [owise] .
 
+--- Pre-condition: CK is a CompletenessKey, CS is a CompletenessSet, and CM is a CompletenessMap.
+--- Post-condition: Inserts or updates the CompletenessSet associated with the CompletenessKey in the CompletenessMap.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op insert : CompletenessKey CompletenessSet CompletenessMap -> CompletenessMap .
     eq insert(CK, CS, empty) = { CK => CS } .
     eq insert(CK, CS, { CK => CS' ; CM }) = { CK => (CS', CS) ; CM } .
     eq insert(CK, CS, { CM }) = { CK => CS ; CM } [owise] .
 
+--- Pre-condition: CK is a CompletenessKey, CM is a CompletenessMap, and B is a Bool.
+--- Post-condition: Tests if the CompletenessMap contains a completeness entry for the given key and boolean value.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op testFor : CompletenessKey CompletenessMap Bool -> MaybeBool .
     eq testFor(CK, {CK => (complete(B), CS) ; CM}, B) = true .
     eq testFor(CK, {CK => (incomplete(B), CS) ; CM}, B) = false .
     eq testFor(CK, CM:CompletenessMap, B) = unknown [owise] .
 
     op errorTerm : -> [Term] .
+
+--- Pre-condition: M is a Module, OPDS is an OpDeclSet, and EQS is an EquationSet.
+--- Post-condition: Extracts completeness information from the metadata of operator declarations in the module.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op declaredCompleteness : Module OpDeclSet EquationSet -> CompletenessMap .
     eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(true)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(true)), declaredCompleteness(M, OPDS, EQS)) .
     eq declaredCompleteness(M, (op O:Qid : TYL:TypeList -> 'Prop [metadata("incomplete(false)") ATRS].) OPDS, EQS) = insert(%prop(O:Qid), fillCompleteness(incomplete(false)), declaredCompleteness(M, OPDS, EQS)) .
@@ -424,12 +482,24 @@ fmod COMPLETENESS-DECLARATION is
     op declaredCompleteness : Module -> CompletenessMap [memo] .
     eq declaredCompleteness(M) = declaredCompleteness(M, getOps(M), getEqs(M)) .
 
+--- Pre-condition: M is a Module, O is a Qid, and B is a Bool.
+--- Post-condition: Checks if a proposition with the given Qid is declared as complete for the given boolean value in the module's metadata.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op isPropCompleteFor : Module Qid Bool -> MaybeBool .
     eq isPropCompleteFor(M, O:Qid, B) = testFor(%prop(O:Qid), declaredCompleteness(M), B) .
 
+--- Pre-condition: M is a Module, O is a Qid, and B is a Bool.
+--- Post-condition: Checks if an operator with the given Qid is declared as complete for the given boolean value in the module's metadata.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op isOpCompleteFor : Module Qid Bool -> MaybeBool .
     eq isOpCompleteFor(M, O:Qid, B) = testFor(%operator(O:Qid), declaredCompleteness(M), B) .
       
+--- Pre-condition: M is a Module, T is a Term, and B is a Bool.
+--- Post-condition: Checks if a term is marked as incomplete for a specific boolean value using meta-reduction.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24      
     op isMarkedIncomplete : Module Term Bool -> Bool .
     eq isMarkedIncomplete(M, T, B) = getTerm(metaReduce(M, 'find[T, upTerm(B)])) == 'incomplete[upTerm(B)] .
 endfm
@@ -500,6 +570,10 @@ fmod PROP-INFO-EXTRACTION is
     eq dedup((TL1, T, TL2, T, TL3)) = dedup((TL1, T, TL2, TL3)) .
     eq dedup(TL) = TL [owise] .
 
+--- Pre-condition: M is a Module, Q is a Qid, and B is a Bool.
+--- Post-condition: Determines the incompleteness Completeness value based on whether the negation of the proposition is declared complete in the module.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op negationIncompleteness : Module Qid Bool -> Completeness .
     ceq negationIncompleteness(M, Q, B) = incomplete(not B) if B' := isPropCompleteFor(M, Q, not B) /\ not B' .
     eq negationIncompleteness(M, Q, B) = complete(not B) [owise] .
@@ -526,7 +600,10 @@ fmod PROP-INFO-EXTRACTION is
     eq insertPropInfo(PEM, emptyRulePropConfSet) = emptyRulePropConfSet .
     eq insertPropInfo(PEM, RPC ; RPCS) = (PEM, RPC) ; insertPropInfo(PEM, RPCS) .
 
-    --- Get the cross product of PropEvalMappings
+--- Pre-condition: PEM is a PropEvalMap.
+--- Post-condition: Generates the cross product of PropEvalMappings, creating a RulePropConfSet representing all combinations of proposition evaluations.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op crossPropInfo : PropEvalMap -> RulePropConfSet .
     eq crossPropInfo(emptyPropEvalMap) = emptyRulePropConfSet .
     eq crossPropInfo((Q *> emptyPropEvalSet) PEMm) = emptyRulePropConfSet .
@@ -611,21 +688,37 @@ fmod RULE-EXPANSION is
     ceq conditionCompleteness(M, Q[TL] = T) = incomplete(B) if B := downTerm(T, errorBool) /\ isOpCompleteFor(M, Q, B) = false .
     ceq conditionCompleteness(M, COND /\ COND') = conditionCompleteness(M, COND), conditionCompleteness(M, COND') if COND =/= nil /\ COND' =/= nil .
     eq conditionCompleteness(M, COND) = undefined .
-    
+
+--- Pre-condition: ST is a Term and RPC is a RulePropConf.
+--- Post-condition: Crafts a PropMap term based on the RulePropConf, instantiating propositions with their corresponding boolean values or generating variants if needed.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24    
     op craftPropMap : Term RulePropConf -> Term .
     eq craftPropMap(ST, ((Q *> genVariants), RPC)) = '__['_*>_[toPropTerm(Q), '_|=_[ST, toPropTerm(Q)]], craftPropMap(ST, RPC)] .
     eq craftPropMap(ST, ((Q *> incomplete(B, CP)), RPC)) = '__['_*>_[toPropTerm(Q), upTerm(B)], craftPropMap(ST, RPC)] .
     eq craftPropMap(ST, RPC) = 'emptyPropMap.PropMap [owise] .
 
+--- Pre-condition: ST is a Term, CT is a Term, COND is a Condition, and RPC is a RulePropConf.
+--- Post-condition: Crafts constraints (a boolean term) based on the RulePropConf and the given condition, linking proposition values to their expected truth values.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24    
     op craftConstraints : Term Term Condition RulePropConf -> Term . 
     eq craftConstraints(ST, CT, COND, ((Q *> incomplete(B, CP)), RPC)) = '_and_[('_<=>_['_|=_[ST, toPropTerm(Q)], upTerm(B)]), craftConstraints(ST, CT, COND, RPC)] .
     eq craftConstraints(ST, CT, COND, RPC) = '_and_[conditionToTerm(COND), CT] [owise] .
 
+--- Pre-condition: CPT is a Term, RPC is a RulePropConf, and CS is a CompletenessSet.
+--- Post-condition: Crafts a CompletenessSet term by updating the provided CompletenessSet with information from the RulePropConf.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24    
     op craftCompleteness : Term RulePropConf CompletenessSet -> Term .
     eq craftCompleteness(CPT, ((Q *> incomplete(B, complete(B'))), RPC), CS) = 'update[craftCompleteness(CPT, RPC, CS), 'incomplete['true.Bool]] .
     eq craftCompleteness(CPT, ((Q *> incomplete(B, incomplete(B'))), RPC), CS) = 'update[craftCompleteness(CPT, RPC, CS), '_`,_['incomplete['true.Bool], 'incomplete['false.Bool]]] .
     eq craftCompleteness(CPT, RPC, CS) = 'update[CPT, upTerm(CS)] [owise] .
-    
+
+--- Pre-condition: M is a Module, VARS is a VariantPairSet, and ATRS is an AttrSet.
+--- Post-condition: Generates a RuleSet by instantiating rules based on the provided variants and attributes.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24   
     op generateRules : Module VariantPairSet AttrSet -> RuleSet .
     eq generateRules(M, empty, ATRS) = none .
     ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_|_`}`}`}[ST, PT, CT, CPT] => '`{`{`{_|_|_|_`}`}`}[ST', PT', CT', CPT'] [ATRS] .)
@@ -633,6 +726,10 @@ fmod RULE-EXPANSION is
       if 'exRule[ST,PT,CT,CPT,ST',PT',CT',CPT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
     eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .    
 
+--- Pre-condition: M is a Module, VARS is a VariantPairSet, and ATRS is an AttrSet.
+--- Post-condition: Generates a RuleSet for initial states by instantiating rules based on the provided variants and attributes.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24   
     op generateInitRules : Module VariantPairSet AttrSet -> RuleSet .
     eq generateInitRules(M, empty, ATRS) = none .
     ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_|_>>>[ST,CT,CPT] => '`{`{`{_|_|_|_`}`}`}[ST, PT, CT', CPT'] [ATRS] .)
@@ -644,6 +741,10 @@ fmod RULE-EXPANSION is
     eq isNarrowingRule(metadata("narrowing") ATRS) = true .
     eq isNarrowingRule(ATRS) = false [owise] .
 
+--- Pre-condition: M is a Module, RL is a Rule, and RPCS is a RulePropConfSet.
+--- Post-condition: Expands a given rule based on the provided RulePropConfSet, generating new rules for each possible proposition instantiation.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24   
     op expandRule : Module Rule RulePropConfSet -> RuleSet .
     ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
       if PT' := craftPropMap(ST', RPC) /\ CT' := craftConstraints(ST', '##CT:Bool, nil, RPC) /\ CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, undefined) /\
@@ -656,6 +757,10 @@ fmod RULE-EXPANSION is
          RLS := generateRules(M, VARS, narrowing ATRS) .
     eq expandRule(M, RL, RPCS) = none [owise] .
 
+--- Pre-condition: M is a Module and RPCS is a RulePropConfSet.
+--- Post-condition: Expands initial state rules based on the provided RulePropConfSet, generating new initial state rules for each possible proposition instantiation.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24   
     op expandInitRule : Module RulePropConfSet -> RuleSet .
     eq expandInitRule(M, emptyRulePropConfSet) = none .
     ceq expandInitRule(M, RPC ; RPCS) = RLS expandInitRule(M, RPCS) 
@@ -667,6 +772,10 @@ fmod RULE-EXPANSION is
     eq expandRuleSet(M, none, RPCS) = none .
     eq expandRuleSet(M, RL RLS, RPCS) = expandRule(M, RL, RPCS) expandRuleSet(M, RLS, RPCS) .
 
+--- Pre-condition: M is a Module and TL is a TermList.
+--- Post-condition: Expands the rules in a module based on the provided term list (which typically represents initial states or relevant terms for property analysis), generating a new module with expanded rules.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24   
     op expandRules : Module TermList -> Module [memo] .
     ceq expandRules(M, TL) = (mod Q is IL sorts SS . SSDS OPDS MAS EQS 
                                 expandInitRule(M, RPCS) expandRuleSet(M, RLS, RPCS)
@@ -735,6 +844,10 @@ fmod META-NARROWING-INTERFACE is
    if getType(V1) = getType(V2) .
   eq cleanRedundant(SR) = SR [owise] .
 
+--- Pre-condition: M is a Module, T is a Term, and N is a Nat.
+--- Post-condition: Performs meta-narrowing to find the next possible states from a given term.
+--- Developer: Kyungmin Bae, Kim Kyunwoo
+--- Date: 2024/12/24
   op metaNarrowCollect : Module Term Nat -> StepResultSet .
   ceq metaNarrowCollect(M, T, N) 
     = {getTerm(NAR), getTermSubstitution(NAR), getLabel(NAR) | T} 
@@ -750,16 +863,26 @@ fmod META-NARROWING-INTERFACE is
   eq genVariants(M, empty) = empty .
   eq genVariants(M, {T,SUB,RN | ST} || SRS) = getVariantTerms(getVariantSet(M, T, '@), T) || genVariants(M, SRS) .
  
---- variant narrowing prop instantiations.
---- compute the PI-instantated states of the given state.
+--- Pre-condition: ST is a Term and TL is a TermList.
+--- Post-condition: Creates a list of conjunctions (as boolean terms) representing the PI-instantated states of the given state
+--- Developer: Kyungmin Bae, Kim Kyunwoo
+--- Date: 2024/12/24
   op conjAsBoolList : Term TermList -> TermList .
   eq conjAsBoolList(ST, (T,TL)) = '_|=_[ST, T], conjAsBoolList(ST, TL) .
   eq conjAsBoolList(ST, empty) = 'nil.GrBoolList .
 
+--- Pre-condition: SRS is a StepResultSet.
+--- Post-condition: Simplifies the substitutions within a StepResultSet by removing redundant assignments.
+--- Developer: Kim Kyunwoo
+--- Date: 2024/12/24
   op simplifySubstitutions : StepResultSet -> StepResultSet .
   eq simplifySubstitutions(empty) = empty .
   eq simplifySubstitutions({ST,SUB,RN | T} || SRS) = cleanRedundant({ST,summarize(T, SUB),RN | T}) || simplifySubstitutions(SRS) .
-  
+
+--- Pre-condition: M is a Module and SRS is a StepResultSet.
+--- Post-condition: Filters out states from a StepResultSet based on their boolean condition and completeness information.
+--- Developer: Kim Kyunwoo
+--- Date: 2024/12/24  
   op filterStates : Module StepResultSet -> StepResultSet .
   eq filterStates(M, empty) = empty .
   ceq filterStates(M, {'`{`{`{_|_|_|_`}`}`}[ST, PT, BT, CPT],SUB,RN | T} || SRS) = filterStates(M, SRS) if BT == 'false.Bool or (not isMarkedIncomplete(M, CPT, true) and BT =/= 'true.Bool) .
@@ -802,6 +925,10 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     eq filterTrue({'true.Bool, SUB1} # VARS1) = {'true.Bool, SUB1} # filterTrue(VARS1) .
     eq filterTrue(VARS1) = empty [owise] .
 
+--- Pre-condition: M is a Module and T is a Term.
+--- Post-condition: Gets the variants that satisfy a given constraint term.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op getConstraintVariants : Module Term -> VariantPairSet .
     eq getConstraintVariants(M, T) = filterTrue(getVariantSet(M, renameRuleTerm(T), '%)) .
 
@@ -809,6 +936,10 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     eq none >> SUB2 = SUB2 .
     eq (V1 <- T1 ; SUB1) >> SUB2 = V1 <- $applySubstitution(T1, SUB2) ; (SUB1 >> SUB2) .
 
+--- Pre-condition: M is a Module, SUB1 is a Substitution, and SUB2 is a Substitution.
+--- Post-condition: Checks if all assignments in SUB1 are included in SUB2 (meaning SUB2 is more general or equal).
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op substitutionIncludes : Module Substitution Substitution -> Bool .
     eq substitutionIncludes(M, none, SUB2) = true .
     eq substitutionIncludes(M, (V1 <- T1) ; SUB1, (V1 <- T2) ; SUB2) = metaMatch(M, T1, T2, nil, 0) :: Substitution and substitutionIncludes(M, SUB1, SUB2) .
@@ -817,6 +948,10 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     op variantIncludes : Module VariantPair VariantPair Substitution -> Bool .
     eq variantIncludes(M, {T1,SUB1}, {T2,SUB2}, SUB') = substitutionIncludes(M, SUB1, SUB' >> SUB2) .
 
+--- Pre-condition: M is a Module, VPS1 is a VariantPairSet, VPS2 is a VariantPairSet, and SUB is a Substitution.
+--- Post-condition: Checks if all variants in the first set are included in the second set considering the given substitution.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op variantSetIncludes : Module VariantPairSet VariantPairSet Substitution -> Bool .
     eq variantSetIncludes(M, empty, VAR2, SUB') = true .
     eq variantSetIncludes(M, VAR1 # VARS1, VAR2, SUB') = variantIncludes(M, VAR1, VAR2, SUB') or variantSetIncludes(M, VARS1, VAR2, SUB') .
@@ -825,6 +960,10 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     eq variantSetIncludes(M, VARS1, empty, SUB') = true .
     eq variantSetIncludes(M, VARS1, VAR2 # VARS2, SUB') = variantSetIncludes(M, VARS1, VAR2, SUB') or variantSetIncludes(M, VARS1, VARS2, SUB') .
 
+--- Pre-condition: M is a Module, CT1 is a Term, CT2 is a Term, CPT1 is a Term, CPT2 is a Term, and SUB is a Substitution.
+--- Post-condition: Determines if the constraint represented by CT1 is stronger than or equal to the constraint represented by CT2, considering potential incompleteness.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op constraintIncludes : Module Term Term Term Term Substitution -> Bool .
     eq constraintIncludes(M, CT1, 'true.Bool, CPT1, CPT2, SUB') = getTerm(metaReduce(M, CT1)) == 'true.Bool .
     ceq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = variantSetIncludes(M, getConstraintVariants(M, CT1), getConstraintVariants(M, CT2), SUB')
@@ -833,6 +972,10 @@ mod PARTIAL-COMPLETENESS-FOLDING is
       if isMarkedIncomplete(M, CPT1, true) /\ isMarkedIncomplete(M, CPT2, true) /\ not isMarkedIncomplete(M, CPT1, false) /\ not isMarkedIncomplete(M, CPT2, false) .    
     eq constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB') = false [owise] .
 
+--- Pre-condition: T1 is a Term, T2 is a Term, and M is a Module.
+--- Post-condition: Determines if term T1 is greater than or equal to term T2, potentially using a user-defined subsumption relation for specific state representations.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
     op _>=_[_] : Term Term Module -> Bool .
     ceq '`{`{`{_|_|_|_`}`}`}[ST1, PT1, CT1, CPT1] >= '`{`{`{_|_|_|_`}`}`}[ST2, PT2, CT2, CPT2] [ M ] = (PT1 == PT2) and constraintIncludes(M, CT1, CT2, CPT1, CPT2, SUB')
       if SUB' := metaMatch(M, ST1, ST2, nil, 0) .
@@ -845,6 +988,10 @@ mod VERIFY-USER-DEFINED-RULES is
 
   var M : Module .
 
+--- Pre-condition: M is a Module.
+--- Post-condition: Placeholder for verifying user-defined rules (currently always returns true).
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
   op verifyUserDefinedRules : Module -> Bool .
   eq verifyUserDefinedRules(M) = true .
 endm
@@ -889,12 +1036,24 @@ mod META-SYMBOLIC-CONNECTOR is
    = mid(ST) >= mid(ST') and-then mid(ST') >= mid(ST) .
   eq S1:State ~= S2:State = false [owise] .
 
+--- Pre-condition: ST is a Term.
+--- Post-condition: Gets candidate next states by performing meta-narrowing on the expanded rules.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
   op nextCandidates : Term -> StepResultSet .
   eq nextCandidates(ST) = metaNarrowCollect(expandRules(trMod(##m##), ##f##), ST, 0) |> ST .
 
+--- Pre-condition: ST is a Term.
+--- Post-condition: Gets candidate initial states by generating variants of the initial state.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
   op initCandidates : Term -> StepResultSet .
   eq initCandidates(ST) = genVariants(trMod(##m##), trStateSet(ST)) .
 
+--- Pre-condition: SRS is a StepResultSet.
+--- Post-condition: Transforms a StepResultSet for initial states into a StepResultSet for mid-states, effectively stepping from the initial state.
+--- Author: Kim Kyunwoo
+--- Date: 2024/12/24
   op initStep : StepResultSet -> StepResultSet .
   eq initStep(empty) = empty .
   eq initStep({T,SUB,RN | ST} || SRS:StepResultSet) = next(T) || initStep(SRS:StepResultSet) .
@@ -916,7 +1075,10 @@ mod META-SYMBOLIC-CONNECTOR is
 
   op verificationFailure : -> BoundedModelCheckReport [ctor] .
 
---- run LMC model check : State Formula -> Result
+--- Pre-condition: ST is a Term representing the initial state, PT is a Term representing the property, B is a Bool indicating folding, and D is a Bound.
+--- Post-condition: Performs logical model checking on a given state and property, returning a BoundedModelCheckReport.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op lmc-check : Term Term Bool Bound ~> BoundedModelCheckReport .
  ceq lmc-check(ST, PT, B, D) 
    = if verifyUserDefinedRules(##m##) then symbolicModelCheck(init(ST), O O tilde((##m##),PT), B, D) 
@@ -1023,18 +1185,28 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
   vars B BC BR : Bool . 
   var MR : ModelCheckResult .
 
---- meta counterexample
+--- Pre-condition: MR is a ModelCheckResult.
+--- Post-condition: Transforms a ModelCheckResult into a Term representing the counterexample trace.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op transRes : ModelCheckResult -> Term .
   eq transRes(B) = upTerm(B:Bool) .
   eq transRes(prefix TRL loop TRL')
    = 'prefix_loop_[wrapTL('__,'nil.TransitionList,transTRs(TRL)), 
                            wrapTL('__,'nil.TransitionList,transTRs(TRL'))] .
 
+--- Pre-condition: TRL is a TransitionList.
+--- Post-condition: Transforms a list of transitions into a TermList suitable for representing counterexamples.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op transTRs : TransitionList -> TermList .
   eq transTRs(TR TRL) = transTR(TR), transTRs(TRL) .
   eq transTRs(nil)    = empty .
 
---- transition (including conditions)
+--- Pre-condition: TR is a Transition.
+--- Post-condition: Transforms a Transition into a TermList representing a step in the counterexample.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op transTR : Transition -> TermList .
   eq transTR({mid(ST), -[SUB]/ RN -})  
    = '`{_`,_`,_`}[ST, wrapTL('_;_,'none.CESubstitution,transSUB(SUB)), upRuleName(RN)] .
@@ -1042,7 +1214,10 @@ mod META-LMC-COUNTEREXAMPLE-TRANSFORMER is
    = '`{_`,_`,_`}[ST, 'none.CESubstitution, upRuleName(deadlock)] .
   eq transTR({init(ST), -[SUB]/ RN -}) = empty  .
 
---- substitution
+--- Pre-condition: SUB is a Substitution.
+--- Post-condition: Transforms a Substitution into a TermList representing assignments in the counterexample.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24  
   op transSUB : Substitution -> TermList .
   eq transSUB(none) = empty .
   eq transSUB(V <- T ; SUB) 
@@ -1084,10 +1259,12 @@ mod LMC-COMMAND-PROCESSING is
   var RP : ResultPair . 
   var  RP? : [ResultPair] .
 
---- process lmc commands
+--- Pre-condition: QI is a Qid, ME is a ModuleExpression, and DB is a Database.
+--- Post-condition: Processes a logical model checking command.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op procLMCComd : Term ModuleExpression Database -> Tuple{Database,QidList} .
 
-  --- no argument
   eq procLMCComd(QI, ME, DB)
    = if compiledModule(ME, DB)
      then procLMC(QI, empty, nil, unbounded, 
@@ -1118,12 +1295,20 @@ mod LMC-COMMAND-PROCESSING is
 -------------------------------------
 --- parse arguments
 ---
-  --- command condition type
+
+--- Pre-condition: QI is a Qid.
+--- Post-condition: Returns the expected type of the condition argument for a given LMC command.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op lmcCmdCond : Qid -> Type? .
   eq lmcCmdCond('lmc_|=_.)  = 'Formula .
   eq lmcCmdCond('lfmc_|=_.) = 'Formula .
   eq lmcCmdCond(QI) = anyType [owise] . --- no condition
 
+--- Pre-condition: F is a Qid, TL is a TermList, M is a Module, B is a Bool, D is a Bound, VDS is a VariableSet, DB is a Database, and TL1 is a TermList.
+--- Post-condition: Processes a logical model checking command, handling argument parsing and execution.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op procLMCComd : Qid TermList Module Bool Bound VariableSet Database TermList 
                 -> Tuple{Database,QidList} .
 
@@ -1162,6 +1347,11 @@ mod LMC-COMMAND-PROCESSING is
 -------------------------------------
 --- execute commands
 ---
+
+--- Pre-condition: F is a Qid, TL is a TermList, CD is a Condition, D is a Bound, M is a Module, VDS is a VariableSet, and DB is a Database.
+--- Post-condition: Executes the logical model checking command.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op procLMC : Qid TermList Condition Bound Module VariableSet Database -> Tuple{Database,QidList} .
 
   eq procLMC('lfmc_|=_., (T1,T2), CD, D, M, VDS, DB)
@@ -1169,6 +1359,10 @@ mod LMC-COMMAND-PROCESSING is
   eq procLMC('lmc_|=_., (T1,T2), CD, D, M, VDS, DB)
    = procLMCExec(T1, T2, CD, false, D, M, DB) .
 
+--- Pre-condition: T1 is a Term representing the initial state, T2 is a Term representing the property, CD is a Condition, B is a Bool indicating folding, D is a Bound, M is a Module, and DB is a Database.
+--- Post-condition: Executes the core logical model checking process.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op procLMCExec : Term Term Condition Bool Bound Module Database -> Tuple{Database,QidList} .
   ceq procLMCExec(T1, T2, CD, B, D, M, DB)
    = if RP? :: ResultPair
@@ -1183,6 +1377,10 @@ mod LMC-COMMAND-PROCESSING is
      T4 := up(getTerm(metaReduce(M,T2))) /\
      RP? := metaReduce(U, 'lmc-check[T3,T4,upTerm(B),upTerm(D)]) .
 
+--- Pre-condition: M is a Module, B is a Bool indicating folding, T1 is a Term representing the initial state, T2 is a Term representing the property, and CD is a Condition.
+--- Post-condition: Generates a QidList containing information about the model checking process being initiated.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op printLMCInfo : Module Bool Term Term Condition -> QidList .
   eq printLMCInfo(M, B, T1, T2, CD)
    = '\b 'logical (if B then 'folding else nil fi) 'model 'check 'in
@@ -1192,6 +1390,10 @@ mod LMC-COMMAND-PROCESSING is
       else '\n '\b 'under 'the 'condition ': '\o '\n '\s '\s
       eMetaPrettyPrint(M,CD) fi) '\n .
 
+--- Pre-condition: M is a Module and T is a Term representing the model checking result.
+--- Post-condition: Generates a QidList containing the output of the model checker, including results and potential counterexamples.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op printLMCOutput : Module Term -> QidList .
   eq printLMCOutput(M, 'result:_real:_bound:_complete:_[T1,T2,T3,T4])
    = '\b 'result: '\o '\n '\s '\s
@@ -1212,6 +1414,10 @@ mod LMC-COMMAND-PROCESSING is
    = '\b 'error: '\o '\n '\s '\s
      'model 'checker 'internal 'error '\n [owise] .
 
+--- Pre-condition: M is a Module and T is a Term representing the counterexample.
+--- Post-condition: Generates a QidList containing the pretty-printed counterexample.
+--- Author: Kyungmin Bae
+--- Date: 2024/12/24
   op printLMCCE : Module Term -> QidList .
  ceq printLMCCE(M, T)
    = eMetaPrettyPrint(M, downTerm(getTerm(RP)))
