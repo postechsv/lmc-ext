@@ -1003,6 +1003,9 @@ mod VERIFY-USER-DEFINED-RULES is
   eq verifyUserDefinedRules(M) = true .
 endm
 
+mod ENABLED-AUTO-GENERATION is
+endm
+
 mod META-SYMBOLIC-CONNECTOR is
   pr META-LMC-THEORY .
   pr BOUNDED-FOLDING-MODEL-CHECKER .
