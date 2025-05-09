@@ -1012,6 +1012,9 @@ mod ENABLED-AUTO-GENERATION is
 
   op isStateRule : Module Rule -> Bool .
   eq isStateRule(M, (rl LT => RT [ATRS] .)) = sortLeq(M, leastSort(M, LT), 'State) .
+
+  op getStateRules : Module RuleSet -> RuleSet .
+  eq getStateRules(M, RL RLS) = if isStateRule(M, RL) then RL else none fi getStateRules(M, RLS) .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
