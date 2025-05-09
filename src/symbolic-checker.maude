@@ -1014,6 +1014,7 @@ mod ENABLED-AUTO-GENERATION is
   eq isStateRule(M, (rl LT => RT [ATRS] .)) = sortLeq(M, leastSort(M, LT), 'State) .
 
   op getStateRules : Module RuleSet -> RuleSet .
+  eq getStateRules(M, none) = none .
   eq getStateRules(M, RL RLS) = if isStateRule(M, RL) then RL else none fi getStateRules(M, RLS) .
 endm
 
