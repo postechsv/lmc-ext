@@ -1009,6 +1009,9 @@ mod ENABLED-AUTO-GENERATION is
 
   op enabledProp : -> Term .
   eq enabledProp = 'enabled?.Prop .
+
+  op isStateRule : Module Rule -> Bool .
+  eq isStateRule(M, (rl LT => RT [ATRS] .)) = sortLeq(M, leastSort(M, LT), 'State) .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
