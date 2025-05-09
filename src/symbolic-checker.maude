@@ -1006,6 +1006,9 @@ endm
 mod ENABLED-AUTO-GENERATION is
   pr META-LEVEL .
   pr SATISFACTION .
+
+  op enabledProp : -> Term .
+  eq enabledProp = 'enabled?.Prop .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
