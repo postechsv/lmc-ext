@@ -1018,6 +1018,7 @@ mod ENABLED-AUTO-GENERATION is
   eq getStateRules(M, RL RLS) = if isStateRule(M, RL) then RL else none fi getStateRules(M, RLS) .
 
   op getRuleLhss : RuleSet -> TermList .
+  eq getRuleLhss(none) = empty .
   eq getRuleLhss((rl LT => RT [ATRS] .) RLS) = LT, getRuleLhss(RLS) .
 endm
 
