@@ -1023,6 +1023,10 @@ mod ENABLED-AUTO-GENERATION is
 
   op genEnabledEq : Term -> Equation .
   eq genEnabledEq(T) = (eq '_|=_[T, enabledProp] = 'true.Bool [variant] .) .
+
+  op genEnabledEqs : TermList -> EquationSet .
+  eq genEnabledEqs(empty) = none .
+  eq genEnabledEqs((T, TL)) = genEnabledEq(T) genEnabledEqs(TL) .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
