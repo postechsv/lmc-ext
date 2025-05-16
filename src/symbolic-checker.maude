@@ -1030,6 +1030,9 @@ mod ENABLED-AUTO-GENERATION is
 
   op genEnabledEqs : Module -> EquationSet .
   eq genEnabledEqs(M) = genEnabledEqs(getRuleLhss(getStateRules(M, getRls(M)))) .
+
+  op enabledDecl : -> OpDecl .
+  eq enabledDecl = (op 'enabled? : nil -> 'Prop [metadata("incomplete(false)")] .) .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
