@@ -1027,6 +1027,9 @@ mod ENABLED-AUTO-GENERATION is
   op genEnabledEqs : TermList -> EquationSet .
   eq genEnabledEqs(empty) = none .
   eq genEnabledEqs((T, TL)) = genEnabledEq(T) genEnabledEqs(TL) .
+
+  op genEnabledEqs : Module -> EquationSet .
+  eq genEnabledEqs(M) = genEnabledEqs(getRuleLhss(getStateRules(M, getRls(M)))) .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
