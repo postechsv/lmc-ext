@@ -1007,6 +1007,24 @@ mod ENABLED-AUTO-GENERATION is
   pr META-LEVEL .
   pr SATISFACTION .
 
+  var H : Header .  
+  var IL : ImportList .  
+  var ME : ModuleExpression .
+  var SS : SortSet .  
+  var SSDS : SubsortDeclSet .  
+  vars OPDS OPDS' : OpDeclSet . 
+  var MAS : MembAxSet .  
+  vars EQS EQS' : EquationSet .  
+  var RL : Rule .
+  var RLS : RuleSet .
+  var STDS : StratDeclSet .
+  var STDFS : StratDefSet .
+  var ATRS : AttrSet .
+  var M : Module . 
+
+  vars T LT RT : Term .
+  var TL : TermList .
+
   op enabledProp : -> Term .
   eq enabledProp = 'enabled?.Prop .
 
