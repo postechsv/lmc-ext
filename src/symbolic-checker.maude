@@ -1033,6 +1033,9 @@ mod ENABLED-AUTO-GENERATION is
 
   op enabledDecl : -> OpDecl .
   eq enabledDecl = (op 'enabled? : nil -> 'Prop [metadata("incomplete(false)")] .) .
+
+  op addEqs : Module EquationSet -> Module .
+  eq addEqs(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm, EQS') = mod H is IL sorts SS . SSDS OPDS MAS (EQS EQS') RLS endm .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
