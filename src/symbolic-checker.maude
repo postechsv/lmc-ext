@@ -1042,6 +1042,9 @@ mod ENABLED-AUTO-GENERATION is
 
   op addEnabledEqs : Module -> Module .
   eq addEnabledEqs(M) = addEqs(M, genEnabledEqs(M)) .
+
+  op addEnabledDecl : Module -> Module .
+  eq addEnabledDecl(M) = addDecls(M, enabledDecl) .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
