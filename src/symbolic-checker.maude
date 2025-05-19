@@ -1006,6 +1006,7 @@ endm
 mod ENABLED-AUTO-GENERATION is
   pr META-LEVEL .
   pr SATISFACTION .
+  pr STRING .
 
   var H : Header .  
   var IL : ImportList .  
