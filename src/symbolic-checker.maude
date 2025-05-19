@@ -1316,6 +1316,7 @@ endm
 mod LMC-COMMAND-PROCESSING is
   pr FM-COMMAND-PROCESSING .
   pr META-PROP-SET .
+  pr ENABLED-AUTO-GENERATION .
 
   vars T T1 T2 T3 T4 T5 T6 : Term .  
   var TL TL1 : TermList .
