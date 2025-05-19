@@ -1445,13 +1445,14 @@ mod LMC-COMMAND-PROCESSING is
      then << DB ; printLMCInfo(M,B,T1,T2,CD) printLMCOutput(M,getTerm(RP?)) >>
      else << DB ; getMsg(getTerm(RP?)) >>
      fi
-   if U := addEqs( 
+   if M':Module := addEnabled(M) /\
+      U := addEqs( 
 	    (eq '##m##.Module = up(M) [none] .
 	     eq '##f##.TermList = upTerm(props(M,T2)) [none] .),
 	    upModule('META-SYMBOLIC-CONNECTOR, false)) /\
-     T3  := up(getTerm(metaReduce(M,T1))) /\
-     T4 := up(getTerm(metaReduce(M,T2))) /\
-     RP? := metaReduce(U, 'lmc-check[T3,T4,upTerm(B),upTerm(D)]) .
+      T3  := up(getTerm(metaReduce(M,T1))) /\
+      T4 := up(getTerm(metaReduce(M,T2))) /\
+      RP? := metaReduce(U, 'lmc-check[T3,T4,upTerm(B),upTerm(D)]) .
 
 --- Pre-condition: M is a Module, B is a Bool indicating folding, T1 is a Term representing the initial state, T2 is a Term representing the property, and CD is a Condition.
 --- Post-condition: Generates a QidList containing information about the model checking process being initiated.
