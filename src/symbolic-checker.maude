@@ -1039,6 +1039,9 @@ mod ENABLED-AUTO-GENERATION is
 
   op addDecls : Module OpDeclSet -> Module .
   eq addDecls(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm, OPDS') = mod H is IL sorts SS . SSDS (OPDS OPDS') MAS EQS RLS endm .
+
+  op addEnabledEqs : Module -> Module .
+  eq addEnabledEqs(M) = addEqs(M, genEnabledEqs(M)) .
 endm
 
 mod META-SYMBOLIC-CONNECTOR is
