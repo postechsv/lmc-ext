@@ -1442,7 +1442,7 @@ mod LMC-COMMAND-PROCESSING is
   op procLMCExec : Term Term Condition Bool Bound Module Database -> Tuple{Database,QidList} .
   ceq procLMCExec(T1, T2, CD, B, D, M, DB)
    = if RP? :: ResultPair
-     then << DB ; printLMCInfo(M,B,T1,T2,CD) printLMCOutput(M,getTerm(RP?)) >>
+     then << DB ; printLMCInfo(M':Module,B,T1,T2,CD) printLMCOutput(M':Module,getTerm(RP?)) >>
      else << DB ; getMsg(getTerm(RP?)) >>
      fi
    if EL:TermList := enabledProp, props(M,T2) /\
