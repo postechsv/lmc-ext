@@ -1445,7 +1445,8 @@ mod LMC-COMMAND-PROCESSING is
      then << DB ; printLMCInfo(M,B,T1,T2,CD) printLMCOutput(M,getTerm(RP?)) >>
      else << DB ; getMsg(getTerm(RP?)) >>
      fi
-   if M':Module := addEnabled(M) /\
+   if EL:TermList := enabledProp, props(M,T2) /\
+      M':Module := addEnabled(M) /\
       U := addEqs( 
 	    (eq '##m##.Module = up(M':Module) [none] .
 	     eq '##f##.TermList = upTerm(props(M,T2)) [none] .),
