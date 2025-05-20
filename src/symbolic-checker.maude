@@ -1449,7 +1449,7 @@ mod LMC-COMMAND-PROCESSING is
       M':Module := addEnabled(M) /\
       U := addEqs( 
 	    (eq '##m##.Module = up(M':Module) [none] .
-	     eq '##f##.TermList = upTerm(props(M,T2)) [none] .),
+	     eq '##f##.TermList = upTerm(EL:TermList) [none] .),
 	    upModule('META-SYMBOLIC-CONNECTOR, false)) /\
       T3  := up(getTerm(metaReduce(M,T1))) /\
       T4 := up(getTerm(metaReduce(M,T2))) /\
