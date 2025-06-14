@@ -990,6 +990,9 @@ mod PARTIAL-COMPLETENESS-FOLDING is
     eq T1 >= T2 [ M ] = metaMatch(M, T1, T2, nil, 0) :: Substitution .
 endm
 
+mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
+endm
+
 mod VERIFY-USER-DEFINED-RULES is
   pr META-LEVEL .
 
