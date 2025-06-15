@@ -995,8 +995,16 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
 
   sort PSValidationResult .
 
+  var PSVR : PSValidationResult .
+
   op success : -> PSValidationResult [ctor] .
   op validationFail : -> PSValidationResult [ctor] .
+
+  op _*_ : PSValidationResult PSValidationResult -> PSValidationResult [assoc] .
+  eq success * success = success .
+  eq success * validationFail = validationFail .
+  eq validationFail * PSVR = validationFail .
+
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
