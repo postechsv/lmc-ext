@@ -992,6 +992,8 @@ endm
 
 mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   pr META-LEVEL .
+
+  sort PSValidationResult .
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
