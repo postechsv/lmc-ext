@@ -993,6 +993,17 @@ endm
 mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   pr META-LEVEL .
 
+  var M : Module .
+  var H : Header .  
+  var IL : ImportList .  
+  var SS : SortSet .  
+  var SSDS : SubsortDeclSet .  
+  var OPDS : OpDeclSet . 
+  var MAS : MembAxSet .  
+  var EQS : EquationSet .  
+  var RLS : RuleSet .
+  var ATRS : AttrSet .
+
   sort PSValidationResult .
 
   var PSVR : PSValidationResult .
