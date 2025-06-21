@@ -1019,6 +1019,10 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op retrievePSRules : RuleSet -> RuleSet .
   eq retrievePSRules((rl T => T' [metadata("ps") ATRS] .) RLS) = (rl T => T' [metadata("ps") ATRS] .) retrievePSRules(RLS) .
   eq retrievePSRules(RLS) = none [owise] .
+
+  op retrievePSRules : Module -> RuleSet .
+  eq retrievePSRules(M) = retrievePSRules(getRls(M)) .
+
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
