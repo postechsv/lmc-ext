@@ -1027,6 +1027,8 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   eq excludePSRules((rl T => T' [metadata("ps") ATRS] .) RLS) = excludePSRules(RLS) .
   eq excludePSRules(RLS) = RLS [owise] .
 
+  op excludePSRules : Module -> Module .
+  eq excludePSRules(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm) = mod H is IL sorts SS . SSDS OPDS MAS EQS excludePSRules(RLS) endm .
 
 endm
 
