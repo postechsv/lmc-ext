@@ -1046,6 +1046,12 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op nil : -> NarrowingResultSet [ctor] .
   subsort NarrowingApplyResult < NarrowingResultSet .
   op _;_ : NarrowingResultSet NarrowingResultSet -> NarrowingResultSet [assoc comm ctor id: nil] .
+
+  op metaNarrowCollect : Module Term Nat -> NarrowingResultSet .
+  ceq metaNarrowCollect(M, T, N) = NAR ; metaNarrowCollect(M, T, s N)
+    if NAR := metaNarrowingApply(M, T, empty, '@, filter, N) .
+  eq metaNarrowCollect(M, T, N) = nil [owise] .
+
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
