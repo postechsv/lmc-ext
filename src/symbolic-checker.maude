@@ -1033,7 +1033,8 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op isolatePSRules : Module -> Module .
   eq isolatePSRules(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm) = mod H is IL sorts SS . SSDS OPDS MAS EQS retrievePSRules(RLS) endm .
 
-
+  op isolatePSRule : Module Rule -> Module .
+  eq isolatePSRule(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm, RL) = mod H is IL sorts SS . SSDS OPDS MAS EQS RL endm .
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
