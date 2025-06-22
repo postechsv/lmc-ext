@@ -1035,6 +1035,11 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
 
   op isolatePSRule : Module Rule -> Module .
   eq isolatePSRule(mod H is IL sorts SS . SSDS OPDS MAS EQS RLS endm, RL) = mod H is IL sorts SS . SSDS OPDS MAS EQS RL endm .
+
+  sort NarrowingResultSet .
+  op nil : -> NarrowingResultSet [ctor] .
+  subsort NarrowingApplyResult < NarrowingResultSet .
+  op _;_ : NarrowingResultSet NarrowingResultSet -> NarrowingResultSet [assoc comm ctor id: nil] .
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
