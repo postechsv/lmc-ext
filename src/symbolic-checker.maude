@@ -1019,6 +1019,9 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op getLhs : Rule -> Term .
   eq getLhs((rl T => T' [ATRS] .)) = T .
 
+  op getRhs : Rule -> Term .
+  eq getRhs((rl T => T' [ATRS] .)) = T' .
+
   op retrievePSRules : RuleSet -> RuleSet .
   eq retrievePSRules((rl T => T' [metadata("ps") ATRS] .) RLS) = (rl T => T' [metadata("ps") ATRS] .) retrievePSRules(RLS) .
   eq retrievePSRules(RLS) = none [owise] .
