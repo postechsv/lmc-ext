@@ -1055,6 +1055,9 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op applyNarrowingSubstitutionToPSRuleLhs : Module NarrowingApplyResult Rule -> Term .
   eq applyNarrowingSubstitutionToPSRuleLhs(M, NAR, (rl T => T' [metadata("ps") ATRS] .)) = $applySubstitution(T, getTermSubstitution(NAR)) .
 
+  op applyNarrowingSubstitutionToPSRuleRhs : Module NarrowingApplyResult Rule -> Term .
+  eq applyNarrowingSubstitutionToPSRuleRhs(M, NAR, (rl T => T' [metadata("ps") ATRS] .)) = $applySubstitution(T', getTermSubstitution(NAR)) .
+
   op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
   --- eq validatePSNarrowingResult(M, NAR, RL)
   ---   = testPSApplication(M, NAR,
