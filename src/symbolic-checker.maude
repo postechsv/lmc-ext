@@ -1052,6 +1052,7 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
     if NAR := metaNarrowingApply(M, T, empty, '@, filter, N) .
   eq metaNarrowCollect(M, T, N) = nil [owise] .
 
+  op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
