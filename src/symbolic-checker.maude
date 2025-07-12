@@ -1052,6 +1052,9 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
     if NAR := metaNarrowingApply(M, T, empty, '@, filter, N) .
   eq metaNarrowCollect(M, T, N) = nil [owise] .
 
+  op applyNarrowingSubstitutionToPSRuleLhs : Module NarrowingApplyResult Rule -> Term .
+  eq applyNarrowingSubstitutionToPSRuleLhs(M, NAR, (rl T => T' [metadata("ps") ATRS] .)) = $applySubstitution(T, getTermSubstitution(NAR)) .
+
   op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
   --- eq validatePSNarrowingResult(M, NAR, RL)
   ---   = testPSApplication(M, NAR,
