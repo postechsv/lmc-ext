@@ -1065,7 +1065,7 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   ceq testTermEquality(M, T, T') = getTerm(metaReduce(M, '_==_[T, T'])) == 'true.Bool if B:Bool := getTerm(metaReduce(M, '_==_[T, T'])) == 'true.Bool .
 
   op rewritePSRuleRhs : Module Term Qid -> Term .
-  eq rewritePSRuleRhs(M, T) = getTerm(metaRewrite(excludePSRules(M), T, 1)) .
+  eq rewritePSRuleRhs(M, T, L) = getTerm(metaApply(M, T, L, none, 0)) .
 
   op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
   --- eq validatePSNarrowingResult(M, NAR, RL)
