@@ -1061,6 +1061,9 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op applyPSRuleToNarrowingResultTerm : Module NarrowingApplyResult Rule -> Term .
   eq applyPSRuleToNarrowingResultTerm(M, NAR, RL) = getTerm(metaRewrite(isolatePSRule(M, RL), getTerm(NAR), 2)) .
 
+  op rewritePSRuleRhs : Module Term Qid -> Term .
+  eq rewritePSRuleRhs(M, T) = getTerm(metaRewrite(excludePSRules(M), T, 1)) .
+
   op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
   --- eq validatePSNarrowingResult(M, NAR, RL)
   ---   = testPSApplication(M, NAR,
