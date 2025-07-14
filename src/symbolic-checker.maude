@@ -1061,11 +1061,11 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op applyPSRuleToNarrowingResultTerm : Module NarrowingApplyResult Rule -> Term .
   eq applyPSRuleToNarrowingResultTerm(M, NAR, RL) = getTerm(metaRewrite(isolatePSRule(M, RL), getTerm(NAR), 2)) .
 
-  op testTermEquality : Module Term Term -> Bool .
-  ceq testTermEquality(M, T, T') = getTerm(metaReduce(M, '_==_[T, T'])) == 'true.Bool if B:Bool := getTerm(metaReduce(M, '_==_[T, T'])) == 'true.Bool .
-
   op rewritePSRuleRhs : Module Term Qid -> Term .
   eq rewritePSRuleRhs(M, T, L) = getTerm(metaApply(M, T, L, none, 0)) .
+
+  op testTermEquality : Module Term Term -> Bool .
+  ceq testTermEquality(M, T, T') = getTerm(metaReduce(M, '_==_[T, T'])) == 'true.Bool if B:Bool := getTerm(metaReduce(M, '_==_[T, T'])) == 'true.Bool .
 
   op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
   --- eq validatePSNarrowingResult(M, NAR, RL)
