@@ -1079,6 +1079,10 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   ---       applyNarrowingSubstitutionToPSRuleRhs(M, NAR, RL),            
   ---       getTerm(NAR), 
   ---       rewritePSRuleRhs(M, applyNarrowingSubstitutionToPSRuleRhs(M, NAR, RL), getLabel(NAR))) .
+
+  op validatePSRules : Module RuleSet -> PSValidationResult .
+  eq validatePSRules(M, none) = success .
+  eq validatePSRules(M, RL RLS) = validatePSRule(M, RL) * validatePSRules(M, RLS) .
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
