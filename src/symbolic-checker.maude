@@ -1073,12 +1073,12 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
                                     else validationFail fi .
 
   op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
-  --- eq validatePSNarrowingResult(M, NAR, RL)
-  ---   = testPSApplication(M, NAR,
-  ---       applyNarrowingSubstitutionToPSRuleLhs(M, NAR, RL),
-  ---       applyNarrowingSubstitutionToPSRuleRhs(M, NAR, RL),            
-  ---       getTerm(NAR), 
-  ---       rewritePSRuleRhs(M, applyNarrowingSubstitutionToPSRuleRhs(M, NAR, RL), getLabel(NAR))) .
+  eq validatePSNarrowingResult(M, NAR, RL)
+    = testPSApplication(M, NAR,
+        applyNarrowingSubstitutionToPSRuleLhs(M, NAR, RL),
+        applyNarrowingSubstitutionToPSRuleRhs(M, NAR, RL),            
+        getTerm(NAR), 
+        rewritePSRuleRhs(M, applyNarrowingSubstitutionToPSRuleRhs(M, NAR, RL), getLabel(NAR))) .
 
   op validatePSNarrowingResults : Module NarrowingResultSet Rule -> PSValidationResult .
   eq validatePSNarrowingResults(M, nil, RL) = success .
