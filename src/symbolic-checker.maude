@@ -1090,6 +1090,9 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op validatePSRules : Module RuleSet -> PSValidationResult .
   eq validatePSRules(M, none) = success .
   eq validatePSRules(M, RL RLS) = validatePSRule(M, RL) * validatePSRules(M, RLS) .
+
+  op validatePSRules : Module -> PSValidationResult .
+  eq validatePSRules(M) = validatePSRules(M, retrievePSRules(M)) .
 endm
 
 mod VERIFY-USER-DEFINED-RULES is
