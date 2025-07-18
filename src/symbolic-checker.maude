@@ -1080,6 +1080,10 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   ---       getTerm(NAR), 
   ---       rewritePSRuleRhs(M, applyNarrowingSubstitutionToPSRuleRhs(M, NAR, RL), getLabel(NAR))) .
 
+  op validatePSNarrowingResults : Module NarrowingResultSet Rule -> PSValidationResult .
+  eq validatePSNarrowingResults(M, nil, RL) = success .
+  eq validatePSNarrowingResults(M, NAR ; NRS, RL) = validatePSNarrowingResult(M, NAR, RL) * validatePSNarrowingResults(M, NRS, RL) .
+
   op validatePSRule : Module Rule -> PSValidationResult .
   eq validatePSRule(M, (rl T => T' [metadata("ps") ATRS] .)) = validatePSNarrowingResults(M, metaNarrowCollect(excludePSRules(M), T, 0), (rl T => T' [metadata("ps") ATRS] .)) .
 
