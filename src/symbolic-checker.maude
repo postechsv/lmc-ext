@@ -1074,7 +1074,7 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   op testPSApplication : Module NarrowingApplyResult Term Term Term Term -> PSValidationResult .
   eq testPSApplication(M, NAR, T1, T2, T1', T2') = if metaSearch(isolatePSRules(M), T1', T2', nil, '+, 1, 0) :: ResultTriple 
                                     then success 
-                                    else validationFail fi .
+                                    else validationFail(NAR, T1, T2, T1', T2') fi .
 
   op validatePSNarrowingResult : Module NarrowingApplyResult Rule -> PSValidationResult .
   eq validatePSNarrowingResult(M, NAR, RL)
