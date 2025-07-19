@@ -992,7 +992,7 @@ endm
 
 mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   pr META-LEVEL .
-  
+
   var M : Module .
   var H : Header .  
   var IL : ImportList .  
@@ -1013,7 +1013,7 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
   var PSVR : PSValidationResult .
 
   op success : -> PSValidationResult [ctor] .
-  op validationFail : -> PSValidationResult [ctor] .
+  op validationFail : NarrowingApplyResult Term Term Term Term -> PSValidationResult [ctor] .
 
   op _*_ : PSValidationResult PSValidationResult -> PSValidationResult [assoc] .
   eq success * success = success .
