@@ -1017,8 +1017,8 @@ mod PATTERN-SIMPLIFICATION-RULE-VERIFICATION is
 
   op _*_ : PSValidationResult PSValidationResult -> PSValidationResult [assoc] .
   eq success * success = success .
-  eq success * validationFail = validationFail .
-  eq validationFail * PSVR = validationFail .
+  eq success * validationFail(NAR, T1, T2, T1', T2') = validationFail(NAR, T1, T2, T1', T2') .
+  eq validationFail(NAR, T1, T2, T1', T2') * PSVR = validationFail(NAR, T1, T2, T1', T2') .
 
   op getLhs : Rule -> Term .
   eq getLhs((rl T => T' [ATRS] .)) = T .
