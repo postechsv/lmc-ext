@@ -1,0 +1,74 @@
+--- The Readers-Writers problem with explicit shared variables
+--- from: Constrained Monotonic Abstraction, P.A. Abdulla, et. al.
+
+fmod NUMBER is
+  sorts Number . 
+  op 0 : -> Number [ctor] .
+  op s : -> Number [ctor] .
+  op __ : Number Number -> Number [ctor comm assoc id: 0] .
+endfm
+
+fmod RW-CONF is
+  protecting NUMBER .
+
+  sort Truth .
+  ops true false : -> Truth [ctor] .
+
+  sorts ProcIdle ProcRead ProcWrite Proc .
+  subsort ProcIdle ProcRead ProcWrite < Proc .
+  op think : -> ProcIdle [ctor] .
+  ops read : -> ProcRead[ctor] .
+  ops write : -> ProcWrite [ctor] .
+
+  sorts ProcIdleSet ProcReadSet ProcWriteSet ProcSet .
+  subsort ProcIdle < ProcIdleSet .
+  subsort ProcRead < ProcReadSet .
+  subsort ProcWrite < ProcWriteSet .
+  subsort Proc < ProcSet .
+  subsort ProcIdleSet < ProcReadSet ProcWriteSet < ProcSet .
+  op none : -> ProcIdleSet [ctor] .
+  op _;_ : ProcIdleSet ProcIdleSet -> ProcIdleSet [ctor comm assoc id: none] .
+  op _;_ : ProcReadSet ProcReadSet -> ProcReadSet [ctor ditto] .
+  op _;_ : ProcWriteSet ProcWriteSet -> ProcWriteSet [ctor ditto] .
+  op _;_ : ProcSet ProcSet -> ProcSet [ctor ditto] .
+
+  sort Conf .
+  op <_,_|_> : Number Truth ProcSet -> Conf [ctor] .
+endfm
+
+mod RW is
+  protecting RW-CONF .
+
+  var N : Number . var B : Truth . var PS : ProcSet .
+
+  rl [r1]: < 0, true | think ; PS >     =>  < s(0), false | read ; PS > [narrowing] .
+  rl [r2]: < s(N), B | think ; PS >     =>  < s(s(N)), B | read ; PS > [narrowing] .
+  rl [r3]: < s(s(N)), B | read ; PS >   =>  < s(N), B | think ; PS > [narrowing] .
+  rl [r4]: < s(0), false | read ; PS >  =>  < 0, true | think ; PS > [narrowing] .
+  rl [w1]: < N, true | think ; PS >     =>  < N, false | write ; PS > [narrowing] .
+  rl [w2]: < N, false | write ; PS >    =>  < N, true | think ; PS > [narrowing] .
+endm
+
+load symbolic-checker .
+
+(mod RW-PROPS is
+  pr RW .
+  pr SYMBOLIC-CHECKER .
+  pr STATE-SYNTAX .
+
+  subsort Conf < State .
+
+  var N : Number . var B : Truth . var PS : ProcSet .
+  var IS : ProcIdleSet .  var RS : ProcReadSet .  var WS : ProcWriteSet . 
+
+  op mutex : -> Prop .
+
+  eq < N, B | RS > |= mutex = true [variant] .
+  eq < N, B | WS > |= mutex = true [variant] .
+  eq < N, B | read ; write ; PS > |= mutex = false [variant] .
+endm)
+
+---set verbose on .
+
+(lfmc [50] < 0, true | IS > |= [] mutex .)
+***  no counterexample found within bound 50
