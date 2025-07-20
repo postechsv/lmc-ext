@@ -1,0 +1,198 @@
+
+--- The Burns's mutual exclusion algorithms in Maude
+--- From: Nancy Ann Lynch, Distributed algorithms, Morgan Kaufmann, 1996
+---
+---    repeat
+---l1:   flag[i] := 0
+---l2:   if EXIST j<i: flag[j] = 1 then goto l1
+---l3:   flag[i] := 1
+---l4:   if EXIST j<i: flag[j] = 1 then goto l1
+---l5:   awiat ALL j>i : flag[j] != 1
+---crit:
+---l6:   flag[i] := 0
+---    forever
+
+fmod NUMBERS is
+  sort Number .
+  op 0 : -> Number [ctor] .
+  op s : -> Number [ctor] .
+  op __ : Number Number -> Number [ctor comm assoc id: 0] .
+endfm
+
+fmod BURNS-DATA is
+  sorts Status WaitStatus InitStatus .
+  subsorts InitStatus < WaitStatus < Status .
+  op l1 : -> InitStatus [ctor] .
+  ops l2 l3 l4 l5 : -> WaitStatus [ctor] .
+  op crit : -> Status [ctor] .
+
+  sorts Flag Flag0 .
+  subsorts Flag0 < Flag .
+  op 0 : -> Flag0 [ctor] .
+  op 1 : -> Flag [ctor] .
+endfm
+
+fmod BURNS-PROCS is
+  protecting NUMBERS .
+  protecting BURNS-DATA .
+
+  sort Proc .
+  op [_:_,_] : Number Flag Status -> Proc [ctor] .
+
+  sorts Flag0Proc WaitProc InitProc .
+  subsorts Flag0Proc < Proc .
+  subsorts InitProc < WaitProc < Proc .
+  op [_:_,_] : Number Flag0 Status -> Flag0Proc [ctor] .
+  op [_:_,_] : Number Flag WaitStatus -> WaitProc [ctor] .
+  op [_:_,_] : Number Flag InitStatus -> InitProc [ctor] .
+
+  sorts WaitFlag0Proc InitFlag0Proc .
+  subsorts InitFlag0Proc < WaitFlag0Proc InitProc .
+  subsorts WaitFlag0Proc < WaitProc Flag0Proc .
+  op [_:_,_] : Number Flag0 InitStatus -> InitFlag0Proc [ctor] .
+  op [_:_,_] : Number Flag0 WaitStatus -> WaitFlag0Proc [ctor] .
+endfm
+
+fmod BURNS-PROCSETS is
+  protecting BURNS-PROCS .
+
+  sorts ProcSet WaitProcSet InitProcSet Flag0ProcSet .
+  subsorts Proc < ProcSet .
+  subsorts WaitProc < WaitProcSet .
+  subsorts InitProc < InitProcSet .
+  subsorts Flag0Proc < Flag0ProcSet .
+  subsorts InitProcSet < WaitProcSet < ProcSet .
+  subsorts Flag0ProcSet < ProcSet .
+  op none : -> InitFlag0ProcSet [ctor] .
+  op __ : ProcSet ProcSet -> ProcSet [ctor comm assoc id: none] .
+  op __ : WaitProcSet WaitProcSet -> WaitProcSet [ctor ditto] .
+  op __ : InitProcSet InitProcSet -> InitProcSet [ctor ditto] .
+  op __ : Flag0ProcSet Flag0ProcSet -> Flag0ProcSet [ctor ditto] .
+
+  sorts WaitFlag0ProcSet InitFlag0ProcSet .
+  subsorts WaitFlag0Proc < WaitFlag0ProcSet < WaitProcSet Flag0ProcSet .
+  subsorts InitFlag0Proc < InitFlag0ProcSet < InitProcSet Flag0ProcSet .
+  subsorts InitFlag0ProcSet < WaitFlag0ProcSet .
+  op __ : WaitFlag0ProcSet WaitFlag0ProcSet -> WaitFlag0ProcSet [ctor ditto] .
+  op __ : InitFlag0ProcSet InitFlag0ProcSet -> InitFlag0ProcSet [ctor ditto] .
+endfm
+
+
+fmod BURNS-PROCSET-TRIPLES is
+  protecting BURNS-PROCSETS .
+
+  --- proc | proc with smaller ids | proc with greater ids
+  sort ProcSetTriple .
+  op _|_|_ : Proc ProcSet ProcSet -> ProcSetTriple [ctor] .
+
+  vars I J K : Number . vars F1 F2 : Flag . vars S1 S2 : Status .
+  vars PS1 PS2 : ProcSet . 
+
+  --- this should always be invoked by "PROC | ALLOTHERS | none" for the FVP
+  eq [I : F1,S1] | PS1 [s J I : F2,S2] | PS2
+   = [I : F1,S1] | PS1 | [s J I : F2,S2] PS2 [variant] .
+
+---  eq [J I : F1,S1] | PS1 | [J : F2,S2] PS2 
+---   = [J I : F1,S1] | PS1 [J : F2,S2] | PS2 [variant] .
+endfm
+
+
+mod BURNS-CONF is
+  protecting BURNS-PROCSET-TRIPLES .
+
+  sort Conf .
+  op <_> : ProcSet -> Conf [ctor] .
+  op <_> : ProcSetTriple -> Conf [ctor] .
+
+  var P : Proc . var PS : ProcSet .
+
+  --- NOTE: there is an additional "pick" phase for each step.
+  rl [pick]: < P PS >  =>  < P | PS | none > [narrowing] .
+endm
+
+
+mod BURNS-MUTEX is
+  protecting BURNS-CONF .
+
+  vars I J : Number . var F : Flag . var S : Status .
+  vars PS1 PS2 : ProcSet . var F0PS : Flag0ProcSet .
+
+  rl [l1] : < [I : F,l1] | PS1 | PS2 >
+         => < [I : 0,l2] PS1 PS2 > [narrowing] .
+
+  rl [l2] : < [I : F,l2] | [J : 1,S] PS1 | PS2 >
+         => < [I : F,l1] [J : 1,S] PS1 PS2 > [narrowing] .
+
+  rl [l2] : < [I : F,l2] | F0PS | PS2 >
+         => < [I : F,l3] F0PS PS2 > [narrowing] .
+
+  rl [l3] : < [I : F,l3] | PS1 | PS2 >
+         => < [I : 1,l4] PS1 PS2 > [narrowing] .
+
+  rl [l4] : < [I : F,l4] | [J : 1,S] PS1 | PS2 >
+         => < [I : F,l1] [J : 1,S] PS1 PS2 > [narrowing] .
+
+  rl [l4] : < [I : F,l4] | F0PS | PS2 >
+         => < [I : F,l5] F0PS PS2 > [narrowing] .
+
+  rl [l5] : < [I : F,l5] | PS1 | F0PS > 
+         => < [I : F,crit] PS1 F0PS > [narrowing] .
+
+  rl [l6] : < [I : F,crit] | PS1 | PS2 >
+         => < [I : 0,l1] PS1 PS2 > [narrowing] .
+endm
+
+load symbolic-checker
+
+(mod BURNS-MUTEX-SATISFACTION is
+  pr SYMBOLIC-CHECKER .
+  pr BURNS-MUTEX .
+
+  subsort Conf < State .
+
+  ops ex? : -> Prop . 
+
+  var I J : Number . vars F F' : Flag . var S : Status . 
+  var P : Proc . var WP : WaitProc .
+  vars WS WS' : WaitProcSet . vars PS PS' : ProcSet .
+
+  eq < WS >                            |= ex? = true  [variant] .
+  eq < [I : F,crit] WS >               |= ex? = true  [variant] .
+  eq < [I : F,crit] [J : F',crit] PS > |= ex? = false [variant] .
+
+  eq < WP | WS | WS' >                           |= ex? = true [variant] .
+  eq < [I : F,crit] | WS | WS' >                 |= ex? = true [variant] .
+  eq < WP | [I : F,crit] WS | WS' >              |= ex? = true [variant] .
+  eq < WP | WS | [I : F,crit] WS' >              |= ex? = true [variant] .
+  eq < [I : F,crit] | [J : F',crit] PS | PS' >   |= ex? = false [variant] .
+  eq < [I : F,crit] | PS | [J : F',crit] PS' >   |= ex? = false [variant] .
+  eq < P | [I : F,crit] [J : F',crit] PS | PS' > |= ex? = false [variant] .
+  eq < P | [I : F,crit] PS | [J : F',crit] PS' > |= ex? = false [variant] .
+  eq < P | PS | [I : F,crit] [J : F',crit] PS' > |= ex? = false [variant] .
+endm)
+
+
+(mod BURNS-MUTEX-SATISFACTION-ABS is
+  pr BURNS-MUTEX-SATISFACTION .
+
+  vars I J : Number . var P : Proc . vars PS1 PS2 : ProcSet .  
+
+  eq < P | [I : 0,l2] [J : 0,l2] PS1 | PS2 > = < P | [I : 0,l2] PS1 | PS2 > [variant] .
+  eq < P | PS1 | [I : 0,l2] [J : 0,l2] PS2 > = < P | PS1 | [I : 0,l2] PS2 > [variant] .
+
+  eq < P | [I : 0,l3] [J : 0,l3] PS1 | PS2 > = < P | [I : 0,l3] PS1 | PS2 > [variant] .
+  eq < P | PS1 | [I : 0,l3] [J : 0,l3] PS2 > = < P | PS1 | [I : 0,l3] PS2 > [variant] .
+
+  eq < P | [I : 1,l4] [J : 1,l4] PS1 | PS2 > = < P | [I : 1,l4] PS1 | PS2 > [variant] .
+  eq < P | PS1 | [I : 1,l4] [J : 1,l4] PS2 > = < P | PS1 | [I : 1,l4] PS2 > [variant] .
+
+  eq < PS1 [I : 0,l2] [J : 0,l2] > = < PS1 [I : 0,l2] > [variant] .
+  eq < PS1 [I : 0,l3] [J : 0,l3] > = < PS1 [I : 0,l3] > [variant] .
+  eq < PS1 [I : 1,l4] [J : 1,l4] > = < PS1 [I : 1,l4] > [variant] .
+endm)
+
+
+(lfmc [20] in BURNS-MUTEX-SATISFACTION : < IS:InitProcSet > |= [] ex? .)
+
+
+(lfmc in BURNS-MUTEX-SATISFACTION-ABS : < IS:InitProcSet > |= [] ex? .)
