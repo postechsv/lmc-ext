@@ -1,6 +1,13 @@
 --- Lamport's Bakery protocol in Maude.
 --- From: All About Maude - A High-Performance Logical Framework. 
 
+fmod NUMBER is
+  sorts Number . 
+  op 0 : -> Number [ctor] .
+  op s : -> Number [ctor] .
+  op __ : Number Number -> Number [ctor comm assoc id: 0] .
+endfm
+
 fmod BAKERY-SYNTAX is 
   pr NAT .
 
