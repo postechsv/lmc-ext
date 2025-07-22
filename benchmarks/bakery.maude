@@ -9,31 +9,29 @@ fmod NUMBER is
 endfm
 
 fmod BAKERY-SYNTAX is 
-  pr NAT .
+  protecting NUMBER .
 
   sorts ModeIdle ModeWait ModeCrit Mode . 
   subsorts ModeIdle ModeWait ModeCrit < Mode . 
   sorts ProcIdle ProcWait Proc ProcIdleSet ProcWaitSet ProcSet . 
-
   subsorts ProcIdle < ProcIdleSet . 
   subsorts ProcWait < ProcWaitSet . 
   subsorts ProcIdle ProcWait < Proc < ProcSet . 
   subsorts ProcIdleSet < ProcWaitSet < ProcSet . 
-
+  
   op idle : -> ModeIdle . 
-  op wait : Nat -> ModeWait . 
-  op crit : Nat -> ModeCrit . 
-  op `[_`] : ModeIdle -> ProcIdle . 
-  op `[_`] : ModeWait -> ProcWait . 
-  op `[_`] : Mode -> Proc . 
+  op wait : Number -> ModeWait . 
+  op crit : Number -> ModeCrit . 
+  op [_] : ModeIdle -> ProcIdle . 
+  op [_] : ModeWait -> ProcWait . 
+  op [_] : Mode -> Proc . 
   op none : -> ProcIdleSet . 
-
-  op __ : ProcIdleSet ProcIdleSet -> ProcIdleSet [assoc comm id: none] . 
-  op __ : ProcWaitSet ProcWaitSet -> ProcWaitSet [assoc comm id: none] .
-  op __ : ProcSet ProcSet -> ProcSet [assoc comm id: none] .
+  op __ : ProcIdleSet ProcIdleSet -> ProcIdleSet [assoc comm] . 
+  op __ : ProcWaitSet ProcWaitSet -> ProcWaitSet [assoc comm] .
+  op __ : ProcSet ProcSet -> ProcSet [assoc comm] .
 
   sort Conf . 
-  op _;_;_ : Nat Nat ProcSet -> Conf .
+  op _;_;_ : Number Number ProcSet -> Conf .
 endfm
 
 mod BAKERY is
