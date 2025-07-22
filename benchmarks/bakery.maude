@@ -43,3 +43,14 @@ mod BAKERY is
   rl [crit] : N ; M ; [wait(M)] PS => N ; M ; [crit(M)] PS [narrowing] .
   rl [exit] : N ; M ; [crit(M)] PS => N ; s M ; [idle] PS [narrowing] .
 endm
+
+load symbolic-checker
+
+--- prop definitions for bakery
+(mod BAKERY-SATISFACTION1 is
+  pr BAKERY .
+  pr SYMBOLIC-CHECKER .
+  pr STATE-SYNTAX .
+
+  subsort Conf < State .
+endm)
