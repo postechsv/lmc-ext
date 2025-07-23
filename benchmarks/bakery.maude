@@ -53,4 +53,6 @@ load symbolic-checker
   pr STATE-SYNTAX .
 
   subsort Conf < State .
+
+  op ever-wait? : -> Prop .
 endm)
