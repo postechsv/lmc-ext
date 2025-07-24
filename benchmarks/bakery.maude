@@ -60,4 +60,6 @@ load symbolic-checker
 
   eq s N ; M ; PS |= ever-wait? = true [variant] . 
   eq 0 ; M ; PS    |= ever-wait? = false [variant] . 
+  eq N ; s M ; PS |= ever-crit? = true [variant] .
+  eq N ; 0 ; PS    |= ever-crit? = false [variant] . 
 endm)
