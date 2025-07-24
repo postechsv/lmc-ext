@@ -1551,14 +1551,14 @@ mod LMC-COMMAND-PROCESSING is
   op procLMCExec : Term Term Condition Bool Bound Module Database -> Tuple{Database,QidList} .
   ceq procLMCExec(T1, T2, CD, B, D, M, DB)
    = if RP? :: ResultPair
-     then << DB ; printLMCInfo(M':Module,B,T1,T2,CD) printLMCOutput(M':Module,getTerm(RP?)) >>
+     then << DB ; printLMCInfo(M,B,T1,T2,CD) printLMCOutput(M,getTerm(RP?)) >>
      else << DB ; getMsg(getTerm(RP?)) >>
      fi
    if EL:TermList := enabledProp, props(M,T2) /\
       M':Module := addEnabled(M) /\
       U := addEqs( 
-	    (eq '##m##.Module = up(M':Module) [none] .
-	     eq '##f##.TermList = upTerm(EL:TermList) [none] .),
+	    (eq '##m##.Module = up(M) [none] .
+	     eq '##f##.TermList = upTerm(props(M,T2)) [none] .),
 	    upModule('META-SYMBOLIC-CONNECTOR, false)) /\
       T3  := up(getTerm(metaReduce(M,T1))) /\
       T4 := up(getTerm(metaReduce(M,T2))) /\
