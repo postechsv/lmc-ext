@@ -54,7 +54,8 @@ load symbolic-checker
 
   subsort Conf < State .
 
-  ops ever-wait? ever-crit? enabled? : -> Prop .
+  ops ever-wait? ever-crit? : -> Prop .
+  op enabled? : -> Prop [metadata "incomplete(false)"] .
 
   vars N M : Number . vars PS : ProcSet . 
 
