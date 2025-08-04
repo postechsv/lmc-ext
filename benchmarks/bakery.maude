@@ -107,3 +107,9 @@ endm)
 
 *** false
 (lfmc N ; M ; WS |= [] mutex  .)
+
+*** false (infinite graph, but a counterexample exists)
+(lfmc N ; N ; WS |= [] mutex  .)
+
+*** no counterexample
+(lfmc [20] N ; N ; IS |= [] mutex  .)
