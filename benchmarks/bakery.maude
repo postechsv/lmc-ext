@@ -88,5 +88,13 @@ set verbose off .
 
   subsort Conf < State .
 
-  op mutex : -> Prop .
+  op mutex : -> Prop . 
+
+  var WS : ProcWaitSet . var IS : ProcIdleSet . var PS : ProcSet . 
+  vars N M M1 M2 : Number .
+
+--- NOTE: ProcIdleSet < ProcWaitSet
+  eq N ; M ; WS |= mutex = true [variant] .
+  eq N ; M ; [crit(M1)] WS |= mutex = true [variant] .
+  eq N ; M ; [crit(M1)] [crit(M2)] PS |= mutex = false [variant] .
 endm)
