@@ -68,3 +68,15 @@ load symbolic-checker
   eq N ; M ; [wait(M)] PS |= enabled? = true [variant] .
   eq N ; M ; [crit(M)] PS |= enabled? = true [variant] .
 endm)
+
+set print attribute on .
+set verbose off .
+
+*** true
+(lfmc [20] N ; N ; [idle] [idle] [idle] |= [] (ever-wait? -> <> ever-crit?) .)
+
+*** deadlock counterexample
+(lfmc N ; M ; IS:ProcIdleSet |= [] (enabled? -> (ever-wait? -> <> ever-crit?)) .)
+
+*** spurious counterexample
+(lfmc N ; M ; WS:ProcWaitSet |= [] (ever-wait? -> <> ever-crit?) .)
