@@ -98,3 +98,12 @@ set verbose off .
   eq N ; M ; [crit(M1)] WS |= mutex = true [variant] .
   eq N ; M ; [crit(M1)] [crit(M2)] PS |= mutex = false [variant] .
 endm)
+
+*** no counterexample
+(lmc [20] N ; N ; [idle] [idle] [idle] |= [] mutex .)
+
+*** true
+(lfmc N ; N ; [idle] [idle] [idle] |= [] mutex .)
+
+*** false
+(lfmc N ; M ; WS |= [] mutex  .)
