@@ -80,3 +80,13 @@ set verbose off .
 
 *** spurious counterexample
 (lfmc N ; M ; WS:ProcWaitSet |= [] (ever-wait? -> <> ever-crit?) .)
+
+(mod BAKERY-SATISFACTION2 is
+  pr BAKERY .
+  pr SYMBOLIC-CHECKER .
+  pr STATE-SYNTAX .
+
+  subsort Conf < State .
+
+  op mutex : -> Prop .
+endm)
