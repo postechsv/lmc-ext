@@ -68,6 +68,16 @@ load symbolic-checker .
   eq < N, B | read ; write ; PS > |= mutex = false [variant] .
 endm)
 
+(mod RW-PS is
+  pr RW .
+
+  var N : Natural . var PS : ProcSet .
+  var IS : ProcIdleSet .  var RS : ProcReadSet .  var WS : ProcWriteSet . 
+
+  rl < s(s(N)),false | read ; read ; PS >  
+  => <   s(N), false | read ; PS > [metadata "ps"] .
+endm)
+
 ---set verbose on .
 
 (lfmc [50] < 0, true | IS > |= [] mutex .)
