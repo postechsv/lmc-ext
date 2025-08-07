@@ -171,28 +171,32 @@ load symbolic-checker
   eq < P | PS | [I : F,crit] [J : F',crit] PS' > |= ex? = false [variant] .
 endm)
 
-
-(mod BURNS-MUTEX-SATISFACTION-ABS is
-  pr BURNS-MUTEX-SATISFACTION .
+(mod BURNS-MUTEX-PS is
+  pr BURNS-MUTEX .
+  pr META-LEVEL .
 
   vars I J : Number . var P : Proc . vars PS1 PS2 : ProcSet .  
 
-  eq < P | [I : 0,l2] [J : 0,l2] PS1 | PS2 > = < P | [I : 0,l2] PS1 | PS2 > [variant] .
-  eq < P | PS1 | [I : 0,l2] [J : 0,l2] PS2 > = < P | PS1 | [I : 0,l2] PS2 > [variant] .
+  rl < P | [I : 0,l2] [J : 0,l2] PS1 | PS2 > => < P | [I : 0,l2] PS1 | PS2 > [metadata "ps"] .
 
-  eq < P | [I : 0,l3] [J : 0,l3] PS1 | PS2 > = < P | [I : 0,l3] PS1 | PS2 > [variant] .
-  eq < P | PS1 | [I : 0,l3] [J : 0,l3] PS2 > = < P | PS1 | [I : 0,l3] PS2 > [variant] .
+  rl < P | PS1 | [I : 0,l2] [J : 0,l2] PS2 > => < P | PS1 | [I : 0,l2] PS2 > [metadata "ps"] .
 
-  eq < P | [I : 1,l4] [J : 1,l4] PS1 | PS2 > = < P | [I : 1,l4] PS1 | PS2 > [variant] .
-  eq < P | PS1 | [I : 1,l4] [J : 1,l4] PS2 > = < P | PS1 | [I : 1,l4] PS2 > [variant] .
+  rl < P | [I : 0,l3] [J : 0,l3] PS1 | PS2 > => < P | [I : 0,l3] PS1 | PS2 > [metadata "ps"] .
 
-  eq < PS1 [I : 0,l2] [J : 0,l2] > = < PS1 [I : 0,l2] > [variant] .
-  eq < PS1 [I : 0,l3] [J : 0,l3] > = < PS1 [I : 0,l3] > [variant] .
-  eq < PS1 [I : 1,l4] [J : 1,l4] > = < PS1 [I : 1,l4] > [variant] .
+  rl < P | PS1 | [I : 0,l3] [J : 0,l3] PS2 > => < P | PS1 | [I : 0,l3] PS2 > [metadata "ps"] .
+
+  rl < P | [I : 1,l4] [J : 1,l4] PS1 | PS2 > => < P | [I : 1,l4] PS1 | PS2 > [metadata "ps"] .
+
+  rl < P | PS1 | [I : 1,l4] [J : 1,l4] PS2 > => < P | PS1 | [I : 1,l4] PS2 > [metadata "ps"] .
+
+  rl < PS1 [I : 0,l2] [J : 0,l2] > => < PS1 [I : 0,l2] > [metadata "ps"] .
+
+  rl < PS1 [I : 0,l3] [J : 0,l3] > => < PS1 [I : 0,l3] > [metadata "ps"] .
+
+  rl < PS1 [I : 1,l4] [J : 1,l4] > => < PS1 [I : 1,l4] > [metadata "ps"] .
 endm)
-
 
 (lfmc [20] in BURNS-MUTEX-SATISFACTION : < IS:InitProcSet > |= [] ex? .)
 
 
-(lfmc in BURNS-MUTEX-SATISFACTION-ABS : < IS:InitProcSet > |= [] ex? .)
+(lfmc in BURNS-MUTEX-PS : < IS:InitProcSet > |= [] ex? .)
