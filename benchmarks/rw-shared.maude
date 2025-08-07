@@ -76,6 +76,9 @@ endm)
 
   rl < s(s(N)),false | read ; read ; PS >  
   => <   s(N), false | read ; PS > [metadata "ps"] .
+
+  rl < s(s(N)),false | read ; think ; PS >  
+  => <    s(N),false | think ; PS > [metadata "ps"] .
 endm)
 
 ---set verbose on .
