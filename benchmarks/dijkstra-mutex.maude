@@ -245,3 +245,11 @@ endm)
 
 (lfmc [20] < CIS > |= [] mutex .)
 *** no counterexample found within bound 20
+
+mod DIJKSTRA-MUTEX-PS is
+  pr DIJKSTRA-MUTEX .
+
+  var F : Flag .  var CIS : CInitProcSet .  var CPS : CProcSet .  var PS : ProcSet .
+
+  rl < {F,l2,-} {F,l2,-} PS > => < {F,l2,-} PS > [metadata "ps"] .
+endm
