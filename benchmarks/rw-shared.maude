@@ -74,11 +74,11 @@ endm)
   var N : Natural . var PS : ProcSet .
   var IS : ProcIdleSet .  var RS : ProcReadSet .  var WS : ProcWriteSet . 
 
-  rl < s(s(N)),false | read ; read ; PS >  
-  => <   s(N), false | read ; PS > [metadata "ps"] .
+  rl < s(s(N)),B | read ; read ; PS >  
+  => <   s(N), B | read ; PS > [metadata "ps"] .
 
-  rl < s(s(N)),false | read ; think ; PS >  
-  => <    s(N),false | think ; PS > [metadata "ps"] .
+  rl < s(s(N)),B | read ; think ; PS >  
+  => <    s(N),B | think ; PS > [metadata "ps"] .
 endm)
 
 ---set verbose on .
