@@ -99,6 +99,16 @@ set verbose off .
   eq N ; M ; [crit(M1)] [crit(M2)] PS |= mutex = false [variant] .
 endm)
 
+(mod BAKERY-PS is
+    pr BAKERY .
+    pr META-LEVEL .
+
+    var PS : ProcSet .  vars N M : Number . 
+    var WS : ProcWaitSet .
+
+    rl s s s N M ; M ; PS [wait(s N M)] [wait(s s N M)] => s s N M ; M ; PS [wait(s N M)] [metadata "ps"] .
+endm)
+
 *** no counterexample
 (lmc [20] N ; N ; [idle] [idle] [idle] |= [] mutex .)
 
