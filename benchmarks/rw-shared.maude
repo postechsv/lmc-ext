@@ -71,7 +71,7 @@ endm)
 (mod RW-PS is
   pr RW .
 
-  var N : Natural . var PS : ProcSet .
+  var N : Natural . var B : Truth . var PS : ProcSet .
   var IS : ProcIdleSet .  var RS : ProcReadSet .  var WS : ProcWriteSet . 
 
   rl < s(s(N)),B | read ; read ; PS >  
