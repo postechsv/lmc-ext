@@ -107,6 +107,7 @@ endm)
     var WS : ProcWaitSet .
 
     rl s s N M ; M ; WS [wait(N M)] [wait(s N M)] => s N M ; M ; WS [wait(N M)] [metadata "ps"] .
+    rl s s N M ; M ; WS [crit(M)] [wait(N M)] [wait(s N M)] => s N M ; M ; WS [wait(N M)] [metadata "ps"] .
 endm)
 
 *** no counterexample
