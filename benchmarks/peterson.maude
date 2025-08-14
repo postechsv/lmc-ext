@@ -1,0 +1,10 @@
+fmod PETERSON-SYNTAX is
+endfm
+
+mod PETERSON is
+endm
+
+load symbolic-checker
+
+(mod PETERSON-SATISFACTION1 is
+endm)
