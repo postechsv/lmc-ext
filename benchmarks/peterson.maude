@@ -4,6 +4,7 @@ fmod PETERSON-SYNTAX is
   sort PartitionList .
 
   op empty : -> PartitionSet [ctor] .
+  op o : -> PartitionItem [ctor] .
 endfm
 
 mod PETERSON is
