@@ -1,4 +1,7 @@
 fmod PETERSON-SYNTAX is
+  sort Slot .
+  sort PartitionItem . 
+  sort PartitionList .
 endfm
 
 mod PETERSON is
