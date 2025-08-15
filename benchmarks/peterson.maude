@@ -7,6 +7,8 @@ fmod PETERSON-SYNTAX is
   op o : -> PartitionItem [ctor] .
 
   op [_] : PartitionSet -> Slot [ctor] .
+
+  op __ : PartitionSet PartitionSet -> PartitionSet [assoc comm ctor id: empty] .
 endfm
 
 mod PETERSON is
