@@ -1,6 +1,6 @@
 fmod PETERSON-SYNTAX is
   sort Slot .
-  sort PartitionItem . 
+  sorts PartitionItem PartitionSet . 
   sort PartitionList .
 
   op empty : -> PartitionSet [ctor] .
