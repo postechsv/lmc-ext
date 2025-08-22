@@ -5,9 +5,12 @@ fmod PETERSON-SYNTAX is
   sort PartitionList .
   sort EmptyPartitionList .
 
+  subsort EmptySlot < Slot .
   subsort PartitionItem < PartitionSet .
+  subsort EmptyPartitionSet < PartitionSet .    
   subsorts EmptyPartition < Partition .
   subsort Partition < PartitionList .
+  subsort EmptyPartition < EmptyPartitionList < PartitionList .
 
   op empty : -> PartitionSet [ctor] .
   op o : -> PartitionItem [ctor] .
