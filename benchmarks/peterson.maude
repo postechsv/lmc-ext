@@ -1,9 +1,9 @@
 fmod PETERSON-SYNTAX is
-  sorts Slot EmptySlot .
-  sorts PartitionItem PartitionSet .
-  sorts EmptyPartitionSet EmptyPartition .
+  sorts Slot EmptySlot OccupiedSlot .
+  sorts PartitionItem PartitionSet Partition .
+  sorts EmptyPartitionSet NonemptyPartitionSet EmptyPartition NonemptyPartition .
   sort PartitionList .
-  sort EmptyPartitionList .
+  sorts EmptyPartitionList NonemptyPartitionList .
 
   subsort EmptySlot < Slot .
   subsort PartitionItem < PartitionSet .
