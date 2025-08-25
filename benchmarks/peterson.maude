@@ -45,4 +45,5 @@ load symbolic-checker
   protecting PETERSON-SYNTAX .
 
   rl [ascend-1] : < [PS1] | PI PSM1 > < [PS2] | PSM2 > => < [PS1] | PSM1 > < [PI] | PS2 PSM2 > [narrowing] .
+  rl [ascend-2] : < [PS1] | empty > < [empty] | empty > EPL => < [empty] | empty > < [PS1] | empty > EPL [narrowing] .
 endm)
