@@ -42,4 +42,7 @@ endm
 load symbolic-checker
 
 (mod PETERSON-SATISFACTION1 is
+  protecting PETERSON-SYNTAX .
+
+  rl [ascend-1] : < [PS1] | PI PSM1 > < [PS2] | PSM2 > => < [PS1] | PSM1 > < [PI] | PS2 PSM2 > [narrowing] .
 endm)
