@@ -18,16 +18,20 @@ fmod PETERSON-SYNTAX is
 
   op [_] : PartitionSet -> Slot [ctor] .
   op [_] : EmptyPartitionSet -> EmptySlot [ctor] .
+  op [_] : PartitionItem -> OccupiedSlot [ctor] .
 
   op __ : PartitionSet PartitionSet -> PartitionSet [assoc comm ctor id: empty] .
   op __ : EmptyPartitionSet EmptyPartitionSet -> EmptyPartitionSet [assoc comm ctor id: empty] .
+  op __ : NonemptyPartitionSet NonemptyPartitionSet -> NonemptyPartitionSet [assoc comm ctor id: empty] .
 
   op <_|_> : Slot PartitionSet -> Partition [ctor] .
   op <_|_> : EmptySlot EmptyPartitionSet -> EmptyPartition [ctor] .
+  op <_|_> : OccupiedSlot NonemptyPartitionSet -> NonemptyPartition [ctor] .
 
   op nil : -> PartitionList [ctor] .
   op __ : PartitionList PartitionList -> PartitionList [assoc ctor id: nil] .
   op __ : EmptyPartitionList EmptyPartitionList -> EmptyPartitionList [assoc ctor id: nil] .
+  op __ : NonemptyPartitionList NonemptyPartitionList -> NonemptyPartitionList [assoc ctor id: nil] .
 endfm
 
 mod PETERSON is
