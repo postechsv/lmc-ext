@@ -26,6 +26,8 @@ fmod PETERSON-SYNTAX is
 
   op <_|_> : Slot PartitionSet -> Partition [ctor] .
   op <_|_> : EmptySlot EmptyPartitionSet -> EmptyPartition [ctor] .
+  op <_|_> : OccupiedSlot EmptyPartitionSet -> NonemptyPartition [ctor] .
+  op <_|_> : EmptySlot NonemptyPartitionSet -> NonemptyPartition [ctor] .
   op <_|_> : OccupiedSlot NonemptyPartitionSet -> NonemptyPartition [ctor] .
 
   op nil : -> PartitionList [ctor] .
