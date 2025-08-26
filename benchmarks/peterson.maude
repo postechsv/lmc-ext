@@ -37,11 +37,6 @@ fmod PETERSON-SYNTAX is
 endfm
 
 mod PETERSON is
-endm
-
-load symbolic-checker
-
-(mod PETERSON-SATISFACTION1 is
   protecting PETERSON-SYNTAX .
 
   vars PS1 PS2 PSM1 PSM2 : PartitionSet .
@@ -53,4 +48,9 @@ load symbolic-checker
   rl [ascend-2] : < [PS1] | empty > < [empty] | empty > EPL => < [empty] | empty > < [PS1] | empty > EPL [narrowing] .
   rl [exit-1] : < [PS1] | PSM1 > PL < [PS] | PSM2 > => < [PS] | PS1 PSM1 > PL < [empty] | PSM2 > [narrowing] .
   rl [exit-2] : < [PS1] | PSM1 > PL < [PS2] | PS PSM2 > => < [PS] | PS1 PSM1 > PL < [PS2] | PSM2 > [narrowing] .
+endm
+
+load symbolic-checker
+
+(mod PETERSON-SATISFACTION1 is
 endm)
