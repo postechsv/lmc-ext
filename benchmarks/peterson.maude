@@ -44,6 +44,11 @@ load symbolic-checker
 (mod PETERSON-SATISFACTION1 is
   protecting PETERSON-SYNTAX .
 
+  vars PS1 PS2 PSM1 PSM2 : PartitionSet .
+  var PI : PartitionItem .
+  var PL : PartitionList .
+  var EPL : EmptyPartitionList .
+
   rl [ascend-1] : < [PS1] | PI PSM1 > < [PS2] | PSM2 > => < [PS1] | PSM1 > < [PI] | PS2 PSM2 > [narrowing] .
   rl [ascend-2] : < [PS1] | empty > < [empty] | empty > EPL => < [empty] | empty > < [PS1] | empty > EPL [narrowing] .
   rl [exit-1] : < [PS1] | PSM1 > PL < [PS] | PSM2 > => < [PS] | PS1 PSM1 > PL < [empty] | PSM2 > [narrowing] .
