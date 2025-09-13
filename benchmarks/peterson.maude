@@ -58,4 +58,7 @@ load symbolic-checker
   pr STATE-SYNTAX .
 
   ops mex? : -> Prop . 
+
+  eq PL < [PI1] | PI2 PS > |= mex? = true [variant] .
+  eq PL < [empty] | PI1 PI2 PS > |= mex? = true [variant] .
 endm)
