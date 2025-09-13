@@ -61,4 +61,6 @@ load symbolic-checker
 
   eq PL < [PI1] | PI2 PS > |= mex? = true [variant] .
   eq PL < [empty] | PI1 PI2 PS > |= mex? = true [variant] .
+  eq PL < [PS] | empty > |= mex? = false [variant] .
+  eq PL < [empty] | PI1 EPS > |= mex? = false [variant] .
 endm)
