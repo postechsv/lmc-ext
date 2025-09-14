@@ -71,3 +71,7 @@ load symbolic-checker
   eq PL < [PS] | empty > |= mex? = false [variant] .
   eq PL < [empty] | PI1 EPS > |= mex? = false [variant] .
 endm)
+
+set print attribute on .
+
+(lfmc [10] < [PI:PartitionItem] | PS:PartitionSet > PL:PartitionList EP:EmptyPartition |= [] (~ mex?) .)
