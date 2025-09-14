@@ -57,6 +57,8 @@ load symbolic-checker
   pr SYMBOLIC-CHECKER .
   pr STATE-SYNTAX .
 
+  subsort PartitionList < State .
+
   var PL : PartitionList .
   vars PI1 PI2 : PartitionItem .
   var PS : PartitionSet .
