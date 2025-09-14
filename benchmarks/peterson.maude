@@ -57,6 +57,11 @@ load symbolic-checker
   pr SYMBOLIC-CHECKER .
   pr STATE-SYNTAX .
 
+  var PL : PartitionList .
+  vars PI1 PI2 : PartitionItem .
+  var PS : PartitionSet .
+  var EPS : EmptyPartitionSet .
+
   ops mex? : -> Prop . 
 
   eq PL < [PI1] | PI2 PS > |= mex? = true [variant] .
