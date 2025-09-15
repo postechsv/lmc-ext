@@ -67,6 +67,11 @@ mod PETERSON is
   op plength : PartitionSet -> Number .
   eq plength(empty) = 0 .
   eq plength(PI PS) = s plength(PS) .
+
+  op _pequal_ : Number Number -> Bool .
+  eq N1:Number pequal N1:Number = true .
+  eq s N1:Number N2:Number pequal N2:Number = false .
+  eq N2:Number pequal s N1:Number N2:Number = false .
 endm
 
 load symbolic-checker
@@ -93,4 +98,4 @@ endm)
 
 set print attribute on .
 
-(lfmc [10] <<< (< [PI:PartitionItem] | PS:PartitionSet > PL:PartitionList EP:EmptyPartition) | (plength(PS:PartitionSet) = s plength(PL:PartitionList)) >>> |= [] (~ mex?) .)
+(lfmc [10] <<< (< [PI:PartitionItem] | PS:PartitionSet > PL:PartitionList EP:EmptyPartition) | (plength(PS:PartitionSet) pequal s plength(PL:PartitionList)) >>> |= [] (~ mex?) .)
