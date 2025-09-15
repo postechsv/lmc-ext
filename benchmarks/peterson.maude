@@ -1,3 +1,10 @@
+fmod NUMBER is
+  sorts Number . 
+  op 0 : -> Number [ctor] .
+  op s : -> Number [ctor] .
+  op __ : Number Number -> Number [ctor comm assoc id: 0] .
+endfm
+
 fmod PETERSON-SYNTAX is
   sorts Slot EmptySlot OccupiedSlot .
   sorts PartitionItem PartitionSet Partition .
