@@ -45,7 +45,7 @@ endfm
 
 mod PETERSON is
   protecting PETERSON-SYNTAX .
-  protecting NAT .
+  protecting NUMBER .
 
   vars PS1 PS2 PSM1 PSM2 : PartitionSet .
   var PI : PartitionItem .
@@ -60,11 +60,11 @@ mod PETERSON is
   var PS : PartitionSet .
   var P : Partition .
 
-  op plength : PartitionList -> Nat .
+  op plength : PartitionList -> Number .
   eq plength(nil) = 0 .
   eq plength(P PL) = s plength(PL) .
   
-  op plength : PartitionSet -> Nat .
+  op plength : PartitionSet -> Number .
   eq plength(empty) = 0 .
   eq plength(PI PS) = s plength(PS) .
 endm
