@@ -98,4 +98,4 @@ endm)
 
 set print attribute on .
 
-(lfmc [10] <<< (< [PI:PartitionItem] | PS:PartitionSet > PL:PartitionList EP:EmptyPartition) | (plength(PS:PartitionSet) pequal s plength(PL:PartitionList)) >>> |= [] (~ mex?) .)
+(lfmc [10] <<< (< [PI:PartitionItem] | PS:PartitionSet > PL:PartitionList EP:EmptyPartition) | (plength(PS:PartitionSet) pequal s plength(PL:PartitionList)) | incomplete(true), incomplete(false) >>> |= [] (~ mex?) .)
