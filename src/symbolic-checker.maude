@@ -741,6 +741,8 @@ fmod RULE-EXPANSION is
     eq isNarrowingRule(metadata("narrowing") ATRS) = true .
     eq isNarrowingRule(ATRS) = false [owise] .
 
+    --- Shared builders for expanded rule components (used by expandRule/expandInitRule)
+
 --- Pre-condition: M is a Module, RL is a Rule, and RPCS is a RulePropConfSet.
 --- Post-condition: Expands a given rule based on the provided RulePropConfSet, generating new rules for each possible proposition instantiation.
 --- Author: Kim Kyunwoo
