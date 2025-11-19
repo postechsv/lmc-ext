@@ -743,6 +743,8 @@ fmod RULE-EXPANSION is
 
     --- Shared builders for expanded rule components (used by expandRule/expandInitRule)
     op buildExpandedPropMap : Term RulePropConf -> Term .
+    eq buildExpandedPropMap(ST, RPC) = craftPropMap(ST, RPC) .
+
     op buildExpandedConstraint : Term Term Condition RulePropConf -> Term .
     op buildExpandedCompleteness : Term RulePropConf CompletenessSet -> Term .
     op initCompletenessFromCond : Module Condition -> CompletenessSet .
