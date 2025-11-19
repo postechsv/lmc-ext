@@ -742,6 +742,10 @@ fmod RULE-EXPANSION is
     eq isNarrowingRule(ATRS) = false [owise] .
 
     --- Shared builders for expanded rule components (used by expandRule/expandInitRule)
+    op buildExpandedPropMap : Term RulePropConf -> Term .
+    op buildExpandedConstraint : Term Term Condition RulePropConf -> Term .
+    op buildExpandedCompleteness : Term RulePropConf CompletenessSet -> Term .
+    op initCompletenessFromCond : Module Condition -> CompletenessSet .
 
 --- Pre-condition: M is a Module, RL is a Rule, and RPCS is a RulePropConfSet.
 --- Post-condition: Expands a given rule based on the provided RulePropConfSet, generating new rules for each possible proposition instantiation.
