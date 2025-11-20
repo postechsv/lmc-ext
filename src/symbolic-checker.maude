@@ -755,6 +755,9 @@ fmod RULE-EXPANSION is
     eq initCompletenessFromCond(M, nil) = undefined .
     eq initCompletenessFromCond(M, COND) = fillCompleteness(conditionCompleteness(M, COND)) [owise] .
 
+    --- Build RuleSet for one expanded configuration (normal rule)
+    op expandOneRule : Module Term Term Condition AttrSet RulePropConf -> RuleSet .
+
 --- Pre-condition: M is a Module, RL is a Rule, and RPCS is a RulePropConfSet.
 --- Post-condition: Expands a given rule based on the provided RulePropConfSet, generating new rules for each possible proposition instantiation.
 --- Author: Kim Kyunwoo
