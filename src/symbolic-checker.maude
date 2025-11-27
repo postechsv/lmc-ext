@@ -794,13 +794,10 @@ fmod RULE-EXPANSION is
 --- Author: Kim Kyunwoo
 --- Date: 2024/12/24   
     op expandRule : Module Rule RulePropConfSet -> RuleSet .
-    ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) = 
-      RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
-      if PT' := craftPropMap(ST', RPC) /\ CT' := craftConstraints(ST', '##CT:Bool, nil, RPC) /\ 
-         CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, undefined) /\
-         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet, ST', PT', 
-                                          CT', CPT'], '@) /\
-         RLS := generateRules(M, VARS, narrowing ATRS) .
+    ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) =
+        RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
+      if RLS := expandOneRule(M, ST, ST', nil, narrowing ATRS, RPC) .
+      
     ceq expandRule(M, (crl ST => ST' if COND [ATRS] .), RPC ; RPCS) = 
       RLS expandRule(M, (crl ST => ST' if COND [ATRS] .), RPCS)
       if isNarrowingRule(ATRS) /\
