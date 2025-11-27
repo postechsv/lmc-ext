@@ -766,6 +766,16 @@ fmod RULE-EXPANSION is
       if PT' := buildExpandedPropMap(ST', RPC) /\
          CT' := buildExpandedConstraint(ST', '##CT:Bool, nil, RPC) /\
          CPT' := buildExpandedCompleteness('##CPT:CompletenessSet, RPC, undefined) .
+    ceq expandOneRule(M, ST, ST', COND, ATRS, RPC) =
+      generateRules(M,
+        getVariantSet(M,
+          'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet,
+                 ST', PT', CT', CPT'], '@),
+        narrowing ATRS)
+      if isNarrowingRule(ATRS) /\
+         PT' := buildExpandedPropMap(ST', RPC) /\
+         CT' := buildExpandedConstraint(ST', '##CT:Bool, COND, RPC) /\
+         CPT' := buildExpandedCompleteness('##CPT:CompletenessSet, RPC, initCompletenessFromCond(M, COND)) .
 
     --- Build RuleSet for one expanded configuration (init rule)
     op expandOneInitRule : Module RulePropConf -> RuleSet .
