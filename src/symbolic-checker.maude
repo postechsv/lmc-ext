@@ -808,10 +808,8 @@ fmod RULE-EXPANSION is
 --- Date: 2024/12/24   
     op expandInitRule : Module RulePropConfSet -> RuleSet .
     eq expandInitRule(M, emptyRulePropConfSet) = none .
-    ceq expandInitRule(M, RPC ; RPCS) = RLS expandInitRule(M, RPCS) 
-      if PT' := craftPropMap('##ST:State, RPC) /\ CT' := craftConstraints('##ST:State, '##CT:Bool, nil, RPC) /\ CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, undefined) /\
-         VARS := getVariantSet(M, 'exInitRule['##ST:State,'##CT:Bool,'##CPT:CompletenessSet,PT',CT',CPT'], '@) /\
-         RLS := generateInitRules(M, VARS, narrowing) .
+    ceq expandInitRule(M, RPC ; RPCS) = RLS expandInitRule(M, RPCS)
+      if RLS := expandOneInitRule(M, RPC) .
 
     op expandRuleSet : Module RuleSet RulePropConfSet -> RuleSet .
     eq expandRuleSet(M, none, RPCS) = none .
