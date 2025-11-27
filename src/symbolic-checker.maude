@@ -757,6 +757,15 @@ fmod RULE-EXPANSION is
 
     --- Build RuleSet for one expanded configuration (normal rule)
     op expandOneRule : Module Term Term Condition AttrSet RulePropConf -> RuleSet .
+    ceq expandOneRule(M, ST, ST', nil, ATRS, RPC) =
+      generateRules(M,
+        getVariantSet(M,
+          'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet,
+                 ST', PT', CT', CPT'], '@),
+        narrowing ATRS)
+      if PT' := buildExpandedPropMap(ST', RPC) /\
+         CT' := buildExpandedConstraint(ST', '##CT:Bool, nil, RPC) /\
+         CPT' := buildExpandedCompleteness('##CPT:CompletenessSet, RPC, undefined) .
 
     --- Build RuleSet for one expanded configuration (init rule)
     op expandOneInitRule : Module RulePropConf -> RuleSet .
