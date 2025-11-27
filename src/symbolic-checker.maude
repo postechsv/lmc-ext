@@ -796,17 +796,10 @@ fmod RULE-EXPANSION is
     op expandRule : Module Rule RulePropConfSet -> RuleSet .
     ceq expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPC ; RPCS) =
         RLS expandRule(M, (rl ST => ST' [narrowing ATRS] .), RPCS)
-      if RLS := expandOneRule(M, ST, ST', nil, narrowing ATRS, RPC) .
-      
-    ceq expandRule(M, (crl ST => ST' if COND [ATRS] .), RPC ; RPCS) = 
-      RLS expandRule(M, (crl ST => ST' if COND [ATRS] .), RPCS)
-      if isNarrowingRule(ATRS) /\
-         PT' := craftPropMap(ST', RPC) /\ CT' := craftConstraints(ST', '##CT:Bool, COND, RPC) /\ 
-         CPT' := craftCompleteness('##CPT:CompletenessSet, RPC, 
-                                   fillCompleteness(conditionCompleteness(M, COND))) /\
-         VARS := getVariantSet(M, 'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet, ST', PT', 
-                                          CT', CPT'], '@) /\
-         RLS := generateRules(M, VARS, narrowing ATRS) .
+      if RLS := expandOneRule(M, ST, ST', nil, narrowing ATRS, RPC) .      
+    ceq expandRule(M, (crl ST => ST' if COND [ATRS] .), RPC ; RPCS) =
+        RLS expandRule(M, (crl ST => ST' if COND [ATRS] .), RPCS)
+      if RLS := expandOneRule(M, ST, ST', COND, ATRS, RPC) .
     eq expandRule(M, RL, RPCS) = none [owise] .
 
 --- Pre-condition: M is a Module and RPCS is a RulePropConfSet.
