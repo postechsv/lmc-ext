@@ -779,6 +779,15 @@ fmod RULE-EXPANSION is
 
     --- Build RuleSet for one expanded configuration (init rule)
     op expandOneInitRule : Module RulePropConf -> RuleSet .
+    ceq expandOneInitRule(M, RPC) =
+      generateInitRules(M,
+        getVariantSet(M,
+          'exInitRule['##ST:State, '##CT:Bool, '##CPT:CompletenessSet,
+                     PT', CT', CPT'], '@),
+        narrowing)
+      if PT' := buildExpandedPropMap('##ST:State, RPC) /\
+         CT' := buildExpandedConstraint('##ST:State, '##CT:Bool, nil, RPC) /\
+         CPT' := buildExpandedCompleteness('##CPT:CompletenessSet, RPC, undefined) .
 
 --- Pre-condition: M is a Module, RL is a Rule, and RPCS is a RulePropConfSet.
 --- Post-condition: Expands a given rule based on the provided RulePropConfSet, generating new rules for each possible proposition instantiation.
