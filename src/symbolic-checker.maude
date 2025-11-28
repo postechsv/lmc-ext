@@ -887,6 +887,9 @@ fmod META-NARROWING-INTERFACE is
    if getType(V1) = getType(V2) .
   eq cleanRedundant(SR) = SR [owise] .
 
+  var NAR : NarrowingApplyResult .
+  var NRS : NarrowingResultSet .
+
 --- Pre-condition: M is a Module, T is a Term, and N is a Nat.
 --- Post-condition: Performs meta-narrowing to find the next possible states from a given term.
 --- Developer: Kyungmin Bae, Kim Kyunwoo
