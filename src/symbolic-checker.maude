@@ -772,7 +772,8 @@ fmod RULE-EXPANSION is
           'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet,
                  ST', PT', CT', CPT'], '@),
         narrowing ATRS)
-      if PT' := buildExpandedPropMap(ST', RPC) /\
+      if isNarrowingRule(ATRS) /\
+         PT' := buildExpandedPropMap(ST', RPC) /\
          CT' := buildExpandedConstraint(ST', '##CT:Bool, COND, RPC) /\
          CPT' := buildExpandedCompleteness('##CPT:CompletenessSet, RPC, initCompletenessFromCond(M, COND)) .
 
