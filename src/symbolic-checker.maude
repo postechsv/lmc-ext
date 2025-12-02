@@ -89,26 +89,20 @@ fmod STATE-SYNTAX is
     eq isComplete((P *> false) (P' *> B) PM) = isComplete((P' *> B) PM) .
     eq isComplete(PM) = false [owise] .
 
-    op <<<_|_|_>>> : State Bool CompletenessSet -> InitState [ctor] .    
-    op {{{_|_|_|_}}} : State PropMap Bool CompletenessSet -> ExState [ctor] .   
-
-    op <<<_|_>>> : State Bool -> InitState .
+    op <<<_|_>>> : State Bool -> InitState [ctor] .
+    op {{{_|_|_}}} : State PropMap Bool -> ExState [ctor] .
 
     var ST : State .
     var CT : Bool .
-    var CS : CompletenessSet .
 
-    eq <<< ST | CT >>> = <<< ST | CT | complete(true), complete(false) >>> .    
-    eq <<< ST | CT | CS >>> |= P = ST |= P .    
+    eq <<< ST | CT >>> |= P = ST |= P .
 
-    eq {{{ ST | (P *> B) PM | CT | CS }}} |= P = B .
-    eq {{{ ST | PM | CT | CS }}} |= P = false [owise] .
+    eq {{{ ST | (P *> B) PM | CT }}} |= P = B .
+    eq {{{ ST | PM | CT }}} |= P = false [owise] .
 
     sorts ExRuleElements ExInitRuleElements .
     op exRule : State PropMap Bool State PropMap Bool -> ExRuleElements [ctor] .
-    op exRule : State PropMap Bool CompletenessSet State PropMap Bool CompletenessSet -> ExRuleElements [ctor] .
     op exInitRule : State Bool PropMap Bool -> ExInitRuleElements [ctor] .
-    op exInitRule : State Bool CompletenessSet PropMap Bool CompletenessSet -> ExInitRuleElements [ctor] .
 endfm
 
 fmod SYMBOLIC-CHECKER is
