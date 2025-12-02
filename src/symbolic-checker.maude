@@ -715,9 +715,9 @@ fmod RULE-EXPANSION is
 --- Date: 2024/12/24   
     op generateRules : Module VariantPairSet AttrSet -> RuleSet .
     eq generateRules(M, empty, ATRS) = none .
-    ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_|_`}`}`}[ST, PT, CT, CPT] => '`{`{`{_|_|_|_`}`}`}[ST', PT', CT', CPT'] [ATRS] .)
+    ceq generateRules(M, {T,SUB} # VARS, ATRS) = (rl '`{`{`{_|_|_`}`}`}[ST, PT, CT] => '`{`{`{_|_|_`}`}`}[ST', PT', CT'] [ATRS] .)
                                                  generateRules(M, VARS, ATRS)
-      if 'exRule[ST,PT,CT,CPT,ST',PT',CT',CPT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+      if 'exRule[ST,PT,CT,ST',PT',CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT'])) = 'true.Bool /\ CT' =/= 'false.Bool .
     eq generateRules(M, {T,SUB} # VARS, ATRS) = generateRules(M, VARS, ATRS) [owise] .    
 
 --- Pre-condition: M is a Module, VARS is a VariantPairSet, and ATRS is an AttrSet.
