@@ -726,9 +726,9 @@ fmod RULE-EXPANSION is
 --- Date: 2024/12/24   
     op generateInitRules : Module VariantPairSet AttrSet -> RuleSet .
     eq generateInitRules(M, empty, ATRS) = none .
-    ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_|_>>>[ST,CT,CPT] => '`{`{`{_|_|_|_`}`}`}[ST, PT, CT', CPT'] [ATRS] .)
+    ceq generateInitRules(M, {T,SUB} # VARS, ATRS) = (rl '<<<_|_>>>[ST,CT] => '`{`{`{_|_|_`}`}`}[ST, PT, CT'] [ATRS] .)
                                                      generateInitRules(M, VARS, ATRS)
-      if 'exInitRule[ST,CT,CPT,PT,CT',CPT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT])) = 'true.Bool /\ CT' =/= 'false.Bool .   
+      if 'exInitRule[ST,CT,PT,CT'] := renameRuleTerm(T) /\ getTerm(metaReduce(M, 'isComplete[PT])) = 'true.Bool /\ CT' =/= 'false.Bool .
     eq generateInitRules(M, {T,SUB} # VARS, ATRS) = generateInitRules(M, VARS, ATRS) [owise] .
 
     op isNarrowingRule : AttrSet -> Bool .
