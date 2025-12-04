@@ -742,13 +742,6 @@ fmod RULE-EXPANSION is
     op buildExpandedConstraint : Term Term Condition RulePropConf -> Term .
     eq buildExpandedConstraint(ST, CT, COND, RPC) = craftConstraints(ST, CT, COND, RPC) .
 
-    op buildExpandedCompleteness : Term RulePropConf CompletenessSet -> Term .
-    eq buildExpandedCompleteness(CPT, RPC, CS) = craftCompleteness(CPT, RPC, CS) .
-
-    op initCompletenessFromCond : Module Condition -> CompletenessSet .
-    eq initCompletenessFromCond(M, nil) = undefined .
-    eq initCompletenessFromCond(M, COND) = fillCompleteness(conditionCompleteness(M, COND)) [owise] .
-
     --- Build RuleSet for one expanded configuration (normal rule)
     op expandOneRule : Module Term Term Condition AttrSet RulePropConf -> RuleSet .
     ceq expandOneRule(M, ST, ST', nil, ATRS, RPC) =
