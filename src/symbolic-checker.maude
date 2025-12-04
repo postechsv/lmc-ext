@@ -754,22 +754,21 @@ fmod RULE-EXPANSION is
     ceq expandOneRule(M, ST, ST', nil, ATRS, RPC) =
       generateRules(M,
         getVariantSet(M,
-          'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet,
-                 ST', PT', CT', CPT'], '@),
+          'exRule[ST, '##PT:PropMap, '##CT:Bool,
+                 ST', PT', CT'], '@),
         narrowing ATRS)
       if PT' := buildExpandedPropMap(ST', RPC) /\
-         CT' := buildExpandedConstraint(ST', '##CT:Bool, nil, RPC) /\
-         CPT' := buildExpandedCompleteness('##CPT:CompletenessSet, RPC, undefined) .
+         CT' := buildExpandedConstraint(ST', '##CT:Bool, nil, RPC) .
+
     ceq expandOneRule(M, ST, ST', COND, ATRS, RPC) =
       generateRules(M,
         getVariantSet(M,
-          'exRule[ST, '##PT:PropMap, '##CT:Bool, '##CPT:CompletenessSet,
-                 ST', PT', CT', CPT'], '@),
+          'exRule[ST, '##PT:PropMap, '##CT:Bool,
+                 ST', PT', CT'], '@),
         narrowing ATRS)
       if isNarrowingRule(ATRS) /\
          PT' := buildExpandedPropMap(ST', RPC) /\
-         CT' := buildExpandedConstraint(ST', '##CT:Bool, COND, RPC) /\
-         CPT' := buildExpandedCompleteness('##CPT:CompletenessSet, RPC, initCompletenessFromCond(M, COND)) .
+         CT' := buildExpandedConstraint(ST', '##CT:Bool, COND, RPC) .
 
     --- Build RuleSet for one expanded configuration (init rule)
     op expandOneInitRule : Module RulePropConf -> RuleSet .
