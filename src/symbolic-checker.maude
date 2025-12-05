@@ -280,6 +280,63 @@ fmod META-LMC-PARAMETERS is
   eq trMod(M:Module) = M:Module [owise] .
 endfm
 
+fmod CONSTRAINT-INCOMPLETENESS is
+  pr META-LEVEL .
+  pr COMPLETENESS .
+  pr COMPLETENESS-DECLARATION .
+  pr META-LMC-PARAMETERS .
+
+  var M : Module .
+  var Q : Qid .
+  vars T T1 T2 : Term .
+  var TL : TermList .
+  var B : Bool .
+  var PROP : Constant .
+
+  op propConstraintIncompleteness : Module Qid -> CompletenessSet .
+  ceq propConstraintIncompleteness(M, Q) = incomplete(true), incomplete(false)
+    if isPropCompleteFor(M, Q, true) = false /\ isPropCompleteFor(M, Q, false) = false .
+  ceq propConstraintIncompleteness(M, Q) = incomplete(true)
+    if isPropCompleteFor(M, Q, true) = false .
+  ceq propConstraintIncompleteness(M, Q) = incomplete(true)
+    if isPropCompleteFor(M, Q, false) = false .
+  eq propConstraintIncompleteness(M, Q) = undefined [owise] .
+
+  op opConstraintIncompleteness : Module Qid Bool -> CompletenessSet .
+  ceq opConstraintIncompleteness(M, Q, B) = incomplete(B) if isOpCompleteFor(M, Q, B) = false .
+  eq opConstraintIncompleteness(M, Q, B) = undefined [owise] .
+
+  op equalityConstraintIncompleteness : Module Term Term -> CompletenessSet .
+
+  ceq equalityConstraintIncompleteness(M, '_|=_[T, PROP], 'true.Bool) = propConstraintIncompleteness(M, getName(PROP)) .
+  ceq equalityConstraintIncompleteness(M, '_|=_[T, PROP], 'false.Bool) = propConstraintIncompleteness(M, getName(PROP)) .
+  ceq equalityConstraintIncompleteness(M, 'true.Bool, '_|=_[T, PROP]) = propConstraintIncompleteness(M, getName(PROP)) .
+  ceq equalityConstraintIncompleteness(M, 'false.Bool, '_|=_[T, PROP]) = propConstraintIncompleteness(M, getName(PROP)) .
+
+  ceq equalityConstraintIncompleteness(M, Q[TL], 'true.Bool) = opConstraintIncompleteness(M, Q, true) .
+  ceq equalityConstraintIncompleteness(M, Q[TL], 'false.Bool) = opConstraintIncompleteness(M, Q, false) .
+  ceq equalityConstraintIncompleteness(M, 'true.Bool, Q[TL]) = opConstraintIncompleteness(M, Q, true) .
+  ceq equalityConstraintIncompleteness(M, 'false.Bool, Q[TL]) = opConstraintIncompleteness(M, Q, false) .
+
+  eq equalityConstraintIncompleteness(M, T1, T2) = undefined [owise] .
+
+  op constraintIncompletenessRaw : Module Term -> CompletenessSet .
+  op constraintIncompletenessRaw : Module TermList -> CompletenessSet .
+
+  eq constraintIncompletenessRaw(M, 'true.Bool) = undefined .
+  eq constraintIncompletenessRaw(M, 'false.Bool) = undefined .
+
+  eq constraintIncompletenessRaw(M, '_and_[TL]) = constraintIncompletenessRaw(M, TL) .
+  eq constraintIncompletenessRaw(M, '_or_[TL]) = constraintIncompletenessRaw(M, TL) .
+  eq constraintIncompletenessRaw(M, '_<=>_[T1, T2]) = equalityConstraintIncompleteness(M, T1, T2), constraintIncompletenessRaw(M, T1), constraintIncompletenessRaw(M, T2) .
+  eq constraintIncompletenessRaw(M, T) = undefined [owise] .
+
+  eq constraintIncompletenessRaw(M, empty) = undefined .
+  eq constraintIncompletenessRaw(M, (T, TL)) = constraintIncompletenessRaw(M, T), constraintIncompletenessRaw(M, TL) .
+
+  op constraintIncompleteness : Module Term -> CompletenessSet .
+  eq constraintIncompleteness(M, T) = constraintIncompletenessRaw(M, T), ##initCPT## .
+endfm
 
 fmod LMC-RESULT-SET is
   pr FM-RESULT-CONTEXT-SET .
