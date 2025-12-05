@@ -642,7 +642,7 @@ fmod RULE-EXPANSION is
     
     var Q : Qid .
     vars M M' : Module .
-    vars T T1 T2 ST ST' PT PT' CT CT' CPT CPT' : Term .
+    vars T T1 T2 ST ST' PT PT' CT CT' : Term .
     vars TL PTs CTs CTs' : TermList .
     vars B B' : Bool .
     var SUB : Substitution .
@@ -666,8 +666,6 @@ fmod RULE-EXPANSION is
     var RPCS : RulePropConfSet .
 
     var CS : CompletenessSet .
-
-    var CP : Completeness .
   
     op toPropTerm : Qid -> Term .
     eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
