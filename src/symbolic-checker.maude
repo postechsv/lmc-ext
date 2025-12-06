@@ -723,6 +723,8 @@ fmod RULE-EXPANSION is
     var RPCS : RulePropConfSet .
 
     var CS : CompletenessSet .
+
+    var CP : Completeness .
   
     op toPropTerm : Qid -> Term .
     eq toPropTerm(Q) = qid(string(Q) + ".Prop") .
