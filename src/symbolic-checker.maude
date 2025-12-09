@@ -249,6 +249,9 @@ fmod META-LMC-PARAMETERS is
   pr META-MODULE .
   op ##m## : ~> SModule [memo] . --- empty! the user module shoule define them.
   op ##f## : ~> TermList [memo] .
+  op ##initCPT## : ~> CompletenessSet [memo] . --- initial constraint incompleteness; user module should define this when needed
+
+  eq ##initCPT## = undefined .
 
   var H : Header .  
   var IL : ImportList .  
