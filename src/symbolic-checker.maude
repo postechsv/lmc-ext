@@ -522,40 +522,39 @@ fmod CONSTRAINT-INCOMPLETENESS is
     if isPropCompleteFor(M, Q, false) = false .
   eq propConstraintIncompleteness(M, Q) = undefined [owise] .
 
-  op opConstraintIncompleteness : Module Qid Bool -> CompletenessSet .
-  ceq opConstraintIncompleteness(M, Q, B) = incomplete(B) if isOpCompleteFor(M, Q, B) = false .
-  eq opConstraintIncompleteness(M, Q, B) = undefined [owise] .
+  op opConstraintIncompleteness : Module Qid -> CompletenessSet .
+  ceq opConstraintIncompleteness(M, Q) = incomplete(true), incomplete(false)
+    if isOpCompleteFor(M, Q, true) = false /\ isOpCompleteFor(M, Q, false) = false .
+  ceq opConstraintIncompleteness(M, Q) = incomplete(true)
+    if isOpCompleteFor(M, Q, true) = false .
+  ceq opConstraintIncompleteness(M, Q) = incomplete(true)
+    if isOpCompleteFor(M, Q, false) = false .
+  eq opConstraintIncompleteness(M, Q) = undefined [owise] .
 
-  op equalityConstraintIncompleteness : Module Term Term -> CompletenessSet .
+  op termIncompletenessRaw : Module Term -> CompletenessSet .
+  op termIncompletenessRaw : Module TermList -> CompletenessSet .
 
-  ceq equalityConstraintIncompleteness(M, '_|=_[T, PROP], 'true.Bool) = propConstraintIncompleteness(M, getName(PROP)) .
-  ceq equalityConstraintIncompleteness(M, '_|=_[T, PROP], 'false.Bool) = propConstraintIncompleteness(M, getName(PROP)) .
-  ceq equalityConstraintIncompleteness(M, 'true.Bool, '_|=_[T, PROP]) = propConstraintIncompleteness(M, getName(PROP)) .
-  ceq equalityConstraintIncompleteness(M, 'false.Bool, '_|=_[T, PROP]) = propConstraintIncompleteness(M, getName(PROP)) .
+  eq termIncompletenessRaw(M, 'true.Bool) = undefined .
+  eq termIncompletenessRaw(M, 'false.Bool) = undefined .
 
-  ceq equalityConstraintIncompleteness(M, Q[TL], 'true.Bool) = opConstraintIncompleteness(M, Q, true) .
-  ceq equalityConstraintIncompleteness(M, Q[TL], 'false.Bool) = opConstraintIncompleteness(M, Q, false) .
-  ceq equalityConstraintIncompleteness(M, 'true.Bool, Q[TL]) = opConstraintIncompleteness(M, Q, true) .
-  ceq equalityConstraintIncompleteness(M, 'false.Bool, Q[TL]) = opConstraintIncompleteness(M, Q, false) .
+  --- boolean connectives
+  eq termIncompletenessRaw(M, '_and_[TL]) = termIncompletenessRaw(M, TL) .
+  eq termIncompletenessRaw(M, '_or_[TL]) = termIncompletenessRaw(M, TL) .
+  eq termIncompletenessRaw(M, '_<=>_[T1, T2]) = termIncompletenessRaw(M, T1), termIncompletenessRaw(M, T2) .
 
-  eq equalityConstraintIncompleteness(M, T1, T2) = undefined [owise] .
+  --- proposition evaluation
+  eq termIncompletenessRaw(M, '_|=_[T, PROP]) = propConstraintIncompleteness(M, getName(PROP)), termIncompletenessRaw(M, T) .
 
-  op constraintIncompletenessRaw : Module Term -> CompletenessSet .
-  op constraintIncompletenessRaw : Module TermList -> CompletenessSet .
+  --- operator evaluation that returns a Bool
+  eq termIncompletenessRaw(M, Q[TL]) = opConstraintIncompleteness(M, Q), termIncompletenessRaw(M, TL) .
 
-  eq constraintIncompletenessRaw(M, 'true.Bool) = undefined .
-  eq constraintIncompletenessRaw(M, 'false.Bool) = undefined .
+  eq termIncompletenessRaw(M, T) = undefined [owise] .
 
-  eq constraintIncompletenessRaw(M, '_and_[TL]) = constraintIncompletenessRaw(M, TL) .
-  eq constraintIncompletenessRaw(M, '_or_[TL]) = constraintIncompletenessRaw(M, TL) .
-  eq constraintIncompletenessRaw(M, '_<=>_[T1, T2]) = equalityConstraintIncompleteness(M, T1, T2), constraintIncompletenessRaw(M, T1), constraintIncompletenessRaw(M, T2) .
-  eq constraintIncompletenessRaw(M, T) = undefined [owise] .
-
-  eq constraintIncompletenessRaw(M, empty) = undefined .
-  eq constraintIncompletenessRaw(M, (T, TL)) = constraintIncompletenessRaw(M, T), constraintIncompletenessRaw(M, TL) .
+  eq termIncompletenessRaw(M, empty) = undefined .
+  eq termIncompletenessRaw(M, (T, TL)) = termIncompletenessRaw(M, T), termIncompletenessRaw(M, TL) .
 
   op constraintIncompleteness : Module Term -> CompletenessSet .
-  eq constraintIncompleteness(M, T) = constraintIncompletenessRaw(M, T), ##initCPT## .
+  eq constraintIncompleteness(M, T) = termIncompletenessRaw(M, T), ##initCPT## .
 endfm
 
 fmod RULE-PROP-CONF is
