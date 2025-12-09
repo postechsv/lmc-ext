@@ -513,12 +513,15 @@ fmod CONSTRAINT-INCOMPLETENESS is
   var B : Bool .
   var PROP : Constant .
 
+  --- Semantics:
+  --- - incomplete(true)  : the constraint itself is incomplete
+  --- - incomplete(false) : the negation of the constraint is incomplete
   op propConstraintIncompleteness : Module Qid -> CompletenessSet .
   ceq propConstraintIncompleteness(M, Q) = incomplete(true), incomplete(false)
     if isPropCompleteFor(M, Q, true) = false /\ isPropCompleteFor(M, Q, false) = false .
   ceq propConstraintIncompleteness(M, Q) = incomplete(true)
     if isPropCompleteFor(M, Q, true) = false .
-  ceq propConstraintIncompleteness(M, Q) = incomplete(true)
+  ceq propConstraintIncompleteness(M, Q) = incomplete(false)
     if isPropCompleteFor(M, Q, false) = false .
   eq propConstraintIncompleteness(M, Q) = undefined [owise] .
 
@@ -527,7 +530,7 @@ fmod CONSTRAINT-INCOMPLETENESS is
     if isOpCompleteFor(M, Q, true) = false /\ isOpCompleteFor(M, Q, false) = false .
   ceq opConstraintIncompleteness(M, Q) = incomplete(true)
     if isOpCompleteFor(M, Q, true) = false .
-  ceq opConstraintIncompleteness(M, Q) = incomplete(true)
+  ceq opConstraintIncompleteness(M, Q) = incomplete(false)
     if isOpCompleteFor(M, Q, false) = false .
   eq opConstraintIncompleteness(M, Q) = undefined [owise] .
 
