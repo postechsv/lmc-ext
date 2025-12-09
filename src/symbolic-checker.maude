@@ -563,6 +563,11 @@ fmod CONSTRAINT-INCOMPLETENESS is
 
   op constraintIncompleteness : Module Term -> CompletenessSet .
   eq constraintIncompleteness(M, T) = termIncompletenessRaw(M, T), ##initCPT## .
+  
+  --- Use ONLY for the initial constraint (init state), to inject the
+  --- externally-specified incompleteness without storing it in the state.
+  op initConstraintIncompleteness : Module Term -> CompletenessSet .
+  eq initConstraintIncompleteness(M, T) = termIncompletenessRaw(M, T), ##initCPT## .
 endfm
 
 fmod RULE-PROP-CONF is
