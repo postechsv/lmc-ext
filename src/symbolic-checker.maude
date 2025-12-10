@@ -1524,6 +1524,7 @@ mod LMC-COMMAND-PROCESSING is
   pr FM-COMMAND-PROCESSING .
   pr META-PROP-SET .
   pr ENABLED-AUTO-GENERATION .
+  pr COMPLETENESS .
 
   vars T T1 T2 T3 T4 T5 T6 : Term .  
   var TL TL1 : TermList .
@@ -1541,6 +1542,17 @@ mod LMC-COMMAND-PROCESSING is
   var  TMVB : [Tuple{Term,Module,Bool,VariableSet,Bound,Database}] .
   var RP : ResultPair . 
   var  RP? : [ResultPair] .
+
+  --- Init-stage incompleteness spec extraction (syntax-only)
+  vars STT CTT CPTT : Term .
+
+  op extractInitCPT : Term -> Term .
+  op stripInitCPT : Term -> Term .
+  
+  eq extractInitCPT('<<<_|_|_>>>[STT, CTT, CPTT]) = CPTT .
+  eq extractInitCPT(T) = upTerm(undefined) [owise] .
+  eq stripInitCPT('<<<_|_|_>>>[STT, CTT, CPTT]) = '<<<_|_>>>[STT, CTT] .
+  eq stripInitCPT(T) = T [owise] .
 
 --- Pre-condition: QI is a Qid, ME is a ModuleExpression, and DB is a Database.
 --- Post-condition: Processes a logical model checking command.
