@@ -1548,7 +1548,7 @@ mod LMC-COMMAND-PROCESSING is
 
   op extractInitCPT : Term -> Term .
   op stripInitCPT : Term -> Term .
-  
+
   eq extractInitCPT('<<<_|_|_>>>[STT, CTT, CPTT]) = CPTT .
   eq extractInitCPT(T) = upTerm(undefined) [owise] .
   eq stripInitCPT('<<<_|_|_>>>[STT, CTT, CPTT]) = '<<<_|_>>>[STT, CTT] .
@@ -1661,18 +1661,20 @@ mod LMC-COMMAND-PROCESSING is
   op procLMCExec : Term Term Condition Bool Bound Module Database -> Tuple{Database,QidList} .
   ceq procLMCExec(T1, T2, CD, B, D, M, DB)
    = if RP? :: ResultPair
-     then << DB ; printLMCInfo(M,B,T1,T2,CD) printLMCOutput(M,getTerm(RP?)) >>
+     then << DB ; printLMCInfo(M':Module,B,T1,T2,CD) printLMCOutput(M':Module,getTerm(RP?)) >>
      else << DB ; getMsg(getTerm(RP?)) >>
      fi
-   if EL:TermList := enabledProp, props(M,T2) /\
-      M':Module := addEnabled(M) /\
-      U := addEqs( 
-	    (eq '##m##.Module = up(M) [none] .
-	     eq '##f##.TermList = upTerm(props(M,T2)) [none] .),
-	    upModule('META-SYMBOLIC-CONNECTOR, false)) /\
+   if
+     EL:TermList := enabledProp, props(M,T2) /\
+     M':Module := addEnabled(M) /\
       T3  := up(getTerm(metaReduce(M,T1))) /\
-      T4 := up(getTerm(metaReduce(M,T2))) /\
-      RP? := metaReduce(U, 'lmc-check[T3,T4,upTerm(B),upTerm(D)]) .
+     U := addEqs( 
+	    (eq '##m##.Module = up(M':Module) [none] .
+	     eq '##f##.TermList = upTerm(EL:TermList) [none] .
+	     eq '##initCPT##.CompletenessSet = extractInitCPT(T3) [none] .),
+	    upModule('META-SYMBOLIC-CONNECTOR, false)) /\
+     T4 := up(getTerm(metaReduce(M,T2))) /\
+	 RP? := metaReduce(U, 'lmc-check[stripInitCPT(T3),T4,upTerm(B),upTerm(D)]) .
 
 --- Pre-condition: M is a Module, B is a Bool indicating folding, T1 is a Term representing the initial state, T2 is a Term representing the property, and CD is a Condition.
 --- Post-condition: Generates a QidList containing information about the model checking process being initiated.
