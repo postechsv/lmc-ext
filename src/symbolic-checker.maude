@@ -1545,6 +1545,7 @@ mod LMC-COMMAND-PROCESSING is
 
   --- Init-stage incompleteness spec extraction (syntax-only)
   vars STT CTT CPTT : Term .
+  var CPT3 : Term .
 
   op extractInitCPT : Term -> Term .
   op stripInitCPT : Term -> Term .
@@ -1668,10 +1669,11 @@ mod LMC-COMMAND-PROCESSING is
      EL:TermList := enabledProp, props(M,T2) /\
      M':Module := addEnabled(M) /\
       T3  := up(getTerm(metaReduce(M,T1))) /\
+      CPT3 := extractInitCPT(T3) /\
      U := addEqs( 
 	    (eq '##m##.Module = up(M':Module) [none] .
 	     eq '##f##.TermList = upTerm(EL:TermList) [none] .
-	     eq '##initCPT##.CompletenessSet = extractInitCPT(T3) [none] .),
+       eq '##initCPT##.CompletenessSet = CPT3 [none] .),
 	    upModule('META-SYMBOLIC-CONNECTOR, false)) /\
      T4 := up(getTerm(metaReduce(M,T2))) /\
 	 RP? := metaReduce(U, 'lmc-check[stripInitCPT(T3),T4,upTerm(B),upTerm(D)]) .
