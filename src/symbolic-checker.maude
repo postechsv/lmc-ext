@@ -1341,10 +1341,10 @@ mod META-SYMBOLIC-CONNECTOR is
   eq initStep({T,SUB,RN | ST} || SRS:StepResultSet) = next(T) || initStep(SRS:StepResultSet) .
 
   eq next(ST) 
-    = simplifySubstitutions(filterStates(trMod(##m##), nextCandidates(ST))) .
+    = simplifySubstitutions(filterStates(##m##, nextCandidates(ST))) .
 
   eq initVariant(ST) 
-    = initStep(simplifySubstitutions(filterStates(trMod(##m##), initCandidates(ST)))) .
+    = initStep(simplifySubstitutions(filterStates(##m##, initCandidates(ST)))) .
 
   op wrapInitState : Term -> Term .
   eq wrapInitState('<<<_|_>>>[TL]) = '<<<_|_>>>[TL] .
