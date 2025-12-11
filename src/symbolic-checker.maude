@@ -1713,7 +1713,9 @@ mod LMC-COMMAND-PROCESSING is
 
   eq printLMCOutput(M, T)
    = '\b 'error: '\o '\n '\s '\s
-     'model 'checker 'internal 'error '\n [owise] .
+     'model 'checker 'internal 'error '\n '\s '\s
+     'returned: '\o eMetaPrettyPrint(M, T) '\n [owise] .
+
 
 --- Pre-condition: M is a Module and T is a Term representing the counterexample.
 --- Post-condition: Generates a QidList containing the pretty-printed counterexample.
