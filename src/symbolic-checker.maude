@@ -59,6 +59,7 @@ fmod STATE-SYNTAX is
     --- Initialization-only interface for specifying constraint incompleteness
     --- without embedding it in the InitState/ExState representation.
     sort InitStateSpec .
+    subsort InitStateSpec < State .
     op <<<_|_|_>>> : State Bool CompletenessSet -> InitStateSpec [ctor] .
 
     sorts PropMapping PropMap .
